@@ -1,0 +1,91 @@
+UV-CDAT Demo
+-------------------------------------------------------------------------------
+
+
+
+Videos
+-----------------------------
+
+1) overall features
+o streaming
+o large data
+o dynamic blending
+
+2a) howto - basics 
+o load
+o change palette
+o move slice
+o change timestep
+
+2b) howto - blend operation
+o change blend operation
+o enable/disable datasets
+
+3a) advanced - treeview
+o selection via tree view
+o renaming / deleting
+o adding new render
+
+3b) advanced - volume renderer
+o select volume renderer in treeview
+o change size of query window
+o viewer-aligned vs orthogonal slices
+
+3c) advanced - other analysis/rendering
+o min/max trees
+o isocontours
+
+4x) bugs (one video per bug)
+o UI weirdness (uvcdat bug?)
+o crashes (if they can be reproduced)
+o volume rendering
+o doesn't show value in sliders
+o field selection confusion
+o cannot double-click to recenter
+o palette range not shown
+o dataflow layout
+
+-----------------------------
+Scripts
+Note: Title... signifies a scene transition, show text overlay (... not necessary)
+-----------------------------
+
+Script (1):
+
+Introduction...
+The ViSUS module [show ViSUS logo], integrated with the Ultra-scale Climate Data Analysis Toolkit [UV-CDAT startup screen], provides dynamic blending of heterogenous datasets [show selection dialog and changing view, 4 seconds], streaming multiresolution remote access [show 3D streaming, 3 seconds], and a variety of data analysis and visualization tools [isocontour, jtree, 2D slice with topo-map style transfer function, 5 seconds].
+
+Getting started...
+ViSUS can dynamically blend numerous datasets on-the-fly. To select a compilation of datasets for use with ViSUS, click the 'plus' icon in the variables panel in the top-right quadrant, then select the 'ViSUS' tab. The server can be changed and the application will dynamically query for available dataset collections. Select the collection you want to load [as many as you like], then click 'Load and Close'. Drag the new variable into a spreadsheet cell. (10 seconds)
+
+Next, in the modules panel in the bottom-left quadrant, select ViSUS and drag the 'Slice + Volume' into the same cell. ViSUS will load with a default slice view and if the volume is 3D will also include a volume render view (10 seconds).
+
+Interaction...
+To change the timestep, open the properties panel by clicking the 'pencil' icon in the top-middle. Click the button to open the time slider and drag the slider to the desired timestep. [10 sec]
+
+The slider also features a 'play' button that can be used to automatically change timesteps [10 seconds]
+
+You can modify the palette by clicking the 'palette' button. This opens a simple transfer function editor that can be used to highlight desired data. [10 seconds, while play continues from previous clip]
+
+Dynamic blending...
+To select the variables to be blended, click the 'variable' button to open the dialog. First, select a primary operation and click 'enable' in the first panel. It is very important not to skip this step. To change the variable being blended, select a dataset, a run, and finally the variable, then click 'Enable All'. Individual datasets, runs or variables can be enabled or disabled using the corresponding buttons. In addition, the blending equation itself is shown below the variables and datasets and may be edited manually [30 sec total?]
+
+In summary...
+ViSUS is the ideal tool for streaming remote access of arbitrarily large heterogenous datasets. Dynamic blending makes it simple to compare many data even of different resolutions, and customizable python filters allow for a variety of analyses and visualizations. [5 seconds]
+
+For further information contact visus-uvcdat@gmail.com (or pascucci@sci.utah.edu).
+
+
+-------------------------------------------------------------------------------
+
+Monday, December 02, 2013
+
+Installing uvcdat on laptop (1.3.1 build)
+   NVISUSIO_ROOT=/Users/cam/code/nvisus
+   PYTHON_SITE_PACKAGES=/usr/local/uvcdat/1.3.1/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages
+   sudo rm -Rf   $PYTHON_SITE_PACKAGES/visuspy
+   sudo mkdir -p $PYTHON_SITE_PACKAGES/visuspy
+   sudo cp $NVISUSIO_ROOT/visuscpp/swig/python/__init__.py $PYTHON_SITE_PACKAGES/visuspy/
+   sudo cp ./visuscpp/swig/python/*.py $PYTHON_SITE_PACKAGES/visuspy/
+   sudo cp ./Release/_visuspy.so $PYTHON_SITE_PACKAGES/visuspy/ 
+   sudo chmod -R a+rwx $PYTHON_SITE_PACKAGES/visuspy

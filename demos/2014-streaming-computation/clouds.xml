@@ -1,0 +1,342 @@
+<VisusViewer bRefreshDataOnCameraChange="False">
+	<scenegraph>
+		<root icon="resources/icons/treeview/world.png" name="World" uuid="b33a9167-8217-4011-a570-e8f9ed1db8ff">
+			<child icon="resources/icons/treeview/database.png" name="volcanoA_3d (MIDX)" uuid="3cc83571-1845-4017-a072-9522185b728f">
+				<child name="modelview" uuid="ba2e75fe-003a-4592-9af9-ac4d60e4e54f" />
+				<child name="fieldname" uuid="9503c25a-fff0-43a9-b8c7-cf75b799a817">
+					<object fieldname="f0=input.volcanoA_3d.CLDLIQ;&#x0A;output=Visus.Array.avg([f0]);&#x0A;" typename="DbField" uuid="9c9b7280-9377-4522-ba40-0ff0dd6c1f47" />
+					<child name="modelview" uuid="298b09e2-c317-4ba8-a535-3162b6264de8" />
+				</child>
+				<child name="render_bbox" uuid="2bd0b7f7-5ae6-4d01-88fc-4c7105501d84">
+					<object typename="BoolObject" uuid="07185de4-6e96-4c7f-baf0-67bfa8fcae05" value="True" />
+					<child name="modelview" uuid="7849656a-f170-4355-bbd2-d9a290202965" />
+				</child>
+				<child name="time" uuid="05c2ff7d-2fa4-4ea5-8765-6a39ca1b359a">
+					<object typename="DoubleInRange" uuid="5f7b8c7d-8777-4b0d-afd1-9687810aa9f6" value="20">
+						<range from="0" step="10" to="221" />
+					</object>
+					<child name="modelview" uuid="3206720e-723d-4e9a-a468-ad73dbdbdbb6" />
+				</child>
+				<child name="progression" uuid="3ffefb22-2dd8-4237-ac66-4ca92d418381">
+					<object typename="DoubleInRange" uuid="b838cad1-f33c-4ff7-b5b6-6c43bd442778" value="9">
+						<range from="0" step="1" to="32" />
+					</object>
+					<child name="modelview" uuid="69d039c4-83f8-495b-898f-86367e5970e9" />
+				</child>
+				<child name="quality" uuid="8e606e81-2a97-4c4d-bcf3-e541eaa7d8fb">
+					<object typename="DoubleInRange" uuid="f257bddd-62ad-4fa4-b110-0ead0f43bf7e" value="-3">
+						<range from="-8" step="1" to="8" />
+					</object>
+					<child name="modelview" uuid="7baa1802-d0c2-48dd-b316-6f0f2d8db1f5" />
+				</child>
+				<child icon="resources/icons/treeview/gears.png" name="Volume 1" uuid="75e49c23-f171-4466-a8da-26556ee5a6c8">
+					<child name="position" uuid="a4e677fe-26ae-4bba-9dca-59cda4b198eb">
+						<object typename="Position" uuid="46064947-16b0-4656-a11c-c77ac973875a">
+							<map matrix="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1" />
+							<box p1="0 0 -1.8853" p2="1023 511 23.1147" />
+						</object>
+						<child name="modelview" uuid="c51edcf5-7c48-4b15-8a7d-12e5fcf63ba4" />
+					</child>
+					<child name="fieldname" uuid="63fd4f46-8efa-4f2b-a853-d88e2717bc60">
+						<object fieldname="output=input.volcanoA_3d.CLDICE;" typename="DbField" uuid="efb5f8a0-94c5-490a-9365-4a15adc56eaf" />
+						<child name="modelview" uuid="9babb98d-e659-4f7e-89c6-0bb53f99c4dd" />
+					</child>
+					<child name="palette" uuid="0deb7e02-f035-48fe-b706-dc278a8789fe">
+						<object input_normalization="3" output_dtype="uint8" typename="TransferFunction1d" uuid="0bdf0bbb-200e-4172-b74e-dfaab4412d0b">
+							<input_user_range from="0" step="1" to="6.3e-05" />
+							<output_range from="0" step="1" to="255" />
+							<function color="255 0 0 255" name="Red" typename="LutTransferFunction1d">
+								<![CDATA[
+1 0.991658 0.983316 0.974973 0.966631 0.958289 0.949947 0.941605 0.933263 0.92492 0.916578 0.908236 0.899894 0.891552 0.88321 0.874867 
+0.866525 0.858183 0.849841 0.841499 0.833157 0.824814 0.816472 0.80813 0.799788 0.791446 0.783104 0.774761 0.766419 0.758077 0.749735 0.741393 
+0.733051 0.724708 0.716366 0.708024 0.699682 0.69134 0.682998 0.674655 0.666313 0.657971 0.649629 0.641287 0.632944 0.624602 0.61626 0.607918 
+0.599576 0.591234 0.582891 0.574549 0.566207 0.557865 0.549523 0.541181 0.532838 0.524496 0.516154 0.507812 0.49947 0.491128 0.482785 0.474443 
+0.466101 0.457759 0.449417 0.441075 0.432732 0.42439 0.415854 0.407317 0.39878 0.390244 0.380793 0.371341 0.36189 0.352439 0.342988 0.333537 
+0.324085 0.314634 0.305183 0.295732 0.28628 0.276829 0.267378 0.257927 0.248476 0.239024 0.22439 0.209756 0.195122 0.180488 0.158537 0.136585 
+0.119512 0.102439 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]]>
+							</function>
+							<function color="0 128 0 255" name="Green" typename="LutTransferFunction1d">
+								<![CDATA[
+0 0 0 0.985366 0.98374 0.982114 0.980488 0.976585 0.972683 0.96878 0.964878 0.960976 0.956098 0.95122 0.946341 0.941463 
+0.936585 0.931707 0.926829 0.921951 0.917073 0.912195 0.908711 0.905226 0.901742 0.898258 0.894774 0.891289 0.887805 0.884321 0.880836 0.877352 
+0.873868 0.870383 0.866899 0.863415 0.858537 0.853659 0.84878 0.843902 0.839024 0.834146 0.829268 0.82439 0.819512 0.814634 0.809756 0.804878 
+0.800348 0.795819 0.791289 0.78676 0.78223 0.7777 0.773171 0.768641 0.764111 0.759582 0.755052 0.750523 0.745993 0.741463 0.737398 0.733333 
+0.729268 0.725203 0.721138 0.717073 0.713008 0.708943 0.704878 0.700813 0.696748 0.692683 0.687805 0.682927 0.678049 0.673171 0.668293 0.663415 
+0.658537 0.653659 0.64878 0.643902 0.638581 0.633259 0.627938 0.622616 0.617295 0.611973 0.606652 0.60133 0.596009 0.590687 0.585366 0.579404 
+0.573442 0.56748 0.561518 0.555556 0.549593 0.543631 0.537669 0.531707 0.525366 0.519024 0.512683 0.506341 0.5 0.493659 0.487317 0.480976 
+0.474634 0.468293 0.462331 0.456369 0.450406 0.444444 0.438482 0.43252 0.426558 0.420596 0.414634 0.406098 0.397561 0.389024 0.380488 0.368293 
+0.356098 0.343902 0.331707 0.323577 0.315447 0.307317 0.30122 0.295122 0.289024 0.282927 0.273171 0.263415 0.253659 0.234146 0.22561 0.217073 
+0.208537 0.2 0.185366 0.170732 0.159892 0.149051 0.138211 0.127371 0.116531 0.105691 0.0948509 0.0840108 0.0731707 0.0646341 0.0560976 0.047561 
+0.0390244 0.0304878 0.0219512 0.0134146 0.00487805 0.00243902 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]]>
+							</function>
+							<function color="0 0 255 255" name="Blue" typename="LutTransferFunction1d">
+								<![CDATA[
+0 0.00392157 0.00784314 0.0156863 0.0196078 0.0235294 0.0313725 0.0352941 0.0392157 0.0470588 0.0509804 0.054902 0.0627451 0.0666667 0.0705882 0.0784314 
+0.0823529 0.0901961 0.0941176 0.0980392 0.105882 0.109804 0.113725 0.121569 0.12549 0.129412 0.137255 0.141176 0.145098 0.152941 0.156863 0.164706 
+0.168627 0.172549 0.180392 0.184314 0.188235 0.196078 0.2 0.203922 0.211765 0.215686 0.219608 0.227451 0.231373 0.239216 0.243137 0.247059 
+0.254902 0.258824 0.262745 0.270588 0.27451 0.278431 0.286275 0.290196 0.294118 0.301961 0.305882 0.313725 0.317647 0.321569 0.329412 0.333333 
+0.337255 0.345098 0.34902 0.352941 0.360784 0.364706 0.368627 0.376471 0.380392 0.388235 0.392157 0.396078 0.403922 0.407843 0.411765 0.419608 
+0.423529 0.427451 0.435294 0.439216 0.443137 0.45098 0.454902 0.462745 0.466667 0.470588 0.478431 0.482353 0.486275 0.494118 0.498039 0.501961 
+0.509804 0.513725 0.517647 0.52549 0.529412 0.533333 0.541176 0.545098 0.552941 0.556863 0.560784 0.568627 0.572549 0.576471 0.584314 0.588235 
+0.592157 0.6 0.603922 0.607843 0.615686 0.619608 0.627451 0.631373 0.635294 0.643137 0.647059 0.65098 0.658824 0.662745 0.666667 0.67451 
+0.678431 0.682353 0.690196 0.694118 0.701961 0.705882 0.709804 0.717647 0.721569 0.72549 0.733333 0.737255 0.741176 0.74902 0.752941 0.756863 
+0.764706 0.768627 0.776471 0.780392 0.784314 0.792157 0.796078 0.8 0.807843 0.811765 0.815686 0.823529 0.827451 0.831373 0.839216 0.843137 
+0.85098 0.854902 0.858824 0.866667 0.870588 0.87451 0.882353 0.886275 0.890196 0.898039 0.901961 0.905882 0.913725 0.917647 0.92549 0.929412 
+0.933333 0.941176 0.945098 0.94902 0.956863 0.960784 0.964706 0.972549 0.976471 0.980392 0.988235 0.992157 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]]>
+							</function>
+							<function color="128 128 128 255" name="Alpha" typename="LutTransferFunction1d">
+								<![CDATA[
+0 0.00176991 0.00707965 0.00353982 0.00530973 0.00176991 0.000884956 0 0 0 0.00707965 0.00530973 0.00530973 0.00530973 0.00530973 0.00442478 
+0.0831858 0.00353982 0.00353982 0.00176991 0.00176991 0.00176991 0.00117994 0.00058997 0 0.00176991 0 0 0.153982 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0.263717 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]]>
+							</function>
+						</object>
+						<child name="modelview" uuid="501b3c89-5852-42f9-ac5d-5ccdd8810099" />
+					</child>
+					<child name="enable_viewdep" uuid="a3680361-a5b1-4979-a297-f7cc04b04f18">
+						<object typename="BoolObject" uuid="a5f7f21d-845c-42e8-8ffe-1446cd381096" value="False" />
+						<child name="modelview" uuid="72ab7b8c-c6a5-47da-bca2-ea3209f34c13" />
+					</child>
+					<child name="Process array" uuid="5f9ac2d8-89f8-4529-871b-aad76485c80b">
+						<child name="modelview" uuid="8d75b086-7bcc-4db0-a0dc-03bb6980860b" />
+						<child icon="resources/icons/treeview/brush.png" name="Array render" uuid="fcb84bca-ff87-427d-83ce-12474108b0f3">
+							<child name="modelview" uuid="49b13c1d-a333-4b7b-8dee-ad22ce12ff98" />
+						</child>
+					</child>
+				</child>
+				<child icon="resources/icons/treeview/gears.png" name="IsoContour 1" uuid="3b56d638-08ad-48dd-bf84-128990b5879a">
+					<child name="position" uuid="b3892e6d-dd8a-4d86-adf0-ab0d1f63604e">
+						<object typename="Position" uuid="b74d483f-1bbd-4145-8214-82472621c352">
+							<map matrix="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1" />
+							<box p1="3.82425 0 0" p2="1026.82 511 25" />
+						</object>
+						<child name="modelview" uuid="e2ef568c-d712-4dce-a41b-9abf3fd8bab7" />
+					</child>
+					<child name="fieldname" uuid="c16f03f1-6428-4f49-b099-a1c003f8d6a0">
+						<object fieldname="f0=input.volcanoA_3d.Z3;&#x0A;output=Visus.Array.avg([f0]);&#x0A;" typename="DbField" uuid="5565ef17-8379-46eb-9d05-6fa026908abd" />
+						<child name="modelview" uuid="4523e36a-959b-4037-ada1-2bf19662549a" />
+					</child>
+					<child name="palette" uuid="2fdbbced-9008-4238-b085-79f9a7d4c45b">
+						<object default_name="graytransparent" input_normalization="0" output_dtype="uint8" typename="TransferFunction1d" uuid="a4b9602d-0ebd-4935-96f4-5a9cc60e51d0">
+							<output_range from="0" step="1" to="255" />
+						</object>
+						<child name="modelview" uuid="aef1493a-fbb9-42e3-9cc8-5728faf6d4b7" />
+					</child>
+					<child name="enable_viewdep" uuid="cdbf19f7-c746-4e2d-95d5-bd645d1378ef">
+						<object typename="BoolObject" uuid="e9566f9f-09e8-4a5a-8064-8b15ee0e2c48" value="False" />
+						<child name="modelview" uuid="ef97540b-e60a-40c2-83bd-54334917ddde" />
+					</child>
+					<child icon="resources/icons/treeview/geometry.png" name="Marching cube" uuid="a09817b2-2299-4183-837a-f7a4e58f346e">
+						<modelview matrix="1 0 0 0 0 1 0 0 0 0 7.74158 -114.434 0 0 0 1" />
+						<child name="modelview" uuid="d7b562e1-7c93-424d-9cde-3298e8f73376" />
+						<child icon="resources/icons/treeview/brush.png" name="Mesh render" uuid="4c15aca3-9da5-40d2-ad20-a7dfe6dc642c">
+							<child name="modelview" uuid="f228f766-90c1-4e84-a10a-62fa15ff0492" />
+							<child name="force_LOD" uuid="2f3a3d3f-52bb-4095-9b99-9239428ae472">
+								<object typename="BoolObject" uuid="a73de896-f5f1-4408-995f-590e1b33db66" value="False" />
+								<child name="modelview" uuid="24148791-6bf4-4b58-b133-ce54cb418f38" />
+							</child>
+							<child name="material" uuid="59d83332-bfc9-4bbf-baa4-c304054caecd">
+								<object typename="GLMaterial" uuid="7a44961a-c262-42c8-8e00-35c4de524c98">
+									<front ambient="30 30 30 255" diffuse="60 109 62 255" emission="0 0 0 255" shininess="10" specular="255 255 255 255" />
+									<back ambient="30 30 30 255" diffuse="42 75 112 255" emission="0 0 0 255" shininess="10" specular="255 255 255 255" />
+								</object>
+								<child name="modelview" uuid="299eb12b-9078-4532-a197-18e013550221" />
+							</child>
+						</child>
+						<child name="isovalue" uuid="894ef0ae-9621-445c-8eb3-855199ad4d3b">
+							<object typename="DoubleInRange" uuid="b5a9a3cf-a55f-40dd-800d-baa7680b7bd2" value="8077">
+								<range from="0" step="1" to="50000" />
+							</object>
+							<child name="modelview" uuid="a12d0b80-88bd-4513-87f5-d636433b3ff8" />
+						</child>
+					</child>
+				</child>
+			</child>
+		</root>
+	</scenegraph>
+	<dataflow>
+		<dataflow_node name="volcanoA_3d (MIDX)" typename="DatasetNode" uuid="a36a8eac-63b4-43fe-9f79-265a66da01a9">
+			<preferred_position height="40" width="60" x="546" y="237" />
+			<dataset typename="MultipleDataset" url="file:///Users/cam/visus/midx/volcanoA_3d.midx">
+				<config>
+					<dataset name="volcanoA_3d (MIDX)" url="/Users/cam/visus/midx/volcanoA_3d.midx">
+						<Logo>
+							<BottomLeft alpha="0.6" filename="/Users/cam/visus/Logos/sci-logo.png" height="72" />
+							<BottomRight alpha="0.6" filename="/Users/cam/visus/Logos/visus_alt.png" height="150" />
+							<TopRight alpha="0.6" filename="/Users/cam/visus/Logos/UVCDAT.png" height="100" />
+							<TopLeft alpha="0.6" filename="/Users/cam/visus/Logos/cedmav-logo.png" height="72" />
+						</Logo>
+						<access name="MultipleAccess" type="MultipleAccess">
+							<access name="volcanoA_3d" type="multiplex">
+								<access chmod="rw" type="disk" url="file:///Users/cam/visus/cached_files/volcanoA_3d/visus.idx" />
+								<access chmod="r" compression="zip" type="network" url="http://atlantis.sci.utah.edu/mod_visus?dataset=volcanoA_3d" />
+							</access>
+						</access>
+					</dataset>
+				</config>
+			</dataset>
+		</dataflow_node>
+		<dataflow_node name="fieldname" oport="fieldname" typename="ObjectNode" uuid="cad70110-f436-4a8a-a74e-6d56d7dc27ea">
+			<preferred_position height="40" width="60" x="153" y="219" />
+			<object uuid="9c9b7280-9377-4522-ba40-0ff0dd6c1f47" />
+		</dataflow_node>
+		<dataflow_node name="render_bbox" oport="render_bbox" typename="ObjectNode" uuid="4b549815-74e9-4c04-9169-bc3252e0c815">
+			<preferred_position height="40" width="60" x="610" y="451" />
+			<object uuid="07185de4-6e96-4c7f-baf0-67bfa8fcae05" />
+		</dataflow_node>
+		<dataflow_node name="time" oport="time" typename="ObjectNode" uuid="8290887d-d2b9-416f-a6c6-0b65349c6e9f">
+			<preferred_position height="40" width="60" x="154" y="128" />
+			<object uuid="5f7b8c7d-8777-4b0d-afd1-9687810aa9f6" />
+		</dataflow_node>
+		<dataflow_node name="progression" oport="progression" typename="ObjectNode" uuid="afb84cf1-7383-4e33-808f-cd896a4a2f25">
+			<preferred_position height="40" width="60" x="94" y="126" />
+			<object uuid="b838cad1-f33c-4ff7-b5b6-6c43bd442778" />
+		</dataflow_node>
+		<dataflow_node name="quality" oport="quality" typename="ObjectNode" uuid="1eab71de-f17f-4989-a1f1-4e2b1239d727">
+			<preferred_position height="40" width="60" x="691" y="356" />
+			<object uuid="f257bddd-62ad-4fa4-b110-0ead0f43bf7e" />
+		</dataflow_node>
+		<dataflow_node name="Volume 1" typename="QueryNode" uuid="e4b823d6-e1d5-4ab0-9cc3-e2f27d2fcbdb">
+			<preferred_position height="120" width="180" x="4" y="326" />
+		</dataflow_node>
+		<dataflow_node name="position" oport="position" typename="ObjectNode" uuid="5a4551cd-fe66-4ce9-bd25-c2fc86725c47">
+			<preferred_position height="40" width="60" x="245" y="364" />
+			<object uuid="46064947-16b0-4656-a11c-c77ac973875a" />
+		</dataflow_node>
+		<dataflow_node name="fieldname" oport="fieldname" typename="ObjectNode" uuid="09f41fa4-5339-403e-bece-4312764fa13f">
+			<preferred_position height="40" width="60" x="499" y="395" />
+			<object uuid="efb5f8a0-94c5-490a-9365-4a15adc56eaf" />
+		</dataflow_node>
+		<dataflow_node name="palette" oport="palette" typename="ObjectNode" uuid="37f8fd62-8b6f-49cf-b310-c2c539ee9f48">
+			<preferred_position height="40" width="60" x="587" y="70" />
+			<object uuid="0bdf0bbb-200e-4172-b74e-dfaab4412d0b" />
+		</dataflow_node>
+		<dataflow_node name="enable_viewdep" oport="enable_viewdep" typename="ObjectNode" uuid="42c51c7f-c718-4d6d-a80f-a149babe53de">
+			<preferred_position height="40" width="60" x="346" y="68" />
+			<object uuid="a5f7f21d-845c-42e8-8ffe-1446cd381096" />
+		</dataflow_node>
+		<dataflow_node name="Process array" typename="ScriptingProcessArrayNode" uuid="62442ee4-8c9f-429e-af63-02e6c826456c">
+			<preferred_position height="80" width="120" x="187" y="225" />
+			<scripting code="output=input;" typename="ScriptingProcessArray" />
+		</dataflow_node>
+		<dataflow_node four_channel_blend_color="0 0 0 255" four_channel_blend_enabled="False" lighting_enabled="False" lut_enabled="False" magnify_filter="9729" max_num_slices="0" minify_filter="9729" name="Array render" preintegration_enabled="False" progressive_rendering_enabled="True" ray_cast_enabled="False" raycast_quality="3" typename="ArrayRenderNode" use_view_direction_enabled="False" uuid="c3e3aea9-4738-4b73-83b4-a54d7b713d54">
+			<preferred_position height="56.5685" width="84.8528" x="394" y="186" />
+		</dataflow_node>
+		<dataflow_node name="IsoContour 1" typename="QueryNode" uuid="b7cb4981-89a2-4b58-a1e5-7fcb74aae587">
+			<preferred_position height="120" width="180" x="411" y="466" />
+		</dataflow_node>
+		<dataflow_node name="position" oport="position" typename="ObjectNode" uuid="99546556-f5a7-4377-b5b9-f8e783b4057f">
+			<preferred_position height="40" width="60" x="561" y="53" />
+			<object uuid="b74d483f-1bbd-4145-8214-82472621c352" />
+		</dataflow_node>
+		<dataflow_node name="fieldname" oport="fieldname" typename="ObjectNode" uuid="3fab975d-dfbf-4eff-8b8e-ed3168b2d0b4">
+			<preferred_position height="40" width="60" x="379" y="62" />
+			<object uuid="5565ef17-8379-46eb-9d05-6fa026908abd" />
+		</dataflow_node>
+		<dataflow_node name="palette" oport="palette" typename="ObjectNode" uuid="718295ad-14a0-44be-bd7b-c43f6247becf">
+			<preferred_position height="40" width="60" x="552" y="481" />
+			<object uuid="a4b9602d-0ebd-4935-96f4-5a9cc60e51d0" />
+		</dataflow_node>
+		<dataflow_node name="enable_viewdep" oport="enable_viewdep" typename="ObjectNode" uuid="dbda3f76-b2e2-4c0c-a6a9-0b3e39ec2fd6">
+			<preferred_position height="40" width="60" x="383" y="642" />
+			<object uuid="e9566f9f-09e8-4a5a-8064-8b15ee0e2c48" />
+		</dataflow_node>
+		<dataflow_node name="Marching cube" typename="MarchingCubeNode" uuid="de1a1e30-a4b3-4e73-a255-464ab3c837f2">
+			<preferred_position height="80" width="120" x="682" y="178" />
+		</dataflow_node>
+		<dataflow_node name="Mesh render" typename="MeshRenderNode" uuid="efc021db-c12f-42d5-a50c-803fa8e95c65">
+			<preferred_position height="120" width="180" x="276" y="414" />
+		</dataflow_node>
+		<dataflow_node name="force_LOD" oport="force_LOD" typename="ObjectNode" uuid="63de0231-47e9-4332-9b0e-c7137f45bf97">
+			<preferred_position height="40" width="60" x="241" y="126" />
+			<object uuid="a73de896-f5f1-4408-995f-590e1b33db66" />
+		</dataflow_node>
+		<dataflow_node name="isovalue" oport="isovalue" typename="ObjectNode" uuid="57d40f02-921e-4df3-b454-7276a54a5e05">
+			<preferred_position height="40" width="60" x="491" y="179" />
+			<object uuid="b5a9a3cf-a55f-40dd-800d-baa7680b7bd2" />
+		</dataflow_node>
+		<dataflow_node name="material" oport="material" typename="ObjectNode" uuid="d74afcaa-78ed-4378-a3a3-3d414c2e76d1">
+			<preferred_position height="40" width="60" x="661" y="543" />
+			<object uuid="7a44961a-c262-42c8-8e00-35c4de524c98" />
+		</dataflow_node>
+		<dataflow_connection from="a36a8eac-63b4-43fe-9f79-265a66da01a9" iport="dataset" oport="dataset" to="b7cb4981-89a2-4b58-a1e5-7fcb74aae587" />
+		<dataflow_connection from="a36a8eac-63b4-43fe-9f79-265a66da01a9" iport="dataset" oport="dataset" to="e4b823d6-e1d5-4ab0-9cc3-e2f27d2fcbdb" />
+		<dataflow_connection from="8290887d-d2b9-416f-a6c6-0b65349c6e9f" iport="time" oport="time" to="b7cb4981-89a2-4b58-a1e5-7fcb74aae587" />
+		<dataflow_connection from="8290887d-d2b9-416f-a6c6-0b65349c6e9f" iport="time" oport="time" to="e4b823d6-e1d5-4ab0-9cc3-e2f27d2fcbdb" />
+		<dataflow_connection from="afb84cf1-7383-4e33-808f-cd896a4a2f25" iport="progression" oport="progression" to="b7cb4981-89a2-4b58-a1e5-7fcb74aae587" />
+		<dataflow_connection from="afb84cf1-7383-4e33-808f-cd896a4a2f25" iport="progression" oport="progression" to="e4b823d6-e1d5-4ab0-9cc3-e2f27d2fcbdb" />
+		<dataflow_connection from="1eab71de-f17f-4989-a1f1-4e2b1239d727" iport="quality" oport="quality" to="b7cb4981-89a2-4b58-a1e5-7fcb74aae587" />
+		<dataflow_connection from="1eab71de-f17f-4989-a1f1-4e2b1239d727" iport="quality" oport="quality" to="e4b823d6-e1d5-4ab0-9cc3-e2f27d2fcbdb" />
+		<dataflow_connection from="e4b823d6-e1d5-4ab0-9cc3-e2f27d2fcbdb" iport="data" oport="data" to="62442ee4-8c9f-429e-af63-02e6c826456c" />
+		<dataflow_connection from="5a4551cd-fe66-4ce9-bd25-c2fc86725c47" iport="position" oport="position" to="e4b823d6-e1d5-4ab0-9cc3-e2f27d2fcbdb" />
+		<dataflow_connection from="09f41fa4-5339-403e-bece-4312764fa13f" iport="fieldname" oport="fieldname" to="e4b823d6-e1d5-4ab0-9cc3-e2f27d2fcbdb" />
+		<dataflow_connection from="37f8fd62-8b6f-49cf-b310-c2c539ee9f48" iport="palette" oport="palette" to="c3e3aea9-4738-4b73-83b4-a54d7b713d54" />
+		<dataflow_connection from="42c51c7f-c718-4d6d-a80f-a149babe53de" iport="enable_viewdep" oport="enable_viewdep" to="e4b823d6-e1d5-4ab0-9cc3-e2f27d2fcbdb" />
+		<dataflow_connection from="62442ee4-8c9f-429e-af63-02e6c826456c" iport="data" oport="data" to="c3e3aea9-4738-4b73-83b4-a54d7b713d54" />
+		<dataflow_connection from="b7cb4981-89a2-4b58-a1e5-7fcb74aae587" iport="data" oport="data" to="de1a1e30-a4b3-4e73-a255-464ab3c837f2" />
+		<dataflow_connection from="99546556-f5a7-4377-b5b9-f8e783b4057f" iport="position" oport="position" to="b7cb4981-89a2-4b58-a1e5-7fcb74aae587" />
+		<dataflow_connection from="3fab975d-dfbf-4eff-8b8e-ed3168b2d0b4" iport="fieldname" oport="fieldname" to="b7cb4981-89a2-4b58-a1e5-7fcb74aae587" />
+		<dataflow_connection from="718295ad-14a0-44be-bd7b-c43f6247becf" iport="palette" oport="palette" to="efc021db-c12f-42d5-a50c-803fa8e95c65" />
+		<dataflow_connection from="dbda3f76-b2e2-4c0c-a6a9-0b3e39ec2fd6" iport="enable_viewdep" oport="enable_viewdep" to="b7cb4981-89a2-4b58-a1e5-7fcb74aae587" />
+		<dataflow_connection from="de1a1e30-a4b3-4e73-a255-464ab3c837f2" iport="mesh" oport="mesh" to="efc021db-c12f-42d5-a50c-803fa8e95c65" />
+		<dataflow_connection from="de1a1e30-a4b3-4e73-a255-464ab3c837f2" iport="texture" oport="texture" to="efc021db-c12f-42d5-a50c-803fa8e95c65" />
+		<dataflow_connection from="63de0231-47e9-4332-9b0e-c7137f45bf97" iport="force_LOD" oport="force_LOD" to="efc021db-c12f-42d5-a50c-803fa8e95c65" />
+		<dataflow_connection from="57d40f02-921e-4df3-b454-7276a54a5e05" iport="isovalue" oport="isovalue" to="de1a1e30-a4b3-4e73-a255-464ab3c837f2" />
+		<dataflow_connection from="d74afcaa-78ed-4378-a3a3-3d414c2e76d1" iport="material" oport="material" to="efc021db-c12f-42d5-a50c-803fa8e95c65" />
+	</dataflow>
+	<multi_node AutoConnectOutputs="True" dnode="99546556-f5a7-4377-b5b9-f8e783b4057f" snode="b3892e6d-dd8a-4d86-adf0-ab0d1f63604e" />
+	<multi_node AutoConnectOutputs="True" dnode="3fab975d-dfbf-4eff-8b8e-ed3168b2d0b4" snode="c16f03f1-6428-4f49-b099-a1c003f8d6a0" />
+	<multi_node AutoConnectOutputs="True" dnode="718295ad-14a0-44be-bd7b-c43f6247becf" snode="2fdbbced-9008-4238-b085-79f9a7d4c45b" />
+	<multi_node AutoConnectOutputs="True" dnode="dbda3f76-b2e2-4c0c-a6a9-0b3e39ec2fd6" snode="cdbf19f7-c746-4e2d-95d5-bd645d1378ef" />
+	<multi_node AutoConnectInputs="True" dnode="de1a1e30-a4b3-4e73-a255-464ab3c837f2" snode="a09817b2-2299-4183-837a-f7a4e58f346e" />
+	<multi_node AutoConnectInputs="True" dnode="b7cb4981-89a2-4b58-a1e5-7fcb74aae587" snode="3b56d638-08ad-48dd-bf84-128990b5879a" />
+	<multi_node AutoConnectOutputs="True" dnode="d74afcaa-78ed-4378-a3a3-3d414c2e76d1" snode="59d83332-bfc9-4bbf-baa4-c304054caecd" />
+	<multi_node AutoConnectOutputs="True" dnode="57d40f02-921e-4df3-b454-7276a54a5e05" snode="894ef0ae-9621-445c-8eb3-855199ad4d3b" />
+	<multi_node AutoConnectOutputs="True" dnode="63de0231-47e9-4332-9b0e-c7137f45bf97" snode="2f3a3d3f-52bb-4095-9b99-9239428ae472" />
+	<multi_node AutoConnectInputs="True" dnode="62442ee4-8c9f-429e-af63-02e6c826456c" snode="5f9ac2d8-89f8-4529-871b-aad76485c80b" />
+	<multi_node AutoConnectInputs="True" dnode="c3e3aea9-4738-4b73-83b4-a54d7b713d54" snode="fcb84bca-ff87-427d-83ce-12474108b0f3" />
+	<multi_node AutoConnectOutputs="True" dnode="42c51c7f-c718-4d6d-a80f-a149babe53de" snode="a3680361-a5b1-4979-a297-f7cc04b04f18" />
+	<multi_node AutoConnectOutputs="True" dnode="37f8fd62-8b6f-49cf-b310-c2c539ee9f48" snode="0deb7e02-f035-48fe-b706-dc278a8789fe" />
+	<multi_node AutoConnectOutputs="True" dnode="09f41fa4-5339-403e-bece-4312764fa13f" snode="63fd4f46-8efa-4f2b-a853-d88e2717bc60" />
+	<multi_node AutoConnectInputs="True" dnode="a36a8eac-63b4-43fe-9f79-265a66da01a9" snode="3cc83571-1845-4017-a072-9522185b728f" />
+	<multi_node AutoConnectInputs="True" dnode="e4b823d6-e1d5-4ab0-9cc3-e2f27d2fcbdb" snode="75e49c23-f171-4466-a8da-26556ee5a6c8" />
+	<multi_node AutoConnectOutputs="True" dnode="cad70110-f436-4a8a-a74e-6d56d7dc27ea" snode="9503c25a-fff0-43a9-b8c7-cf75b799a817" />
+	<multi_node AutoConnectOutputs="True" dnode="4b549815-74e9-4c04-9169-bc3252e0c815" snode="2bd0b7f7-5ae6-4d01-88fc-4c7105501d84" />
+	<multi_node AutoConnectOutputs="True" dnode="8290887d-d2b9-416f-a6c6-0b65349c6e9f" snode="05c2ff7d-2fa4-4ea5-8765-6a39ca1b359a" />
+	<multi_node AutoConnectOutputs="True" dnode="afb84cf1-7383-4e33-808f-cd896a4a2f25" snode="3ffefb22-2dd8-4237-ac66-4ca92d418381" />
+	<multi_node AutoConnectOutputs="True" dnode="5a4551cd-fe66-4ce9-bd25-c2fc86725c47" snode="a4e677fe-26ae-4bba-9dca-59cda4b198eb" />
+	<multi_node AutoConnectOutputs="True" dnode="1eab71de-f17f-4989-a1f1-4e2b1239d727" snode="8e606e81-2a97-4c4d-bcf3-e541eaa7d8fb" />
+	<multi_node AutoConnectInputs="True" dnode="efc021db-c12f-42d5-a50c-803fa8e95c65" snode="4c15aca3-9da5-40d2-ad20-a7dfe6dc642c" />
+	<glcamera bUseOrthoProjection="False" bottom="-48.6744" bound="0 0 0 1023 511 25" centerOfRotation="511.5 255.5 12.5" defaultPanFactor="5" defaultRotFactor="5.2" defaultZoomFactor="1.1" dir="-0.894388 -0.446757 -0.021857" disableRotation="False" left="-57.1396" pos="2546.15 1555.61 75.4772" quaternion="-0.303191 -0.478208 -0.73437 -0.374291" right="57.1396" top="48.6744" typename="GLLookAtCamera" vup="0 0 1" zFar="4117.67" zNear="686.279" />
+</VisusViewer>

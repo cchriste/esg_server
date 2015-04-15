@@ -1,0 +1,161 @@
+<VisusViewer bRefreshDataOnCameraChange="True">
+	<scenegraph>
+		<root icon="resources/icons/treeview/world.png" name="World" uuid="b558d466-77d2-4fc2-945f-0bd8965905cb">
+			<child icon="resources/icons/treeview/database.png" name="PinatuboComp" uuid="a904a787-c1ef-4071-a37c-9a958af8e2d6">
+				<child name="modelview" uuid="3dfc0d24-fb3a-42dc-9932-ace59d899cac" />
+				<child name="fieldname" uuid="2760d675-8b84-4fce-8f6b-ce10bf79d72c">
+					<object fieldname="f0=input.nopin[&apos;\&#x0A;&#x09;f0=input.A.ODV_bcar2;\&#x0A;&#x09;f1=input.B.ODV_bcar2;\&#x0A;&#x09;f2=input.C.ODV_bcar2;\&#x0A;&#x09;f3=input.D.ODV_bcar2;\&#x0A;&#x09;f4=input.E.ODV_bcar2;\&#x0A;&#x09;output=Visus.Array.avg([f0,f1,f2,f3,f4]);\&#x0A;&#x09;&apos;];&#x0A;f1=input.pin[&apos;\&#x0A;&#x09;f0=input.A.ODV_bcar2;\&#x0A;&#x09;f1=input.B.ODV_bcar2;\&#x0A;&#x09;f2=input.C.ODV_bcar2;\&#x0A;&#x09;f3=input.D.ODV_bcar2;\&#x0A;&#x09;f4=input.E.ODV_bcar2;\&#x0A;&#x09;output=Visus.Array.avg([f0,f1,f2,f3,f4]);\&#x0A;&#x09;&apos;];&#x0A;output=Visus.Array.avg([f0,f1]);&#x0A;" typename="DbField" uuid="0a1a1569-36e7-4384-9954-db629c221725" />
+					<child name="modelview" uuid="247ff3e6-5e13-46bc-8116-7d8630000e24" />
+				</child>
+				<child name="render_bbox" uuid="2bdef7cd-3fb1-414e-a573-eb15d9e5d0a8">
+					<object typename="BoolObject" uuid="adde4fa4-1073-4ab2-9f4d-eff54accab2e" value="True" />
+					<child name="modelview" uuid="c365814b-99ef-4f00-9bed-77369678a205" />
+				</child>
+				<child name="time" uuid="f1e40b9f-add5-43b0-a524-c996f7e669e7">
+					<object typename="DoubleInRange" uuid="34afcf2c-87ea-40ce-8a85-ae65c13ffbea" value="0">
+						<range from="0" step="1" to="221" />
+					</object>
+					<child name="modelview" uuid="04fad709-ae8d-4fc1-8f2b-e2e3a57d7799" />
+				</child>
+				<child name="progression" uuid="2009998b-d667-41ad-a9b7-541fb049d1be">
+					<object typename="DoubleInRange" uuid="05d663e2-19e3-4af8-887b-ab551b069edd" value="0">
+						<range from="0" step="1" to="32" />
+					</object>
+					<child name="modelview" uuid="bc319f11-5ace-4301-86a3-acf1d619492e" />
+				</child>
+				<child name="quality" uuid="99524938-8017-47b0-85e6-04cb0f282221">
+					<object typename="DoubleInRange" uuid="b58ded4c-cff0-4c06-b4d8-e2d7450b1f42" value="0">
+						<range from="-8" step="1" to="8" />
+					</object>
+					<child name="modelview" uuid="77c46c1d-d366-4719-8652-e63e754c4c53" />
+				</child>
+				<child icon="resources/icons/treeview/gears.png" name="Slice 1" uuid="9e5a037c-0c3b-4fcf-9fa5-c1f29b7b0ac2">
+					<child name="position" uuid="32eade13-8482-4b10-8107-f7076441772b">
+						<object typename="Position" uuid="a1a1ccd2-18a7-4d94-9eff-32ec1469bff4">
+							<map matrix="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1" />
+							<box p1="0 0 0" p2="1023 511 0" />
+						</object>
+						<child name="modelview" uuid="f955c4a4-552b-46a9-8a0a-a58b3d9e67c3" />
+					</child>
+					<child name="fieldname" uuid="5557c9e5-a664-470f-9e5b-9d311162687d">
+						<object fieldname="first=5;&#x0A;years=[0,1,2,3,4,5,6,7,8,9,10];&#x0A;years_after=[11,12,13,14];&#x0A;summer_months=[0,1,2];&#x0A;winter_months=[6,7,8];&#x0A;fieldname=&apos;FSNS&apos;;&#x0A;&#x0A;//push_back helper function&#x0A;function push_back(v,value)&#x0A;{v[v.length]=value;}&#x0A;&#x0A;summer_timesteps=[];&#x0A;winter_timesteps=[];&#x0A;for (var Y=0;Y&lt;years.length;Y++) &#x0A;{&#x0A;  for (var M=0;M&lt;summer_months.length;M++)&#x0A;    push_back(summer_timesteps,12*years[Y]+summer_months[M]);&#x0A;  for (var M=0;M&lt;winter_months.length;M++)&#x0A;    push_back(winter_timesteps,12*years[Y]+winter_months[M]);&#x0A;}&#x0A;&#x0A;summer_timesteps_after=[];&#x0A;winter_timesteps_after=[];&#x0A;for (var Y=0;Y&lt;years_after.length;Y++) &#x0A;{&#x0A;  for (var M=0;M&lt;summer_months.length;M++)&#x0A;    push_back(summer_timesteps_after,12*years_after[Y]+summer_months[M]);&#x0A;  for (var M=0;M&lt;winter_months.length;M++)&#x0A;    push_back(winter_timesteps_after,12*years_after[Y]+winter_months[M]);&#x0A;}&#x0A;&#x0A;//calculate seasonal averages from 11 preceding years before volcano&#x0A;pre_summer=[];&#x0A;pre_winter=[];&#x0A;for (var T=0;T&lt;summer_timesteps.length;T++)&#x0A;{&#x0A;  var fieldname_with_time=fieldname + &apos;?time=&apos; + summer_timesteps[T];&#x0A;  push_back(pre_summer,input[&apos;nopin&apos;][&apos;output=input[\&apos;A\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;  push_back(pre_summer,input[&apos;nopin&apos;][&apos;output=input[\&apos;B\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;  push_back(pre_summer,input[&apos;nopin&apos;][&apos;output=input[\&apos;C\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;  push_back(pre_summer,input[&apos;nopin&apos;][&apos;output=input[\&apos;D\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;  push_back(pre_summer,input[&apos;nopin&apos;][&apos;output=input[\&apos;E\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;}&#x0A;for (var T=0;T&lt;winter_timesteps.length;T++)&#x0A;{&#x0A;  var fieldname_with_time=fieldname + &apos;?time=&apos; + winter_timesteps[T];&#x0A;  push_back(pre_winter,input[&apos;nopin&apos;][&apos;output=input[\&apos;A\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;  push_back(pre_winter,input[&apos;nopin&apos;][&apos;output=input[\&apos;B\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;  push_back(pre_winter,input[&apos;nopin&apos;][&apos;output=input[\&apos;C\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;  push_back(pre_winter,input[&apos;nopin&apos;][&apos;output=input[\&apos;D\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;  push_back(pre_winter,input[&apos;nopin&apos;][&apos;output=input[\&apos;E\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;}&#x0A;&#x0A;//calculate seasonal averages for 4 years after eruption&#x0A;post_summer=[];&#x0A;post_winter=[];&#x0A;for (var T=0;T&lt;summer_timesteps_after.length;T++)&#x0A;{&#x0A;  var fieldname_with_time=fieldname + &apos;?time=&apos; + summer_timesteps_after[T];&#x0A;  push_back(post_summer,input[&apos;pin&apos;][&apos;output=input[\&apos;A\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;  push_back(post_summer,input[&apos;pin&apos;][&apos;output=input[\&apos;B\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;  push_back(post_summer,input[&apos;pin&apos;][&apos;output=input[\&apos;C\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;  push_back(post_summer,input[&apos;pin&apos;][&apos;output=input[\&apos;D\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;  push_back(post_summer,input[&apos;pin&apos;][&apos;output=input[\&apos;E\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;}&#x0A;for (var T=0;T&lt;winter_timesteps_after.length;T++)&#x0A;{&#x0A;  var fieldname_with_time=fieldname + &apos;?time=&apos; + winter_timesteps_after[T];&#x0A;  push_back(post_winter,input[&apos;pin&apos;][&apos;output=input[\&apos;A\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;  push_back(post_winter,input[&apos;pin&apos;][&apos;output=input[\&apos;B\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;  push_back(post_winter,input[&apos;pin&apos;][&apos;output=input[\&apos;C\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;  push_back(post_winter,input[&apos;pin&apos;][&apos;output=input[\&apos;D\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;  push_back(post_winter,input[&apos;pin&apos;][&apos;output=input[\&apos;E\&apos;][\&apos;&apos;+fieldname_with_time+&apos;\&apos;];&apos;]);&#x0A;}&#x0A;&#x0A;summer_avg=Visus.Array.avg(pre_summer); &#x0A;summer_avg_after=Visus.Array.avg(post_summer); &#x0A;output=Visus.Array.sub([summer_avg_after,summer_avg]); &#x0A;" typename="DbField" uuid="ebadb1f6-644e-4f9d-97bc-77dee329776e" />
+						<child name="modelview" uuid="9b6784f1-a796-45e7-86cb-14a3cea4559c" />
+					</child>
+					<child name="palette" uuid="719e08e7-b7d5-41aa-960d-30e0a3107f00">
+						<object default_name="grayopaque" input_normalization="0" output_dtype="uint8" typename="TransferFunction1d" uuid="9e121e3c-f59d-4b07-8f44-22afe0700f0d">
+							<output_range from="0" step="1" to="255" />
+						</object>
+						<child name="modelview" uuid="48677cb1-5cb5-463c-a43d-38693c07c52c" />
+					</child>
+					<child name="enable_viewdep" uuid="0bfa49bc-4e67-47be-ba22-d5cd1d339b98">
+						<object typename="BoolObject" uuid="e834528a-f957-48d7-a112-9ee42f3c9047" value="False" />
+						<child name="modelview" uuid="6bbb943b-8b1b-4b5e-a352-ef9818eb7c23" />
+					</child>
+					<child name="Process array" uuid="86547bda-68f1-4acf-8340-20ad7113f90c">
+						<child name="modelview" uuid="a54357f0-641d-4b53-80a8-cef8c58f82cd" />
+						<child icon="resources/icons/treeview/brush.png" name="Array render" uuid="b627720d-16cb-4097-ba6e-a99630caa0dc">
+							<child name="modelview" uuid="45dbb777-5018-417c-a151-008370402a76" />
+						</child>
+					</child>
+				</child>
+			</child>
+		</root>
+	</scenegraph>
+	<dataflow>
+		<dataflow_node name="PinatuboComp" typename="DatasetNode" uuid="142b5ee6-85c7-48ed-8915-eecf95f11ffc">
+			<preferred_position height="40" width="60" x="546" y="237" />
+			<dataset typename="MultipleDataset" url="http://atlantis.sci.utah.edu/mod_visus?action=readdataset&amp;dataset=all2d">
+				<config>
+					<dataset name="PinatuboComp" url="http://atlantis.sci.utah.edu/mod_visus?dataset=all2d">
+						<Logo>
+							<BottomLeft alpha="0.6" filename="Logos/sci-logo.png" height="72" />
+							<BottomRight alpha="0.6" filename="Logos/visus_alt.png" height="150" />
+							<TopRight alpha="0.6" filename="Logos/UVCDAT.png" height="100" />
+							<TopLeft alpha="0.6" filename="Logos/cedmav-logo.png" height="72" />
+						</Logo>
+						<access name="MultipleAccess" type="MultipleAccess">
+							<access name="nopin" type="multiplex">
+								<access compression="zip" dir="./cached_files/all2d/nopin" name="nopin" nsamples="65536" type="DiskAccess" />
+								<access chmod="r" compression="zip" type="network" url="http://atlantis.sci.utah.edu/mod_visus?dataset=all2d/nopin" />
+							</access>
+							<access name="pin" type="multiplex">
+								<access compression="zip" dir="./cached_files/all2d/pin" name="pin" nsamples="65536" type="DiskAccess" />
+								<access chmod="r" compression="zip" type="network" url="http://atlantis.sci.utah.edu/mod_visus?dataset=all2d/pin" />
+							</access>
+						</access>
+					</dataset>
+				</config>
+			</dataset>
+		</dataflow_node>
+		<dataflow_node name="fieldname" oport="fieldname" typename="ObjectNode" uuid="95762dc7-c840-4de8-960d-033989b4a025">
+			<preferred_position height="40" width="60" x="153" y="219" />
+			<object uuid="0a1a1569-36e7-4384-9954-db629c221725" />
+		</dataflow_node>
+		<dataflow_node name="render_bbox" oport="render_bbox" typename="ObjectNode" uuid="5b648c91-f01e-43dc-bb93-d7c371282064">
+			<preferred_position height="40" width="60" x="610" y="451" />
+			<object uuid="adde4fa4-1073-4ab2-9f4d-eff54accab2e" />
+		</dataflow_node>
+		<dataflow_node name="time" oport="time" typename="ObjectNode" uuid="1d42ccdd-cecc-4074-9204-d5dda2bb6516">
+			<preferred_position height="40" width="60" x="154" y="128" />
+			<object uuid="34afcf2c-87ea-40ce-8a85-ae65c13ffbea" />
+		</dataflow_node>
+		<dataflow_node name="progression" oport="progression" typename="ObjectNode" uuid="cb81bd79-d053-44bf-a797-798eb9a67952">
+			<preferred_position height="40" width="60" x="94" y="126" />
+			<object uuid="05d663e2-19e3-4af8-887b-ab551b069edd" />
+		</dataflow_node>
+		<dataflow_node name="quality" oport="quality" typename="ObjectNode" uuid="702819b7-a9e2-4bb2-9707-46253919c32f">
+			<preferred_position height="40" width="60" x="691" y="356" />
+			<object uuid="b58ded4c-cff0-4c06-b4d8-e2d7450b1f42" />
+		</dataflow_node>
+		<dataflow_node name="Slice 1" typename="QueryNode" uuid="d8dde3ce-1bbc-4c16-9eb5-a7b4bb4e1947">
+			<preferred_position height="120" width="180" x="460" y="124" />
+		</dataflow_node>
+		<dataflow_node name="position" oport="position" typename="ObjectNode" uuid="1a99b1f4-bd26-40d5-8400-2a4281c9a1d4">
+			<preferred_position height="40" width="60" x="512" y="180" />
+			<object uuid="a1a1ccd2-18a7-4d94-9eff-32ec1469bff4" />
+		</dataflow_node>
+		<dataflow_node name="fieldname" oport="fieldname" typename="ObjectNode" uuid="863a30b1-cee9-4649-a48f-1041ec3da215">
+			<preferred_position height="40" width="60" x="257" y="287" />
+			<object uuid="ebadb1f6-644e-4f9d-97bc-77dee329776e" />
+		</dataflow_node>
+		<dataflow_node name="palette" oport="palette" typename="ObjectNode" uuid="381c0ce9-7785-421b-bfcc-065a39277b2c">
+			<preferred_position height="40" width="60" x="516" y="140" />
+			<object uuid="9e121e3c-f59d-4b07-8f44-22afe0700f0d" />
+		</dataflow_node>
+		<dataflow_node name="enable_viewdep" oport="enable_viewdep" typename="ObjectNode" uuid="d8c9cb23-bb0b-43d3-bd6c-b744d39803f1">
+			<preferred_position height="40" width="60" x="157" y="512" />
+			<object uuid="e834528a-f957-48d7-a112-9ee42f3c9047" />
+		</dataflow_node>
+		<dataflow_node name="Process array" typename="ScriptingProcessArrayNode" uuid="695148a4-c40a-4ac1-b2cf-c890c40635fb">
+			<preferred_position height="80" width="120" x="28" y="246" />
+			<scripting code="output=input;" typename="ScriptingProcessArray" />
+		</dataflow_node>
+		<dataflow_node four_channel_blend_color="0 0 0 255" four_channel_blend_enabled="False" lighting_enabled="False" lut_enabled="False" magnify_filter="9729" max_num_slices="0" minify_filter="9729" name="Array render" preintegration_enabled="False" progressive_rendering_enabled="True" ray_cast_enabled="False" raycast_quality="3" typename="ArrayRenderNode" use_view_direction_enabled="False" uuid="5f98e177-7101-4ac7-a049-eba5adf8d519">
+			<preferred_position height="56.5685" width="84.8528" x="248" y="132" />
+		</dataflow_node>
+		<dataflow_connection from="142b5ee6-85c7-48ed-8915-eecf95f11ffc" iport="dataset" oport="dataset" to="d8dde3ce-1bbc-4c16-9eb5-a7b4bb4e1947" />
+		<dataflow_connection from="1d42ccdd-cecc-4074-9204-d5dda2bb6516" iport="time" oport="time" to="d8dde3ce-1bbc-4c16-9eb5-a7b4bb4e1947" />
+		<dataflow_connection from="cb81bd79-d053-44bf-a797-798eb9a67952" iport="progression" oport="progression" to="d8dde3ce-1bbc-4c16-9eb5-a7b4bb4e1947" />
+		<dataflow_connection from="702819b7-a9e2-4bb2-9707-46253919c32f" iport="quality" oport="quality" to="d8dde3ce-1bbc-4c16-9eb5-a7b4bb4e1947" />
+		<dataflow_connection from="d8dde3ce-1bbc-4c16-9eb5-a7b4bb4e1947" iport="data" oport="data" to="695148a4-c40a-4ac1-b2cf-c890c40635fb" />
+		<dataflow_connection from="1a99b1f4-bd26-40d5-8400-2a4281c9a1d4" iport="position" oport="position" to="d8dde3ce-1bbc-4c16-9eb5-a7b4bb4e1947" />
+		<dataflow_connection from="863a30b1-cee9-4649-a48f-1041ec3da215" iport="fieldname" oport="fieldname" to="d8dde3ce-1bbc-4c16-9eb5-a7b4bb4e1947" />
+		<dataflow_connection from="381c0ce9-7785-421b-bfcc-065a39277b2c" iport="palette" oport="palette" to="5f98e177-7101-4ac7-a049-eba5adf8d519" />
+		<dataflow_connection from="d8c9cb23-bb0b-43d3-bd6c-b744d39803f1" iport="enable_viewdep" oport="enable_viewdep" to="d8dde3ce-1bbc-4c16-9eb5-a7b4bb4e1947" />
+		<dataflow_connection from="695148a4-c40a-4ac1-b2cf-c890c40635fb" iport="data" oport="data" to="5f98e177-7101-4ac7-a049-eba5adf8d519" />
+	</dataflow>
+	<multi_node AutoConnectOutputs="True" dnode="702819b7-a9e2-4bb2-9707-46253919c32f" snode="99524938-8017-47b0-85e6-04cb0f282221" />
+	<multi_node AutoConnectOutputs="True" dnode="d8c9cb23-bb0b-43d3-bd6c-b744d39803f1" snode="0bfa49bc-4e67-47be-ba22-d5cd1d339b98" />
+	<multi_node AutoConnectOutputs="True" dnode="381c0ce9-7785-421b-bfcc-065a39277b2c" snode="719e08e7-b7d5-41aa-960d-30e0a3107f00" />
+	<multi_node AutoConnectOutputs="True" dnode="cb81bd79-d053-44bf-a797-798eb9a67952" snode="2009998b-d667-41ad-a9b7-541fb049d1be" />
+	<multi_node AutoConnectInputs="True" dnode="5f98e177-7101-4ac7-a049-eba5adf8d519" snode="b627720d-16cb-4097-ba6e-a99630caa0dc" />
+	<multi_node AutoConnectInputs="True" dnode="695148a4-c40a-4ac1-b2cf-c890c40635fb" snode="86547bda-68f1-4acf-8340-20ad7113f90c" />
+	<multi_node AutoConnectInputs="True" dnode="d8dde3ce-1bbc-4c16-9eb5-a7b4bb4e1947" snode="9e5a037c-0c3b-4fcf-9fa5-c1f29b7b0ac2" />
+	<multi_node AutoConnectOutputs="True" dnode="863a30b1-cee9-4649-a48f-1041ec3da215" snode="5557c9e5-a664-470f-9e5b-9d311162687d" />
+	<multi_node AutoConnectOutputs="True" dnode="1a99b1f4-bd26-40d5-8400-2a4281c9a1d4" snode="32eade13-8482-4b10-8107-f7076441772b" />
+	<multi_node AutoConnectInputs="True" dnode="142b5ee6-85c7-48ed-8915-eecf95f11ffc" snode="a904a787-c1ef-4071-a37c-9a958af8e2d6" />
+	<multi_node AutoConnectOutputs="True" dnode="95762dc7-c840-4de8-960d-033989b4a025" snode="2760d675-8b84-4fce-8f6b-ce10bf79d72c" />
+	<multi_node AutoConnectOutputs="True" dnode="1d42ccdd-cecc-4074-9204-d5dda2bb6516" snode="f1e40b9f-add5-43b0-a524-c996f7e669e7" />
+	<multi_node AutoConnectOutputs="True" dnode="5b648c91-f01e-43dc-bb93-d7c371282064" snode="2bdef7cd-3fb1-414e-a573-eb15d9e5d0a8" />
+	<glcamera bottom="-225.7" defaultZoomFactor="1.3" dir="0 0 -1" disableRotation="False" left="10.7217" max_zoom="0" pos="0 0 0" right="1033.72" rotation_angle="0" top="645.745" typename="GLOrthoCamera" vup="0 1 0" zFar="-1" zNear="1" />
+</VisusViewer>

@@ -1,0 +1,59 @@
+Monday, July 21, 2014
+-----------------------------
+
+o map-reduce operations (Daniel Duffy from NASA presented)
+  - converting data on the fly for
+  - example: find max temp over some time period
+     + we could accomplish the same using max filter and visus
+
+o we are missing the ability to operate on temporal data, which is critical for climate science
+
+o UV-CDAT (presented by Charles Doutrieux)
+  - many regridders in UV-CDAT, most important being "ESMF"
+  - uv-cdat "live" thin web client
+
+
+-------------------------------------------------------------------------------
+
+Tuesday, July 22, 2014
+
+OSX 10.8 - personal
+OSX 10.9 - personal (separate machines for 10.8 and 10.9)
+RHEL 6 - crunchy.llnl.gov
+CentOS 6.3 - rhea.ornl.gov
+Ubuntu 14.04 - personal
+
+
+35-50Tb cache on css2
+ESGF conversion node
+
+Dean wants a prototype: 
+
+three components to incorporate with UV-CDAT
+ o download/find visus python installation
+ o code to integrate visus (python)
+ o ctest to ensure it works
+
+
+Charles advises not to worry about hooking into any vistrails
+provenance since it's all broken anyway. They're working on a
+replacement.
+
+-------------------------------------------------------------------------------
+
+Friday, August 15, 2014
+
+With Timo and Giorgio
+
+o Need to get ESGF account
+o Dean can show me how to access the data using the EGF api
+o vision is to use ViSUS as an exploratory front end to look at data, then finally save current state for final conversion
+o milestone 0: figure out how to list datasets from uv-cdat
+o milestone 1: figure out opendap interface
+o milestone 2: wrap that and implement in the esg server
+o milestone 3: create on-the-fly conversion to idx
+o milestone 4: get a visus server running at livermore
+o milestone 5: manage cache in a sane fashion
+o milestone 6: 
+
+o overview goal: a request for cdat data comes into the visus server running with the the esg node, gets converted to idx on the fly, and is served. 

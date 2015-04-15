@@ -1,0 +1,17 @@
+1st run of each institution, show blend with stdev
+blend of all runs from each institution
+set up scenes beforehand
+main point is blending in different resolutions (regridding on the fly)
+
+
+demos:
+
+1) blend all runs from a couple institutions side-by-side
+2) compare first run from every institution
+3) ???
+
+Will have help from Avishek and Sujin for rabbit and icse demos.
+
+Sujin: rabbit and ICSE, using a new machine with a GPU with lots of memory
+Avishek: climate, using Attila's machine
+Me: neurotracker, using my machine

@@ -1,0 +1,448 @@
+<VisusViewer bRefreshDataOnCameraChange="True">
+	<scenegraph>
+		<root icon="resources/icons/treeview/world.png" name="World" uuid="21949fab-a5e5-448c-8eed-5212b34c79c3">
+			<child icon="resources/icons/treeview/database.png" name="Pin2d" uuid="54779ea0-f2e0-4d82-b302-c5940df16551">
+				<child name="modelview" uuid="87cdae60-84d5-471a-832b-9808091f2131" />
+				<child name="fieldname" uuid="e3084b41-ae4f-4cd5-87ea-b136371319c3">
+					<object fieldname="f0=input.pinA.ODV_bcar2;&#x0A;f1=input.pinB.ODV_bcar2;&#x0A;f2=input.pinC.ODV_bcar2;&#x0A;f3=input.pinD.ODV_bcar2;&#x0A;f4=input.pinE.ODV_bcar2;&#x0A;output=Visus.Array.avg([f0,f1,f2,f3,f4]);&#x0A;" typename="DbField" uuid="cca3bc1e-82ba-4d5b-b6cd-1ed668a5c2f4" />
+					<child name="modelview" uuid="a2de8719-7b2c-400e-a3ea-5000cf796ca4" />
+				</child>
+				<child name="render_bbox" uuid="9355d935-ddb7-48e0-a82b-5054a4bf1481">
+					<object typename="BoolObject" uuid="7f82893b-7294-4225-92de-d54e61dd9f68" value="True" />
+					<child name="modelview" uuid="203dad35-40ae-47c4-9d23-89717b052f83" />
+				</child>
+				<child name="time" uuid="e984f0b3-9453-43a0-97d9-881c6f7139d5">
+					<object typename="DoubleInRange" uuid="e91b7f6a-3894-41f1-b41e-50efa359780c" value="110">
+						<range from="0" step="10" to="221" />
+					</object>
+					<child name="modelview" uuid="4f88f79a-a387-4f94-a923-3b836152f635" />
+				</child>
+				<child name="progression" uuid="eb77d6e1-f5c9-4b62-b737-c902009d25ab">
+					<object typename="DoubleInRange" uuid="44a6b0dc-babd-4b5d-b2f2-b6f2fb73eff4" value="8">
+						<range from="0" step="1" to="32" />
+					</object>
+					<child name="modelview" uuid="272fc010-1e95-4845-ae94-571820baeae4" />
+				</child>
+				<child name="palette" uuid="b32a4cc4-fcb2-41f2-80c3-cbf6bcdef0d3">
+					<object input_normalization="0" output_dtype="uint8" typename="TransferFunction1d" uuid="7f17a60a-e24a-4cf5-a8da-559f389e6cd7">
+						<output_range from="0" step="1" to="255" />
+						<function color="255 0 0 255" name="Red" typename="LutTransferFunction1d">
+							<![CDATA[
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0.00392157 0.00392157 0.0156863 0.0196078 0.0196078 0.027451 0.0235294 0.0313725 0.0352941 
+0.0470588 0.054902 0.0588235 0.0627451 0.0705882 0.0901961 0.0901961 0.101961 0.117647 0.12549 0.141176 0.14902 0.160784 0.180392 0.188235 0.207843 
+0.211765 0.235294 0.25098 0.254902 0.278431 0.294118 0.309804 0.317647 0.341176 0.356863 0.372549 0.380392 0.403922 0.419608 0.435294 0.443137 
+0.466667 0.482353 0.498039 0.513725 0.529412 0.541176 0.556863 0.572549 0.588235 0.596078 0.619608 0.635294 0.643137 0.666667 0.678431 0.698039 
+0.713725 0.72549 0.741176 0.752941 0.768627 0.784314 0.8 0.811765 0.819608 0.835294 0.85098 0.858824 0.87451 0.882353 0.890196 0.905882 
+0.909804 0.921569 0.929412 0.937255 0.945098 0.952941 0.956863 0.964706 0.968627 0.972549 0.976471 0.980392 0.984314 0.984314 0.988235 0.988235 
+0.992157 0.992157 0.992157 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 
+1 1 1 1 1 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 
+0.996078 0.996078 0.992157 0.992157 0.992157 0.988235 0.988235 0.984314 0.980392 0.976471 0.972549 0.968627 0.964706 0.960784 0.952941 0.945098 
+0.941176 0.933333 0.92549 0.913725 0.905882 0.894118 0.882353 0.87451 0.858824 0.847059 0.835294 0.823529 0.807843 0.792157 0.776471 0.764706 
+0.74902 0.733333 0.717647 0.698039 0.682353 0.666667 0.65098 0.635294 0.615686 0.6 0.580392 0.564706 0.54902 0.529412 0.513725 0.498039 ]]>
+						</function>
+						<function color="0 128 0 255" name="Green" typename="LutTransferFunction1d">
+							<![CDATA[
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0.00392157 0 0 0.00784314 0.0117647 0.00392157 0.00784314 0.0196078 0.0235294 0.0196078 0.0313725 0.0313725 0.0392157 0.0470588 
+0.0509804 0.0627451 0.0627451 0.0784314 0.0901961 0.0941176 0.105882 0.117647 0.121569 0.141176 0.145098 0.160784 0.172549 0.192157 0.207843 0.219608 
+0.235294 0.25098 0.262745 0.27451 0.286275 0.309804 0.321569 0.333333 0.356863 0.372549 0.388235 0.403922 0.419608 0.435294 0.45098 0.466667 
+0.482353 0.498039 0.513725 0.521569 0.533333 0.54902 0.564706 0.580392 0.596078 0.611765 0.627451 0.65098 0.658824 0.682353 0.698039 0.709804 
+0.729412 0.741176 0.756863 0.768627 0.776471 0.796078 0.807843 0.823529 0.831373 0.85098 0.862745 0.866667 0.886275 0.890196 0.898039 0.909804 
+0.917647 0.921569 0.937255 0.945098 0.952941 0.956863 0.964706 0.968627 0.972549 0.976471 0.980392 0.984314 0.984314 0.988235 0.988235 0.992157 
+0.992157 0.992157 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 1 
+1 1 1 1 1 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 
+0.996078 0.996078 0.992157 0.992157 0.992157 0.988235 0.988235 0.984314 0.984314 0.980392 0.976471 0.972549 0.968627 0.964706 0.956863 0.952941 
+0.945098 0.937255 0.929412 0.913725 0.913725 0.905882 0.890196 0.886275 0.87451 0.862745 0.85098 0.839216 0.827451 0.811765 0.8 0.784314 
+0.768627 0.756863 0.741176 0.729412 0.713725 0.698039 0.682353 0.666667 0.65098 0.635294 0.619608 0.603922 0.588235 0.572549 0.556863 0.541176 
+0.529412 0.513725 0.498039 0.482353 0.466667 0.45098 0.435294 0.419608 0.4 0.388235 0.372549 0.356863 0.341176 0.32549 0.309804 0.294118 
+0.270588 0.254902 0.25098 0.227451 0.219608 0.2 0.188235 0.180392 0.168627 0.14902 0.133333 0.129412 0.117647 0.109804 0.0901961 0.0862745 
+0.0784314 0.0627451 0.0627451 0.0509804 0.0470588 0.0431373 0.0352941 0.0235294 0.027451 0.0235294 0.0196078 0.0156863 0.00392157 0.0117647 0.00392157 0 
+0 0.00392157 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]]>
+						</function>
+						<function color="0 0 255 255" name="Blue" typename="LutTransferFunction1d">
+							<![CDATA[
+0.490196 0.513725 0.529412 0.545098 0.560784 0.576471 0.592157 0.603922 0.619608 0.635294 0.65098 0.666667 0.682353 0.698039 0.713725 0.729412 
+0.741176 0.756863 0.772549 0.784314 0.8 0.811765 0.827451 0.839216 0.85098 0.862745 0.87451 0.886275 0.894118 0.905882 0.913725 0.921569 
+0.929412 0.937255 0.945098 0.952941 0.956863 0.964706 0.968627 0.972549 0.976471 0.980392 0.984314 0.984314 0.988235 0.988235 0.992157 0.992157 
+0.992157 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 1 1 
+1 1 1 1 1 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 
+0.996078 0.996078 0.992157 0.992157 0.992157 0.988235 0.988235 0.984314 0.984314 0.980392 0.976471 0.972549 0.968627 0.964706 0.956863 0.952941 
+0.945098 0.937255 0.929412 0.917647 0.909804 0.905882 0.890196 0.882353 0.87451 0.862745 0.85098 0.835294 0.819608 0.811765 0.8 0.780392 
+0.764706 0.74902 0.741176 0.72549 0.713725 0.690196 0.678431 0.666667 0.643137 0.635294 0.619608 0.6 0.588235 0.572549 0.552941 0.533333 
+0.529412 0.513725 0.498039 0.482353 0.466667 0.443137 0.435294 0.419608 0.403922 0.380392 0.372549 0.356863 0.341176 0.317647 0.309804 0.294118 
+0.278431 0.254902 0.25098 0.235294 0.211765 0.207843 0.188235 0.180392 0.160784 0.152941 0.141176 0.12549 0.117647 0.101961 0.0941176 0.0901961 
+0.0705882 0.0666667 0.0588235 0.054902 0.0470588 0.0352941 0.0313725 0.0235294 0.027451 0.0196078 0.0196078 0.0156863 0.00392157 0.00392157 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]]>
+						</function>
+						<function color="128 128 128 255" name="Alpha" typename="LutTransferFunction1d">
+							<![CDATA[
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]]>
+						</function>
+					</object>
+					<child name="modelview" uuid="942fc106-5618-4401-9acc-0da9b2a702c6" />
+				</child>
+				<child name="quality" uuid="180a4be0-f18d-437f-bb25-865cee6ceb6b">
+					<object typename="DoubleInRange" uuid="f9740d23-2a72-4992-acf0-e86d59dfc57b" value="0">
+						<range from="-8" step="1" to="8" />
+					</object>
+					<child name="modelview" uuid="89e7870c-b345-4329-9398-720893e8fb67" />
+				</child>
+				<child icon="resources/icons/treeview/gears.png" name="Slice 1" uuid="62b797e5-0b94-4ea0-9de5-b68c5c57ede3">
+					<child name="position" uuid="9cef7edb-2104-4b1e-b255-2073ee937f54">
+						<object typename="Position" uuid="426cd427-e5f1-46dd-843e-dc2dc73ee6ce">
+							<map matrix="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1" />
+							<box p1="0 0 0" p2="1023 511 0" />
+						</object>
+						<child name="modelview" uuid="68e806f0-bdb3-4d18-8dd0-72ffa815eb02" />
+					</child>
+					<child name="fieldname" uuid="656b2d0f-e35b-405b-8a40-15ced1c29418">
+						<object fieldname='a=&quot;CLDLOW&quot;;&#x0D;&#x0A;f0=input.pinA[a];&#x0A;f1=input.pinB[a];&#x0A;f2=input.pinC[a];&#x0A;f3=input.pinD[a];&#x0A;f4=input.pinE[a];&#x0A;output=Visus.Array.sdv([f0,f1,f2,f3,f4]);&#x0A;' typename="DbField" uuid="7444c6e0-ecf4-4c59-a221-fd583f754dcb" />
+						<child name="modelview" uuid="d1f4c51a-a802-4757-ab97-15ef22d87b64" />
+					</child>
+					<child name="enable_viewdep" uuid="62cc934f-94fd-4ea1-970d-ed6b83bb4d7f">
+						<object typename="BoolObject" uuid="c7cee470-ed35-4038-baba-6130e6655a84" value="True" />
+						<child name="modelview" uuid="8b487174-074e-4bf0-8961-971871437a9c" />
+					</child>
+					<child name="Process array" uuid="ec6b6135-07c2-40fa-b579-186f9580f734">
+						<child name="modelview" uuid="3965f488-a3fd-49ce-9f1d-61e7dc0f1fa7" />
+						<child icon="resources/icons/treeview/brush.png" name="Array render" uuid="598e7350-0507-4491-8e0a-24f13017a601">
+							<modelview matrix="1 0 0 1215.33 0 1 0 0 0 0 1 0 0 0 0 1" />
+							<child name="modelview" uuid="b1d05b65-cc21-4330-a97c-bf47d6cdbb5a" />
+						</child>
+					</child>
+				</child>
+				<child icon="resources/icons/treeview/gears.png" name="Slice 2" uuid="0fe99bac-03c1-41ed-8b45-705e3b33d6c3">
+					<child name="position" uuid="3deb72ba-c914-4fba-9a9e-11d41897db0b">
+						<object typename="Position" uuid="fc8c4b18-c4c7-4024-9cc3-8931c9aebf08">
+							<map matrix="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1" />
+							<box p1="0 0 0" p2="1023 511 0" />
+						</object>
+						<child name="modelview" uuid="f53dace1-c64d-48dd-b002-28cd75209cd5" />
+					</child>
+					<child name="fieldname" uuid="48084c8e-518a-4e04-8328-b3ad5933c513">
+						<object fieldname='a=&quot;CLDLOW&quot;;&#x0D;&#x0A;f0=input.pinA[a];&#x0A;f1=input.pinB[a];&#x0A;f2=input.pinC[a];&#x0A;f3=input.pinD[a];&#x0A;f4=input.pinE[a];&#x0A;output=Visus.Array.avg([f0,f1,f2,f3,f4]);&#x0A;' typename="DbField" uuid="0968bbf7-6001-4d62-b6d6-1d57ab8fd9cc" />
+						<child name="modelview" uuid="16e1b0df-bf6a-4a3a-beac-4f24649d843a" />
+					</child>
+					<child name="enable_viewdep" uuid="c466268c-c49d-4e09-b67d-948a37904fff">
+						<object typename="BoolObject" uuid="7d2feeb3-b449-4ae3-92dc-e6cbb4c7bcdc" value="True" />
+						<child name="modelview" uuid="efd25152-a56a-4aa9-ba23-fba3a691a74c" />
+					</child>
+					<child name="Process array" uuid="a0fc539b-1b1a-423b-8f8e-6ca9b5955c9c">
+						<child name="modelview" uuid="f1a9e873-80c1-4b62-a148-4e1c926e4ff0" />
+						<child icon="resources/icons/treeview/brush.png" name="Array render" uuid="57bdd742-a5f9-4eab-8140-adb157ced825">
+							<child name="modelview" uuid="d41070ba-b847-443a-ac5b-ea83ebff2679" />
+						</child>
+					</child>
+				</child>
+				<child icon="resources/icons/treeview/gears.png" name="KdQuery 1" uuid="cb823ff0-e6f5-4223-b9ac-bbff580e114d">
+					<child name="position" uuid="aaa43f27-9d4e-4e0e-a795-52e8e5f3d6aa">
+						<object typename="Position" uuid="46d446d9-77a6-4792-8fbb-8b381a8a2607">
+							<map matrix="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1" />
+							<box p1="0 0 0" p2="1023 511 0" />
+						</object>
+						<child name="modelview" uuid="123f47bf-b8a3-4470-8c09-c5ad8b462a59" />
+					</child>
+					<child name="fieldname" uuid="b16737e3-ba90-4fbf-85eb-ce64d7e1f844">
+						<object fieldname='a=&quot;CLDLOW&quot;;&#x0D;&#x0A;f0=input.pinA[a];&#x0A;f1=input.pinB[a];&#x0A;f2=input.pinC[a];&#x0A;f3=input.pinD[a];&#x0A;f4=input.pinE[a];&#x0A;output=Visus.Array.min([f0,f1,f2,f3,f4]);&#x0A;' typename="DbField" uuid="7520a265-e2a3-441a-9823-8d6c010a4b30" />
+						<child name="modelview" uuid="feef36ce-1449-42f9-8551-ba6b146b484c" />
+					</child>
+					<child name="enable_viewdep" uuid="243f797d-edff-40eb-9487-75c66a7c06de">
+						<object typename="BoolObject" uuid="412be225-b4ec-48fe-b0d5-f57db8d8b009" value="True" />
+						<child name="modelview" uuid="d696ad7c-e506-468d-92e8-8c97c778eed7" />
+					</child>
+					<child icon="resources/icons/treeview/brush.png" name="KdArray Render" uuid="1dd15773-a283-45d8-87df-92b5eb455b91">
+						<modelview matrix="1 0 0 0 0 1 0 -591.017 0 0 1 0 0 0 0 1" />
+						<child name="modelview" uuid="2dcb3120-461b-4170-aa4e-1a2b7ec11ff6" />
+					</child>
+				</child>
+				<child icon="resources/icons/treeview/gears.png" name="KdQuery 2" uuid="b1415c72-2df8-411a-ac9b-d28f8e3169f1">
+					<child name="position" uuid="b2b4187e-232a-4d1a-91fc-6abb35a1cf68">
+						<object typename="Position" uuid="30e6e96b-c106-4b00-8939-9f08f93b84aa">
+							<map matrix="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1" />
+							<box p1="0 0 0" p2="1023 511 0" />
+						</object>
+						<child name="modelview" uuid="998fc55b-0d60-4d09-89cb-373a81e42b9e" />
+					</child>
+					<child name="fieldname" uuid="986e27f4-16fe-44fb-97e6-8b4a3ae6128a">
+						<object fieldname='a=&quot;CLDLOW&quot;;&#x0D;&#x0A;f0=input.pinA[a];&#x0A;f1=input.pinB[a];&#x0A;f2=input.pinC[a];&#x0A;f3=input.pinD[a];&#x0A;f4=input.pinE[a];&#x0A;output=Visus.Array.max([f0,f1,f2,f3,f4]);&#x0A;' typename="DbField" uuid="81c5762a-537e-4d07-a759-f0bc1b274e3d" />
+						<child name="modelview" uuid="28a41e51-79a7-42d0-a4df-db3342c24f38" />
+					</child>
+					<child name="palette" uuid="65e5bd94-6c65-407d-9c7e-7e5a0aee9dbc">
+						<object default_name="grayopaque" input_normalization="0" output_dtype="uint8" typename="TransferFunction1d" uuid="8cd029bc-4d01-4825-b016-1d7af6b46ba9">
+							<output_range from="0" step="1" to="255" />
+						</object>
+						<child name="modelview" uuid="2ff90dec-4dea-43db-a337-1da93aefa75a" />
+					</child>
+					<child name="enable_viewdep" uuid="0b57114b-31ff-43df-abe4-546fc2223000">
+						<object typename="BoolObject" uuid="3d5af3bc-7d04-4cba-b92c-2cf13933e2bb" value="True" />
+						<child name="modelview" uuid="32b537c8-5c67-4005-8f24-41dc0b87fc13" />
+					</child>
+					<child icon="resources/icons/treeview/brush.png" name="KdArray Render" uuid="e0f315b6-180f-42c7-9439-478762349bf6">
+						<modelview matrix="1 0 0 1201.46 0 1 0 -593.792 0 0 1 0 0 0 0 1" />
+						<child name="modelview" uuid="d2077bf5-79e6-44af-be62-472c57aa4a5e" />
+					</child>
+				</child>
+				<child name="Annotations" uuid="c780ee6f-d1f9-42fc-a4c0-fe8f31ebe8b5">
+					<child name="modelview" uuid="6d428e3f-0707-450d-bfa1-2d19907f4991" />
+					<child name="Title" uuid="9d768efc-669c-4923-ab43-1f5075f661fc">
+						<modelview matrix="1 0 0 0 0 1 0 126.167 0 0 1 0 0 0 0 1" />
+						<object fill_color="255 255 255 0" fontSize="20" img="" img_opacity="1" img_scale="0.25" line_color="0 0 0 0" line_width="3" name="Point3d 1" text="Ensemble Analysis for Low Clouds (CLDLOW) of 5 Simulation Runs" text_background_color="255 255 255 0" text_foreground_color="0 0 0 255" type="0" typename="PointOfInterestAnnotation" uuid="e5cb45ca-f8b6-4450-bcd4-a4666304aff3">
+							<points>
+								<point position="1046.11 576.319 0" />
+								<point position="1232.04 346.12 0" />
+							</points>
+						</object>
+					</child>
+					<child name="average" uuid="f1a2e3be-96a6-4d2b-a61b-47e26e465744">
+						<modelview matrix="1 0 0 -1524.88 0 1 0 -658.469 0 0 1 0 0 0 0 1" />
+						<object fill_color="255 255 255 0" fontSize="20" img="" img_opacity="1" img_scale="0.25" line_color="0 0 0 0" line_width="3" name="Point3d 6" text="average" text_background_color="255 255 255 0" text_foreground_color="0 0 0 255" type="0" typename="PointOfInterestAnnotation" uuid="25d79142-8701-4ad7-ba17-0cd3935f8236">
+							<points>
+								<point position="1839.4 690.009 0" />
+								<point position="2196.63 559.382 0" />
+							</points>
+						</object>
+					</child>
+					<child name="sdv" uuid="34bea826-275d-4d6f-afcf-dc053e46f547">
+						<modelview matrix="1 0 0 -439.868 0 1 0 -586.491 0 0 1 0 0 0 0 1" />
+						<object fill_color="255 255 255 0" fontSize="20" img="" img_opacity="1" img_scale="0.25" line_color="0 0 0 0" line_width="3" name="Point3d 9" text="standard deviation" text_background_color="255 255 255 0" text_foreground_color="0 0 0 255" type="0" typename="PointOfInterestAnnotation" uuid="075f6b22-ab86-49d4-a563-f698e8650fc0">
+							<points>
+								<point position="2023.35 684.677 0" />
+								<point position="2369.91 420.757 0" />
+							</points>
+						</object>
+					</child>
+					<child name="min" uuid="82972f86-d543-4b83-95d0-0589734f0aff">
+						<modelview matrix="1 0 0 -647.806 0 1 0 125.296 0 0 1 0 0 0 0 1" />
+						<object fill_color="255 255 255 0" fontSize="20" img="" img_opacity="1" img_scale="0.25" line_color="0 0 0 0" line_width="3" name="Point3d 13" text="minimum" text_background_color="255 255 255 0" text_foreground_color="0 0 0 255" type="0" typename="PointOfInterestAnnotation" uuid="19ebe5a2-f057-4c60-bacd-eeebae92669c">
+							<points>
+								<point position="996.17 -654.203 0" />
+								<point position="1326.74 -830.15 0" />
+							</points>
+						</object>
+					</child>
+					<child name="max" uuid="98fdb5cc-0df6-4fd3-810e-c5e6541392e5">
+						<modelview matrix="1 0 0 421.207 0 1 0 77.3101 0 0 1 0 0 0 0 1" />
+						<object fill_color="255 255 255 0" fontSize="20" img="" img_opacity="1" img_scale="0.25" line_color="0 0 0 0" line_width="3" name="Point3d 16" text="maximum" text_background_color="255 255 255 0" text_foreground_color="0 0 0 255" type="0" typename="PointOfInterestAnnotation" uuid="86d52caf-ec27-4052-92ae-92139c25bbb5">
+							<points>
+								<point position="1220.1 -648.871 0" />
+								<point position="1430.71 -750.174 0" />
+							</points>
+						</object>
+					</child>
+				</child>
+			</child>
+		</root>
+	</scenegraph>
+	<dataflow>
+		<dataflow_node name="Pin2d" typename="DatasetNode" uuid="8d67c930-f980-4262-8aa6-1a8c50070da1">
+			<preferred_position height="40" width="60" x="457" y="31" />
+      <dataset name="pin2d" url="http://atlantis.sci.utah.edu/mod_visus?dataset=pin2d"  >
+        <config>
+          <access name="Example3"  type='multiplex'>
+            <access name="Example" type="DiskAccess" dir="$(local_data)/pin2d" compression="zip" nsamples="65536" />
+            <access type='network' chmod='r'   compression='zip' url="http://atlantis.sci.utah.edu/mod_visus?dataset=pin2d" />
+          </access>
+        </config>
+      </dataset>
+		</dataflow_node>
+		<dataflow_node name="fieldname" oport="fieldname" typename="ObjectNode" uuid="b70a6b4f-18d0-4195-a2d2-c4545c4b52a7">
+			<preferred_position height="56.5685" width="84.8528" x="567" y="350" />
+			<object uuid="cca3bc1e-82ba-4d5b-b6cd-1ed668a5c2f4" />
+		</dataflow_node>
+		<dataflow_node name="render_bbox" oport="render_bbox" typename="ObjectNode" uuid="58240396-e697-4d89-95ad-bca549526018">
+			<preferred_position height="56.5685" width="84.8528" x="287" y="148" />
+			<object uuid="7f82893b-7294-4225-92de-d54e61dd9f68" />
+		</dataflow_node>
+		<dataflow_node name="time" oport="time" typename="ObjectNode" uuid="efc96972-2fd3-4ce8-9a67-f39838d6fa13">
+			<preferred_position height="56.5685" width="84.8528" x="268" y="590" />
+			<object uuid="e91b7f6a-3894-41f1-b41e-50efa359780c" />
+		</dataflow_node>
+		<dataflow_node name="progression" oport="progression" typename="ObjectNode" uuid="d01d04ba-a4f2-4ac5-9883-fd2bbc11e1a4">
+			<preferred_position height="56.5685" width="84.8528" x="114" y="317" />
+			<object uuid="44a6b0dc-babd-4b5d-b2f2-b6f2fb73eff4" />
+		</dataflow_node>
+		<dataflow_node name="quality" oport="quality" typename="ObjectNode" uuid="97a3c53f-0aeb-4f98-ad4f-437d634e97fd">
+			<preferred_position height="56.5685" width="84.8528" x="209" y="447" />
+			<object uuid="f9740d23-2a72-4992-acf0-e86d59dfc57b" />
+		</dataflow_node>
+		<dataflow_node name="Slice 1" typename="QueryNode" uuid="2bf64c3a-6df6-4a54-b729-cb6c97e41093">
+			<preferred_position height="120" width="180" x="232" y="480" />
+		</dataflow_node>
+		<dataflow_node name="position" oport="position" typename="ObjectNode" uuid="ed67f5cc-b757-4f18-97fb-76ad229f46f5">
+			<preferred_position height="56.5685" width="84.8528" x="379" y="136" />
+			<object uuid="426cd427-e5f1-46dd-843e-dc2dc73ee6ce" />
+		</dataflow_node>
+		<dataflow_node name="fieldname" oport="fieldname" typename="ObjectNode" uuid="41e875c7-49a6-4b86-9e48-8459f3a75874">
+			<preferred_position height="56.5685" width="84.8528" x="516" y="202" />
+			<object uuid="7444c6e0-ecf4-4c59-a221-fd583f754dcb" />
+		</dataflow_node>
+		<dataflow_node name="palette" oport="palette" typename="ObjectNode" uuid="fc3ab71e-e64f-4e24-aedd-f88d7fd2e139">
+			<preferred_position height="56.5685" width="84.8528" x="303" y="613" />
+			<object uuid="7f17a60a-e24a-4cf5-a8da-559f389e6cd7" />
+		</dataflow_node>
+		<dataflow_node name="enable_viewdep" oport="enable_viewdep" typename="ObjectNode" uuid="81edb2f3-1cb4-4231-8bff-a72c738739ff">
+			<preferred_position height="56.5685" width="84.8528" x="327" y="323" />
+			<object uuid="c7cee470-ed35-4038-baba-6130e6655a84" />
+		</dataflow_node>
+		<dataflow_node name="Process array" typename="ScriptingProcessArrayNode" uuid="c6b9e174-3284-47d4-a62a-125f9721c7c3">
+			<preferred_position height="80" width="120" x="80" y="186" />
+			<scripting code="" typename="ScriptingProcessArray" />
+		</dataflow_node>
+		<dataflow_node four_channel_blend_color="0 0 0 255" four_channel_blend_enabled="False" lighting_enabled="False" lut_enabled="False" magnify_filter="9729" max_num_slices="0" minify_filter="9729" name="Array render" preintegration_enabled="False" progressive_rendering_enabled="True" ray_cast_enabled="False" raycast_quality="3" typename="ArrayRenderNode" use_view_direction_enabled="False" uuid="6adda685-ea9f-4444-a19e-37fc0e2b7962">
+			<preferred_position height="56.5685" width="84.8528" x="569" y="285" />
+		</dataflow_node>
+		<dataflow_node name="Slice 2" typename="QueryNode" uuid="ee9f4f7c-7204-4d50-b5bb-0276a38b49e0">
+			<preferred_position height="120" width="180" x="515" y="64" />
+		</dataflow_node>
+		<dataflow_node name="position" oport="position" typename="ObjectNode" uuid="90297a9e-d361-4b87-b7fb-d5e926abed5c">
+			<preferred_position height="56.5685" width="84.8528" x="863" y="8" />
+			<object uuid="fc8c4b18-c4c7-4024-9cc3-8931c9aebf08" />
+		</dataflow_node>
+		<dataflow_node name="fieldname" oport="fieldname" typename="ObjectNode" uuid="e0f4081e-6d20-4b08-8e0d-ec044496d074">
+			<preferred_position height="56.5685" width="84.8528" x="659" y="448" />
+			<object uuid="0968bbf7-6001-4d62-b6d6-1d57ab8fd9cc" />
+		</dataflow_node>
+		<dataflow_node name="enable_viewdep" oport="enable_viewdep" typename="ObjectNode" uuid="e7718333-8286-4177-80d6-3ca835f3eb22">
+			<preferred_position height="56.5685" width="84.8528" x="14" y="117" />
+			<object uuid="7d2feeb3-b449-4ae3-92dc-e6cbb4c7bcdc" />
+		</dataflow_node>
+		<dataflow_node name="Process array" typename="ScriptingProcessArrayNode" uuid="e88d368b-4fe3-4164-9fa9-24d6ef7142f4">
+			<preferred_position height="80" width="120" x="341" y="335" />
+			<scripting code="" typename="ScriptingProcessArray" />
+		</dataflow_node>
+		<dataflow_node four_channel_blend_color="0 0 0 255" four_channel_blend_enabled="False" lighting_enabled="False" lut_enabled="False" magnify_filter="9729" max_num_slices="0" minify_filter="9729" name="Array render" preintegration_enabled="False" progressive_rendering_enabled="True" ray_cast_enabled="False" raycast_quality="3" typename="ArrayRenderNode" use_view_direction_enabled="False" uuid="3f04515a-77a3-40df-9432-a874c82034e6">
+			<preferred_position height="56.5685" width="84.8528" x="73" y="433" />
+		</dataflow_node>
+		<dataflow_node name="KdQuery 1" typename="KdQueryNode" uuid="d7e23597-cb37-46e4-a8e1-f165ae8292c7">
+			<preferred_position height="113.137" width="169.706" x="810" y="366" />
+		</dataflow_node>
+		<dataflow_node name="position" oport="position" typename="ObjectNode" uuid="9e601f70-ef0e-4025-8343-b10a80f79645">
+			<preferred_position height="56.5685" width="84.8528" x="873" y="337" />
+			<object uuid="46d446d9-77a6-4792-8fbb-8b381a8a2607" />
+		</dataflow_node>
+		<dataflow_node name="fieldname" oport="fieldname" typename="ObjectNode" uuid="018fde70-d3b2-40c0-bd02-159e200f43cc">
+			<preferred_position height="56.5685" width="84.8528" x="624" y="253" />
+			<object uuid="7520a265-e2a3-441a-9823-8d6c010a4b30" />
+		</dataflow_node>
+		<dataflow_node name="enable_viewdep" oport="enable_viewdep" typename="ObjectNode" uuid="0617f735-04ab-4395-bd8b-ac329c6ebdfc">
+			<preferred_position height="56.5685" width="84.8528" x="917" y="184" />
+			<object uuid="412be225-b4ec-48fe-b0d5-f57db8d8b009" />
+		</dataflow_node>
+		<dataflow_node name="KdArray Render" typename="KdArrayRenderNode" uuid="baa5b3a4-2589-4c02-a5ac-2df7feb88dee">
+			<preferred_position height="56.5685" width="84.8528" x="559" y="56" />
+		</dataflow_node>
+		<dataflow_node name="KdQuery 2" typename="KdQueryNode" uuid="e2048a9b-908f-4393-8c13-9ef8fb2e6eb7">
+			<preferred_position height="113.137" width="169.706" x="409" y="42" />
+		</dataflow_node>
+		<dataflow_node name="position" oport="position" typename="ObjectNode" uuid="c5518330-69bc-4071-929b-6da9109868c6">
+			<preferred_position height="56.5685" width="84.8528" x="610" y="219" />
+			<object uuid="30e6e96b-c106-4b00-8939-9f08f93b84aa" />
+		</dataflow_node>
+		<dataflow_node name="fieldname" oport="fieldname" typename="ObjectNode" uuid="7ec313de-a438-4654-9499-8a495084fd5f">
+			<preferred_position height="56.5685" width="84.8528" x="42" y="242" />
+			<object uuid="81c5762a-537e-4d07-a759-f0bc1b274e3d" />
+		</dataflow_node>
+		<dataflow_node name="palette" oport="palette" typename="ObjectNode" uuid="cb736a96-6747-4134-8b76-e3426d91aa32">
+			<preferred_position height="56.5685" width="84.8528" x="301" y="10" />
+			<object uuid="8cd029bc-4d01-4825-b016-1d7af6b46ba9" />
+		</dataflow_node>
+		<dataflow_node name="enable_viewdep" oport="enable_viewdep" typename="ObjectNode" uuid="651cdae6-f402-48d3-a66d-82f43174f513">
+			<preferred_position height="56.5685" width="84.8528" x="775" y="39" />
+			<object uuid="3d5af3bc-7d04-4cba-b92c-2cf13933e2bb" />
+		</dataflow_node>
+		<dataflow_node name="KdArray Render" typename="KdArrayRenderNode" uuid="968e1c33-d835-4e80-ba60-3e367ef34a59">
+			<preferred_position height="56.5685" width="84.8528" x="119" y="407" />
+		</dataflow_node>
+		<dataflow_connection from="8d67c930-f980-4262-8aa6-1a8c50070da1" iport="dataset" oport="dataset" to="e2048a9b-908f-4393-8c13-9ef8fb2e6eb7" />
+		<dataflow_connection from="8d67c930-f980-4262-8aa6-1a8c50070da1" iport="dataset" oport="dataset" to="d7e23597-cb37-46e4-a8e1-f165ae8292c7" />
+		<dataflow_connection from="8d67c930-f980-4262-8aa6-1a8c50070da1" iport="dataset" oport="dataset" to="ee9f4f7c-7204-4d50-b5bb-0276a38b49e0" />
+		<dataflow_connection from="8d67c930-f980-4262-8aa6-1a8c50070da1" iport="dataset" oport="dataset" to="2bf64c3a-6df6-4a54-b729-cb6c97e41093" />
+		<dataflow_connection from="efc96972-2fd3-4ce8-9a67-f39838d6fa13" iport="time" oport="time" to="e2048a9b-908f-4393-8c13-9ef8fb2e6eb7" />
+		<dataflow_connection from="efc96972-2fd3-4ce8-9a67-f39838d6fa13" iport="time" oport="time" to="d7e23597-cb37-46e4-a8e1-f165ae8292c7" />
+		<dataflow_connection from="efc96972-2fd3-4ce8-9a67-f39838d6fa13" iport="time" oport="time" to="ee9f4f7c-7204-4d50-b5bb-0276a38b49e0" />
+		<dataflow_connection from="efc96972-2fd3-4ce8-9a67-f39838d6fa13" iport="time" oport="time" to="2bf64c3a-6df6-4a54-b729-cb6c97e41093" />
+		<dataflow_connection from="d01d04ba-a4f2-4ac5-9883-fd2bbc11e1a4" iport="progression" oport="progression" to="ee9f4f7c-7204-4d50-b5bb-0276a38b49e0" />
+		<dataflow_connection from="d01d04ba-a4f2-4ac5-9883-fd2bbc11e1a4" iport="progression" oport="progression" to="2bf64c3a-6df6-4a54-b729-cb6c97e41093" />
+		<dataflow_connection from="97a3c53f-0aeb-4f98-ad4f-437d634e97fd" iport="quality" oport="quality" to="e2048a9b-908f-4393-8c13-9ef8fb2e6eb7" />
+		<dataflow_connection from="97a3c53f-0aeb-4f98-ad4f-437d634e97fd" iport="quality" oport="quality" to="d7e23597-cb37-46e4-a8e1-f165ae8292c7" />
+		<dataflow_connection from="97a3c53f-0aeb-4f98-ad4f-437d634e97fd" iport="quality" oport="quality" to="ee9f4f7c-7204-4d50-b5bb-0276a38b49e0" />
+		<dataflow_connection from="97a3c53f-0aeb-4f98-ad4f-437d634e97fd" iport="quality" oport="quality" to="2bf64c3a-6df6-4a54-b729-cb6c97e41093" />
+		<dataflow_connection from="2bf64c3a-6df6-4a54-b729-cb6c97e41093" iport="data" oport="data" to="c6b9e174-3284-47d4-a62a-125f9721c7c3" />
+		<dataflow_connection from="ed67f5cc-b757-4f18-97fb-76ad229f46f5" iport="position" oport="position" to="2bf64c3a-6df6-4a54-b729-cb6c97e41093" />
+		<dataflow_connection from="41e875c7-49a6-4b86-9e48-8459f3a75874" iport="fieldname" oport="fieldname" to="2bf64c3a-6df6-4a54-b729-cb6c97e41093" />
+		<dataflow_connection from="fc3ab71e-e64f-4e24-aedd-f88d7fd2e139" iport="palette" oport="palette" to="968e1c33-d835-4e80-ba60-3e367ef34a59" />
+		<dataflow_connection from="fc3ab71e-e64f-4e24-aedd-f88d7fd2e139" iport="palette" oport="palette" to="baa5b3a4-2589-4c02-a5ac-2df7feb88dee" />
+		<dataflow_connection from="fc3ab71e-e64f-4e24-aedd-f88d7fd2e139" iport="palette" oport="palette" to="3f04515a-77a3-40df-9432-a874c82034e6" />
+		<dataflow_connection from="fc3ab71e-e64f-4e24-aedd-f88d7fd2e139" iport="palette" oport="palette" to="6adda685-ea9f-4444-a19e-37fc0e2b7962" />
+		<dataflow_connection from="81edb2f3-1cb4-4231-8bff-a72c738739ff" iport="enable_viewdep" oport="enable_viewdep" to="2bf64c3a-6df6-4a54-b729-cb6c97e41093" />
+		<dataflow_connection from="c6b9e174-3284-47d4-a62a-125f9721c7c3" iport="data" oport="data" to="6adda685-ea9f-4444-a19e-37fc0e2b7962" />
+		<dataflow_connection from="ee9f4f7c-7204-4d50-b5bb-0276a38b49e0" iport="data" oport="data" to="e88d368b-4fe3-4164-9fa9-24d6ef7142f4" />
+		<dataflow_connection from="90297a9e-d361-4b87-b7fb-d5e926abed5c" iport="position" oport="position" to="ee9f4f7c-7204-4d50-b5bb-0276a38b49e0" />
+		<dataflow_connection from="e0f4081e-6d20-4b08-8e0d-ec044496d074" iport="fieldname" oport="fieldname" to="ee9f4f7c-7204-4d50-b5bb-0276a38b49e0" />
+		<dataflow_connection from="e7718333-8286-4177-80d6-3ca835f3eb22" iport="enable_viewdep" oport="enable_viewdep" to="ee9f4f7c-7204-4d50-b5bb-0276a38b49e0" />
+		<dataflow_connection from="e88d368b-4fe3-4164-9fa9-24d6ef7142f4" iport="data" oport="data" to="3f04515a-77a3-40df-9432-a874c82034e6" />
+		<dataflow_connection from="d7e23597-cb37-46e4-a8e1-f165ae8292c7" iport="data" oport="data" to="baa5b3a4-2589-4c02-a5ac-2df7feb88dee" />
+		<dataflow_connection from="9e601f70-ef0e-4025-8343-b10a80f79645" iport="position" oport="position" to="d7e23597-cb37-46e4-a8e1-f165ae8292c7" />
+		<dataflow_connection from="018fde70-d3b2-40c0-bd02-159e200f43cc" iport="fieldname" oport="fieldname" to="d7e23597-cb37-46e4-a8e1-f165ae8292c7" />
+		<dataflow_connection from="0617f735-04ab-4395-bd8b-ac329c6ebdfc" iport="enable_viewdep" oport="enable_viewdep" to="d7e23597-cb37-46e4-a8e1-f165ae8292c7" />
+		<dataflow_connection from="e2048a9b-908f-4393-8c13-9ef8fb2e6eb7" iport="data" oport="data" to="968e1c33-d835-4e80-ba60-3e367ef34a59" />
+		<dataflow_connection from="c5518330-69bc-4071-929b-6da9109868c6" iport="position" oport="position" to="e2048a9b-908f-4393-8c13-9ef8fb2e6eb7" />
+		<dataflow_connection from="7ec313de-a438-4654-9499-8a495084fd5f" iport="fieldname" oport="fieldname" to="e2048a9b-908f-4393-8c13-9ef8fb2e6eb7" />
+		<dataflow_connection from="651cdae6-f402-48d3-a66d-82f43174f513" iport="enable_viewdep" oport="enable_viewdep" to="e2048a9b-908f-4393-8c13-9ef8fb2e6eb7" />
+	</dataflow>
+	<multi_node AutoConnectOutputs="True" dnode="41e875c7-49a6-4b86-9e48-8459f3a75874" snode="656b2d0f-e35b-405b-8a40-15ced1c29418" />
+	<multi_node AutoConnectOutputs="True" dnode="58240396-e697-4d89-95ad-bca549526018" snode="9355d935-ddb7-48e0-a82b-5054a4bf1481" />
+	<multi_node AutoConnectOutputs="True" dnode="d01d04ba-a4f2-4ac5-9883-fd2bbc11e1a4" snode="eb77d6e1-f5c9-4b62-b737-c902009d25ab" />
+	<multi_node AutoConnectOutputs="True" dnode="97a3c53f-0aeb-4f98-ad4f-437d634e97fd" snode="180a4be0-f18d-437f-bb25-865cee6ceb6b" />
+	<multi_node AutoConnectOutputs="True" dnode="ed67f5cc-b757-4f18-97fb-76ad229f46f5" snode="9cef7edb-2104-4b1e-b255-2073ee937f54" />
+	<multi_node AutoConnectOutputs="True" dnode="b70a6b4f-18d0-4195-a2d2-c4545c4b52a7" snode="e3084b41-ae4f-4cd5-87ea-b136371319c3" />
+	<multi_node AutoConnectOutputs="True" dnode="efc96972-2fd3-4ce8-9a67-f39838d6fa13" snode="e984f0b3-9453-43a0-97d9-881c6f7139d5" />
+	<multi_node AutoConnectOutputs="True" dnode="651cdae6-f402-48d3-a66d-82f43174f513" snode="0b57114b-31ff-43df-abe4-546fc2223000" />
+	<multi_node AutoConnectOutputs="True" dnode="7ec313de-a438-4654-9499-8a495084fd5f" snode="986e27f4-16fe-44fb-97e6-8b4a3ae6128a" />
+	<multi_node AutoConnectOutputs="True" dnode="cb736a96-6747-4134-8b76-e3426d91aa32" snode="65e5bd94-6c65-407d-9c7e-7e5a0aee9dbc" />
+	<multi_node AutoConnectInputs="True" dnode="6adda685-ea9f-4444-a19e-37fc0e2b7962" snode="598e7350-0507-4491-8e0a-24f13017a601" />
+	<multi_node AutoConnectInputs="True" dnode="c6b9e174-3284-47d4-a62a-125f9721c7c3" snode="ec6b6135-07c2-40fa-b579-186f9580f734" />
+	<multi_node AutoConnectInputs="True" dnode="e88d368b-4fe3-4164-9fa9-24d6ef7142f4" snode="a0fc539b-1b1a-423b-8f8e-6ca9b5955c9c" />
+	<multi_node AutoConnectInputs="True" dnode="3f04515a-77a3-40df-9432-a874c82034e6" snode="57bdd742-a5f9-4eab-8140-adb157ced825" />
+	<multi_node AutoConnectInputs="True" dnode="ee9f4f7c-7204-4d50-b5bb-0276a38b49e0" snode="0fe99bac-03c1-41ed-8b45-705e3b33d6c3" />
+	<multi_node AutoConnectInputs="True" dnode="8d67c930-f980-4262-8aa6-1a8c50070da1" snode="54779ea0-f2e0-4d82-b302-c5940df16551" />
+	<multi_node AutoConnectInputs="True" dnode="2bf64c3a-6df6-4a54-b729-cb6c97e41093" snode="62b797e5-0b94-4ea0-9de5-b68c5c57ede3" />
+	<multi_node AutoConnectInputs="True" dnode="968e1c33-d835-4e80-ba60-3e367ef34a59" snode="e0f315b6-180f-42c7-9439-478762349bf6" />
+	<multi_node AutoConnectInputs="True" dnode="baa5b3a4-2589-4c02-a5ac-2df7feb88dee" snode="1dd15773-a283-45d8-87df-92b5eb455b91" />
+	<multi_node AutoConnectInputs="True" dnode="e2048a9b-908f-4393-8c13-9ef8fb2e6eb7" snode="b1415c72-2df8-411a-ac9b-d28f8e3169f1" />
+	<multi_node AutoConnectInputs="True" dnode="d7e23597-cb37-46e4-a8e1-f165ae8292c7" snode="cb823ff0-e6f5-4223-b9ac-bbff580e114d" />
+	<multi_node AutoConnectOutputs="True" dnode="e0f4081e-6d20-4b08-8e0d-ec044496d074" snode="48084c8e-518a-4e04-8328-b3ad5933c513" />
+	<multi_node AutoConnectOutputs="True" dnode="90297a9e-d361-4b87-b7fb-d5e926abed5c" snode="3deb72ba-c914-4fba-9a9e-11d41897db0b" />
+	<multi_node AutoConnectOutputs="True" dnode="018fde70-d3b2-40c0-bd02-159e200f43cc" snode="b16737e3-ba90-4fbf-85eb-ce64d7e1f844" />
+	<multi_node AutoConnectOutputs="True" dnode="c5518330-69bc-4071-929b-6da9109868c6" snode="b2b4187e-232a-4d1a-91fc-6abb35a1cf68" />
+	<multi_node AutoConnectOutputs="True" dnode="fc3ab71e-e64f-4e24-aedd-f88d7fd2e139" snode="b32a4cc4-fcb2-41f2-80c3-cbf6bcdef0d3" />
+	<multi_node AutoConnectOutputs="True" dnode="81edb2f3-1cb4-4231-8bff-a72c738739ff" snode="62cc934f-94fd-4ea1-970d-ed6b83bb4d7f" />
+	<multi_node AutoConnectOutputs="True" dnode="e7718333-8286-4177-80d6-3ca835f3eb22" snode="c466268c-c49d-4e09-b67d-948a37904fff" />
+	<multi_node AutoConnectOutputs="True" dnode="9e601f70-ef0e-4025-8343-b10a80f79645" snode="aaa43f27-9d4e-4e0e-a795-52e8e5f3d6aa" />
+	<multi_node AutoConnectOutputs="True" dnode="0617f735-04ab-4395-bd8b-ac329c6ebdfc" snode="243f797d-edff-40eb-9487-75c66a7c06de" />
+	<glcamera bottom="-738.911" defaultZoomFactor="1.1" dir="0 0 -1" disableRotation="False" left="-67.5274" max_zoom="0" pos="0 0 0" right="2249.17" rotation_angle="0" top="668.471" typename="GLOrthoCamera" vup="0 1 0" zFar="-1" zNear="1" />
+</VisusViewer>

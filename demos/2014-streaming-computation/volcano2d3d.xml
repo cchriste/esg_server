@@ -1,0 +1,233 @@
+<VisusViewer bRefreshDataOnCameraChange="False">
+	<scenegraph>
+		<root icon="resources/icons/treeview/world.png" name="World" uuid="b88a9a05-f751-46ae-a51b-8c19f2a3e799">
+			<child icon="resources/icons/treeview/database.png" name="volcanoA_3d (MIDX)" uuid="7c6cf91e-2c86-4341-af67-581cab9b2f8c">
+				<child name="modelview" uuid="1e4278e3-e990-4356-852a-63d2cd49f33d" />
+				<child name="fieldname" uuid="8a6770d7-4020-4353-9126-07664e176217">
+					<object fieldname="f0=input.volcanoA_3d.CLDLIQ;&#x0A;output=Visus.Array.avg([f0]);&#x0A;" typename="DbField" uuid="590df270-0eee-4363-a7cd-31cfc35d8a1a" />
+					<child name="modelview" uuid="d76095ff-d50b-4883-b8f9-bd3ac7b052c0" />
+				</child>
+				<child name="render_bbox" uuid="eb75b432-a4e3-4c6f-bc8d-9273fe068fcc">
+					<object typename="BoolObject" uuid="8fc1c9c4-1575-4911-8bdf-751624e49b4f" value="True" />
+					<child name="modelview" uuid="a5b398be-4598-48f3-b0f8-30fcd7673515" />
+				</child>
+				<child name="time" uuid="4d3a255d-6afc-48f0-acf2-5756dec933b5">
+					<object typename="DoubleInRange" uuid="35ef82d2-f21b-45a2-b84a-7e149b41c054" value="0">
+						<range from="0" step="1" to="221" />
+					</object>
+					<child name="modelview" uuid="7f6a5e04-1cc7-48ae-a30c-c7ad05de4339" />
+				</child>
+				<child name="progression" uuid="fa9dce81-ac7a-480b-b437-f576caeb67d4">
+					<object typename="DoubleInRange" uuid="22991b67-f987-4d76-a689-a2d8a19fce15" value="9">
+						<range from="0" step="1" to="32" />
+					</object>
+					<child name="modelview" uuid="248a532e-c3c1-4c13-9295-a094acdf75e2" />
+				</child>
+				<child name="quality" uuid="ebd1e1ff-c91b-407d-b96d-bd7d859c8732">
+					<object typename="DoubleInRange" uuid="25250606-2f20-4849-9023-bd48ce217864" value="-3">
+						<range from="-8" step="1" to="8" />
+					</object>
+					<child name="modelview" uuid="bcd58c30-e7fc-4dd8-96b5-95011fdb66d9" />
+				</child>
+				<child icon="resources/icons/treeview/gears.png" name="Volume 1" uuid="5e9c243d-53dd-4c25-8b27-610891e87deb">
+					<child name="position" uuid="2d732a12-df39-445e-9088-dc72a11ab512">
+						<object typename="Position" uuid="f0eae5c6-6265-40a1-a82e-4e8bd3aa5fd8">
+							<map matrix="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1" />
+							<box p1="0 -1.40399 0" p2="1023 509.596 25" />
+						</object>
+						<child name="modelview" uuid="a722508c-956a-4e73-af67-4361d0df03ec" />
+					</child>
+					<child name="fieldname" uuid="d9b9818f-9fe8-40f7-b6ec-56a038b730e6">
+						<object fieldname="output=input.volcanoA_3d.CLDLIQ;" typename="DbField" uuid="bf9beead-1a2e-4918-83e0-252e725f99fa" />
+						<child name="modelview" uuid="3b2efa3f-e2a8-4583-9876-dd18d49074a8" />
+					</child>
+					<child name="palette" uuid="7cfd3091-3d18-4211-880f-0b0399248a3c">
+						<object input_normalization="0" output_dtype="uint8" typename="TransferFunction1d" uuid="6615812f-341e-448c-a320-aa24a8c10cda">
+							<output_range from="0" step="1" to="255" />
+							<function color="255 0 0 255" name="Red" typename="LutTransferFunction1d">
+								<![CDATA[
+0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 
+0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 
+0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.984314 0.960784 0.937255 0.913725 0.890196 
+0.866667 0.843137 0.819608 0.796078 0.772549 0.74902 0.72549 0.701961 0.678431 0.654902 0.631373 0.607843 0.584314 0.560784 0.537255 0.513726 
+0.490196 0.466667 0.443137 0.419608 0.396078 0.372549 0.34902 0.32549 0.301961 0.278431 0.254902 0.231373 0.207843 0.184314 0.160784 0.137255 
+0.113725 0.0901961 0.0666667 0.0431373 0.0196078 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0.0196078 0.0431373 0.0666667 0.0901961 0.113725 
+0.137255 0.160784 0.184314 0.207843 0.231373 0.254902 0.278431 0.301961 0.32549 0.34902 0.372549 0.396078 0.419608 0.443137 0.466667 0.490196 
+0.513726 0.537255 0.560784 0.584314 0.607843 0.631373 0.654902 0.678431 0.701961 0.72549 0.74902 0.772549 0.796078 0.819608 0.843137 0.866667 
+0.890196 0.913725 0.937255 0.960784 0.984314 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 
+0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 
+0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 ]]>
+							</function>
+							<function color="0 128 0 255" name="Green" typename="LutTransferFunction1d">
+								<![CDATA[
+0 0.0196078 0.0431373 0.0666667 0.0901961 0.113725 0.137255 0.160784 0.184314 0.207843 0.231373 0.254902 0.278431 0.301961 0.32549 0.34902 
+0.372549 0.396078 0.419608 0.443137 0.466667 0.490196 0.513726 0.537255 0.560784 0.584314 0.607843 0.631373 0.654902 0.678431 0.701961 0.72549 
+0.74902 0.772549 0.796078 0.819608 0.843137 0.866667 0.890196 0.913725 0.937255 0.960784 0.984314 0.996078 0.996078 0.996078 0.996078 0.996078 
+0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 
+0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 
+0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 
+0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 
+0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 
+0.984314 0.960784 0.937255 0.913725 0.890196 0.866667 0.843137 0.819608 0.796078 0.772549 0.74902 0.72549 0.701961 0.678431 0.654902 0.631373 
+0.607843 0.584314 0.560784 0.537255 0.513726 0.490196 0.466667 0.443137 0.419608 0.396078 0.372549 0.34902 0.32549 0.301961 0.278431 0.254902 
+0.231373 0.207843 0.184314 0.160784 0.137255 0.113725 0.0901961 0.0666667 0.0431373 0.0196078 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]]>
+							</function>
+							<function color="0 0 255 255" name="Blue" typename="LutTransferFunction1d">
+								<![CDATA[
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0.0196078 0.0431373 0.0666667 0.0901961 0.113725 0.137255 0.160784 0.184314 0.207843 0.231373 
+0.254902 0.278431 0.301961 0.32549 0.34902 0.372549 0.396078 0.419608 0.443137 0.466667 0.490196 0.513726 0.537255 0.560784 0.584314 0.607843 
+0.631373 0.654902 0.678431 0.701961 0.72549 0.74902 0.772549 0.796078 0.819608 0.843137 0.866667 0.890196 0.913725 0.937255 0.960784 0.984314 
+0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 
+0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 
+0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 
+0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 
+0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 0.996078 
+0.996078 0.996078 0.996078 0.996078 0.996078 0.984314 0.960784 0.937255 0.913725 0.890196 0.866667 0.843137 0.819608 0.796078 0.772549 0.74902 
+0.72549 0.701961 0.678431 0.654902 0.631373 0.607843 0.584314 0.560784 0.537255 0.513726 0.490196 0.466667 0.443137 0.419608 0.396078 0.372549 
+0.34902 0.32549 0.301961 0.278431 0.254902 0.231373 0.207843 0.184314 0.160784 0.137255 0.113725 0.0901961 0.0666667 0.0431373 0.0196078 0 ]]>
+							</function>
+							<function color="128 128 128 255" name="Alpha" typename="LutTransferFunction1d">
+								<![CDATA[
+0 0 0 0 0 0 0 0 0 0 0 0 0 0.0439024 0.0439024 0.0439024 
+0.045122 0.0463415 0.047561 0.0487805 0.05 0.0512195 0.052439 0.0536585 0.054878 0.0560976 0.0573171 0.0585366 0.0597561 0.0609756 0.0621951 0.0634146 
+0.0646341 0.0658537 0.0670732 0.0682927 0.0695122 0.0707317 0.0719512 0.0731707 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0.000609756 0.00121951 0.00182927 0.00243902 
+0.00304878 0.00365854 0.00426829 0.00487805 0.00682927 0.00878049 0.0107317 0.0126829 0.0146341 0.0146341 0.0146341 0.0146341 0.0146341 0.0146341 0.0156098 0.0165854 
+0.017561 0.0185366 0.0195122 0.0195122 0.0195122 0.0195122 0.0195122 0.0202091 0.0209059 0.0216028 0.0222997 0.0229965 0.0236934 0.0243902 0.0243902 0.0243902 
+0.0243902 0.0243902 0.0243902 0.0253659 0.0263415 0.0273171 0.0282927 0.0292683 0.0302439 0.0312195 0.0321951 0.0331707 0.0341463 0.0353659 0.0365854 0.0378049 
+0.0390244 0.0402439 0.0414634 0.0426829 0.0439024 0.044878 0.0458537 0.0468293 0.0478049 0.0487805 0.0536585 0.0585366 0.0634146 0.0682927 0.0731707 0.0743902 
+0.0756098 0.0768293 0.0780488 0.0780488 0.0780488 0.0780488 0.0780488 0.0487805 0.0487805 0.0463415 0.0439024 0.0439024 0.0439024 0.0439024 0.0439024 0.0439024 
+0.0429268 0.0419512 0.0409756 0.04 0.0390244 0.0373984 0.0357724 0.0341463 0.0329268 0.0317073 0.0304878 0.0292683 0.0280488 0.0268293 0.0256098 0.0243902 
+0.0219512 0.0195122 0.0195122 0.0195122 0.0195122 0.0195122 0.0195122 0.0195122 0.0188828 0.0182533 0.0176239 0.0169945 0.0163651 0.0157356 0.0151062 0.0144768 
+0.0138474 0.0132179 0.0125885 0.0119591 0.0113297 0.0107002 0.0100708 0.00944139 0.00881196 0.00818253 0.00755311 0.00692368 0.00629426 0.00566483 0.00503541 0.00440598 
+0.00377655 0.00314713 0.0025177 0.00188828 0.00125885 0.000629426 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ]]>
+							</function>
+						</object>
+						<child name="modelview" uuid="42f3bc0d-e92a-437c-a246-6e72c80e7616" />
+					</child>
+					<child name="enable_viewdep" uuid="7d0a6d06-45e9-46dc-ba07-e94b921b53dd">
+						<object typename="BoolObject" uuid="84688dd2-135c-47b2-bd63-b70451dc6b8c" value="False" />
+						<child name="modelview" uuid="5fe98204-f819-46eb-bf49-b88adec2f604" />
+					</child>
+					<child name="Process array" uuid="13610000-1e87-4bb7-b716-7b2a1e494397">
+						<child name="modelview" uuid="9ef803a5-945f-4533-b3aa-2af20861d10f" />
+						<child icon="resources/icons/treeview/brush.png" name="Array render" uuid="e1d966ab-574c-4a18-93f5-b6e5c1829595">
+							<child name="modelview" uuid="8aa040bf-94a0-47be-9dd1-adafebbe6bf8" />
+						</child>
+					</child>
+				</child>
+			</child>
+		</root>
+	</scenegraph>
+	<dataflow>
+		<dataflow_node name="volcanoA_3d (MIDX)" typename="DatasetNode" uuid="261ee4a6-f143-438c-a8c1-977a1bfe2794">
+			<preferred_position height="40" width="60" x="546" y="237" />
+			<dataset typename="MultipleDataset" url="file:///Users/cam/visus/midx/volcanoA_3d.midx">
+				<config>
+					<dataset name="volcanoA_3d (MIDX)" url="/Users/cam/visus/midx/volcanoA_3d.midx">
+						<Logo>
+							<BottomLeft alpha="0.6" filename="/Users/cam/visus/Logos/sci-logo.png" height="72" />
+							<BottomRight alpha="0.6" filename="/Users/cam/visus/Logos/visus_alt.png" height="150" />
+							<TopRight alpha="0.6" filename="/Users/cam/visus/Logos/UVCDAT.png" height="100" />
+							<TopLeft alpha="0.6" filename="/Users/cam/visus/Logos/cedmav-logo.png" height="72" />
+						</Logo>
+						<access name="MultipleAccess" type="MultipleAccess">
+							<access name="volcanoA_3d" type="multiplex">
+								<access chmod="rw" type="disk" url="file:///Users/cam/visus/cached_files/volcanoA_3d/visus.idx" />
+								<access chmod="r" compression="zip" type="network" url="http://atlantis.sci.utah.edu/mod_visus?dataset=volcanoA_3d" />
+							</access>
+						</access>
+					</dataset>
+				</config>
+			</dataset>
+		</dataflow_node>
+		<dataflow_node name="fieldname" oport="fieldname" typename="ObjectNode" uuid="630df7a9-547e-49b1-af52-1164bd64965e">
+			<preferred_position height="40" width="60" x="153" y="219" />
+			<object uuid="590df270-0eee-4363-a7cd-31cfc35d8a1a" />
+		</dataflow_node>
+		<dataflow_node name="render_bbox" oport="render_bbox" typename="ObjectNode" uuid="6cb5929f-61e9-422b-ab87-a2516c391957">
+			<preferred_position height="40" width="60" x="610" y="451" />
+			<object uuid="8fc1c9c4-1575-4911-8bdf-751624e49b4f" />
+		</dataflow_node>
+		<dataflow_node name="time" oport="time" typename="ObjectNode" uuid="28043db5-e89a-4297-a7b8-1eb7651333cd">
+			<preferred_position height="40" width="60" x="154" y="128" />
+			<object uuid="35ef82d2-f21b-45a2-b84a-7e149b41c054" />
+		</dataflow_node>
+		<dataflow_node name="progression" oport="progression" typename="ObjectNode" uuid="d27ce200-d128-4cc0-ad43-993484a1bd1c">
+			<preferred_position height="40" width="60" x="94" y="126" />
+			<object uuid="22991b67-f987-4d76-a689-a2d8a19fce15" />
+		</dataflow_node>
+		<dataflow_node name="quality" oport="quality" typename="ObjectNode" uuid="09ccc6e2-1791-412a-b3e8-d2aab4c1f71c">
+			<preferred_position height="40" width="60" x="691" y="356" />
+			<object uuid="25250606-2f20-4849-9023-bd48ce217864" />
+		</dataflow_node>
+		<dataflow_node name="Volume 1" typename="QueryNode" uuid="6bb92845-87b5-4410-bd63-352902e1fc57">
+			<preferred_position height="120" width="180" x="566" y="245" />
+		</dataflow_node>
+		<dataflow_node name="position" oport="position" typename="ObjectNode" uuid="aa9e5c21-ea8e-4034-894f-ef6eb0d0a197">
+			<preferred_position height="40" width="60" x="164" y="299" />
+			<object uuid="f0eae5c6-6265-40a1-a82e-4e8bd3aa5fd8" />
+		</dataflow_node>
+		<dataflow_node name="fieldname" oport="fieldname" typename="ObjectNode" uuid="425310bc-a019-4652-a544-29899377a4cf">
+			<preferred_position height="40" width="60" x="345" y="487" />
+			<object uuid="bf9beead-1a2e-4918-83e0-252e725f99fa" />
+		</dataflow_node>
+		<dataflow_node name="palette" oport="palette" typename="ObjectNode" uuid="5545871c-adf9-4c74-95e3-5894b15d2678">
+			<preferred_position height="40" width="60" x="470" y="396" />
+			<object uuid="6615812f-341e-448c-a320-aa24a8c10cda" />
+		</dataflow_node>
+		<dataflow_node name="enable_viewdep" oport="enable_viewdep" typename="ObjectNode" uuid="a9be16b6-dcde-482f-92c5-fe6fe68e601d">
+			<preferred_position height="40" width="60" x="318" y="97" />
+			<object uuid="84688dd2-135c-47b2-bd63-b70451dc6b8c" />
+		</dataflow_node>
+		<dataflow_node name="Process array" typename="ScriptingProcessArrayNode" uuid="12cebfb2-5380-48ea-b972-65359acc5795">
+			<preferred_position height="80" width="120" x="385" y="432" />
+			<scripting code="output=input;" typename="ScriptingProcessArray" />
+		</dataflow_node>
+		<dataflow_node four_channel_blend_color="0 0 0 255" four_channel_blend_enabled="False" lighting_enabled="True" lut_enabled="False" magnify_filter="9729" max_num_slices="0" minify_filter="9729" name="Array render" preintegration_enabled="True" progressive_rendering_enabled="True" ray_cast_enabled="True" raycast_quality="1" typename="ArrayRenderNode" use_view_direction_enabled="False" uuid="30e9f7c9-da42-4d3e-b720-95ea480988db">
+			<preferred_position height="56.5685" width="84.8528" x="226" y="589" />
+		</dataflow_node>
+		<dataflow_connection from="261ee4a6-f143-438c-a8c1-977a1bfe2794" iport="dataset" oport="dataset" to="6bb92845-87b5-4410-bd63-352902e1fc57" />
+		<dataflow_connection from="28043db5-e89a-4297-a7b8-1eb7651333cd" iport="time" oport="time" to="6bb92845-87b5-4410-bd63-352902e1fc57" />
+		<dataflow_connection from="d27ce200-d128-4cc0-ad43-993484a1bd1c" iport="progression" oport="progression" to="6bb92845-87b5-4410-bd63-352902e1fc57" />
+		<dataflow_connection from="09ccc6e2-1791-412a-b3e8-d2aab4c1f71c" iport="quality" oport="quality" to="6bb92845-87b5-4410-bd63-352902e1fc57" />
+		<dataflow_connection from="6bb92845-87b5-4410-bd63-352902e1fc57" iport="data" oport="data" to="12cebfb2-5380-48ea-b972-65359acc5795" />
+		<dataflow_connection from="aa9e5c21-ea8e-4034-894f-ef6eb0d0a197" iport="position" oport="position" to="6bb92845-87b5-4410-bd63-352902e1fc57" />
+		<dataflow_connection from="425310bc-a019-4652-a544-29899377a4cf" iport="fieldname" oport="fieldname" to="6bb92845-87b5-4410-bd63-352902e1fc57" />
+		<dataflow_connection from="5545871c-adf9-4c74-95e3-5894b15d2678" iport="palette" oport="palette" to="30e9f7c9-da42-4d3e-b720-95ea480988db" />
+		<dataflow_connection from="a9be16b6-dcde-482f-92c5-fe6fe68e601d" iport="enable_viewdep" oport="enable_viewdep" to="6bb92845-87b5-4410-bd63-352902e1fc57" />
+		<dataflow_connection from="12cebfb2-5380-48ea-b972-65359acc5795" iport="data" oport="data" to="30e9f7c9-da42-4d3e-b720-95ea480988db" />
+	</dataflow>
+	<multi_node AutoConnectInputs="True" dnode="261ee4a6-f143-438c-a8c1-977a1bfe2794" snode="7c6cf91e-2c86-4341-af67-581cab9b2f8c" />
+	<multi_node AutoConnectOutputs="True" dnode="d27ce200-d128-4cc0-ad43-993484a1bd1c" snode="fa9dce81-ac7a-480b-b437-f576caeb67d4" />
+	<multi_node AutoConnectOutputs="True" dnode="09ccc6e2-1791-412a-b3e8-d2aab4c1f71c" snode="ebd1e1ff-c91b-407d-b96d-bd7d859c8732" />
+	<multi_node AutoConnectOutputs="True" dnode="630df7a9-547e-49b1-af52-1164bd64965e" snode="8a6770d7-4020-4353-9126-07664e176217" />
+	<multi_node AutoConnectOutputs="True" dnode="6cb5929f-61e9-422b-ab87-a2516c391957" snode="eb75b432-a4e3-4c6f-bc8d-9273fe068fcc" />
+	<multi_node AutoConnectOutputs="True" dnode="28043db5-e89a-4297-a7b8-1eb7651333cd" snode="4d3a255d-6afc-48f0-acf2-5756dec933b5" />
+	<multi_node AutoConnectInputs="True" dnode="6bb92845-87b5-4410-bd63-352902e1fc57" snode="5e9c243d-53dd-4c25-8b27-610891e87deb" />
+	<multi_node AutoConnectOutputs="True" dnode="a9be16b6-dcde-482f-92c5-fe6fe68e601d" snode="7d0a6d06-45e9-46dc-ba07-e94b921b53dd" />
+	<multi_node AutoConnectOutputs="True" dnode="5545871c-adf9-4c74-95e3-5894b15d2678" snode="7cfd3091-3d18-4211-880f-0b0399248a3c" />
+	<multi_node AutoConnectOutputs="True" dnode="aa9e5c21-ea8e-4034-894f-ef6eb0d0a197" snode="2d732a12-df39-445e-9088-dc72a11ab512" />
+	<multi_node AutoConnectOutputs="True" dnode="425310bc-a019-4652-a544-29899377a4cf" snode="d9b9818f-9fe8-40f7-b6ec-56a038b730e6" />
+	<multi_node AutoConnectInputs="True" dnode="12cebfb2-5380-48ea-b972-65359acc5795" snode="13610000-1e87-4bb7-b716-7b2a1e494397" />
+	<multi_node AutoConnectInputs="True" dnode="30e9f7c9-da42-4d3e-b720-95ea480988db" snode="e1d966ab-574c-4a18-93f5-b6e5c1829595" />
+	<glcamera bUseOrthoProjection="False" bottom="-27.4755" bound="0 0 0 1023 511 25" centerOfRotation="511.5 255.5 12.5" defaultPanFactor="5" defaultRotFactor="5.2" defaultZoomFactor="1.1" dir="-0.894388 -0.446757 -0.021857" disableRotation="False" left="-32.2538" pos="2659.8 1328.6 65" quaternion="-0.520241 0.305734 -0.390085 0.695492" right="32.2538" top="27.4755" typename="GLLookAtCamera" vup="0 0 1" zFar="4117.67" zNear="686.279" />
+</VisusViewer>

@@ -1,0 +1,26 @@
+The Good
+-----------------------------
+ViSUS working in UV-CDAT
+attractive, functional demo
+can specify alternate servers
+dynamically lists available datasets
+not-too-annoying user interaction
+multiple windows works
+no crash on exit...
+
+
+The Bad
+-----------------------------
+100% cpu usage
+no server-side blending?
+slider values not shown / cannot be manually specified
+no crash on exit...  (except sometimes after extended usage)
+time slider sporadically disconnects from slice query
+blending may be incorrect (resolution)
+
+
+The Ugly
+-----------------------------
+floating properties window
+fieldname dialog
+not fully vistrails-enabled: can't save/load, etc. 

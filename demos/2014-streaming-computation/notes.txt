@@ -1,0 +1,342 @@
+// calculate seasonal averages (winter: dec-feb, summer: jun-aug)
+// first month is 5 (jun), so every year is 5+12*years[i], months added to that, 0-2 for summer, 6-8 winter
+// fieldnames: 'FSNS' (net solor flux at surface) and TSMN (min surface temp)
+
+first=5;
+years=[0,1,2,3,4,5,6,7,8,9,10];
+years_after=[11,12,13,14];
+summer_months=[0,1,2];
+winter_months=[6,7,8];
+fieldname='FSNS';
+
+//push_back helper function
+function push_back(v,value)
+{v[v.length]=value;}
+
+summer_timesteps=[];
+winter_timesteps=[];
+for (var Y=0;Y<years.length;Y++) 
+{
+  for (var M=0;M<summer_months.length;M++)
+    push_back(summer_timesteps,12*years[Y]+summer_months[M]);
+  for (var M=0;M<winter_months.length;M++)
+    push_back(winter_timesteps,12*years[Y]+winter_months[M]);
+}
+
+summer_timesteps_after=[];
+winter_timesteps_after=[];
+for (var Y=0;Y<years_after.length;Y++) 
+{
+  for (var M=0;M<summer_months.length;M++)
+    push_back(summer_timesteps_after,12*years_after[Y]+summer_months[M]);
+  for (var M=0;M<winter_months.length;M++)
+    push_back(winter_timesteps_after,12*years_after[Y]+winter_months[M]);
+}
+
+//calculate seasonal averages from 11 preceding years before volcano
+pre_summer=[];
+pre_winter=[];
+for (var T=0;T<summer_timesteps.length;T++)
+{
+  var fieldname_with_time=fieldname + '?time=' + summer_timesteps[T];
+  push_back(pre_summer,input['nopin']['output=input[\'A\'][\''+fieldname_with_time+'\'];']);
+  push_back(pre_summer,input['nopin']['output=input[\'B\'][\''+fieldname_with_time+'\'];']);
+  push_back(pre_summer,input['nopin']['output=input[\'C\'][\''+fieldname_with_time+'\'];']);
+  push_back(pre_summer,input['nopin']['output=input[\'D\'][\''+fieldname_with_time+'\'];']);
+  push_back(pre_summer,input['nopin']['output=input[\'E\'][\''+fieldname_with_time+'\'];']);
+}
+for (var T=0;T<winter_timesteps.length;T++)
+{
+  var fieldname_with_time=fieldname + '?time=' + winter_timesteps[T];
+  push_back(pre_winter,input['nopin']['output=input[\'A\'][\''+fieldname_with_time+'\'];']);
+  push_back(pre_winter,input['nopin']['output=input[\'B\'][\''+fieldname_with_time+'\'];']);
+  push_back(pre_winter,input['nopin']['output=input[\'C\'][\''+fieldname_with_time+'\'];']);
+  push_back(pre_winter,input['nopin']['output=input[\'D\'][\''+fieldname_with_time+'\'];']);
+  push_back(pre_winter,input['nopin']['output=input[\'E\'][\''+fieldname_with_time+'\'];']);
+}
+
+//calculate seasonal averages for 4 years after eruption
+post_summer=[];
+post_winter=[];
+for (var T=0;T<summer_timesteps_after.length;T++)
+{
+  var fieldname_with_time=fieldname + '?time=' + summer_timesteps_after[T];
+  push_back(post_summer,input['pin']['output=input[\'A\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer,input['pin']['output=input[\'B\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer,input['pin']['output=input[\'C\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer,input['pin']['output=input[\'D\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer,input['pin']['output=input[\'E\'][\''+fieldname_with_time+'\'];']);
+}
+for (var T=0;T<winter_timesteps_after.length;T++)
+{
+  var fieldname_with_time=fieldname + '?time=' + winter_timesteps_after[T];
+  push_back(post_winter,input['pin']['output=input[\'A\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_winter,input['pin']['output=input[\'B\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_winter,input['pin']['output=input[\'C\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_winter,input['pin']['output=input[\'D\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_winter,input['pin']['output=input[\'E\'][\''+fieldname_with_time+'\'];']);
+}
+
+summer_avg=Visus.Array.avg(pre_summer); 
+summer_avg_after=Visus.Array.avg(post_summer); 
+output=Visus.Array.sub([summer_avg_after,summer_avg]); 
+output=Visus.Array.avg(summer_avg); 
+
+winter_avg=Visus.Array.avg(pre_winter); 
+winter_avg_after=Visus.Array.avg(post_winter); 
+output=Visus.Array.sub([winter_avg_after,winter_avg]); 
+output=Visus.Array.avg(winter_avg); 
+
+
+
+
+-------------------------------------------------------------------------------
+//remove one of the ensemble members
+
+first=5;
+years=[0,1,2,3,4,5,6,7,8,9,10];
+years_after=[11,12,13,14];
+summer_months=[0,1,2];
+winter_months=[6,7,8];
+fieldname='FSNS';
+
+//push_back helper function
+function push_back(v,value)
+{v[v.length]=value;}
+
+summer_timesteps=[];
+winter_timesteps=[];
+for (var Y=0;Y<years.length;Y++) 
+{
+  for (var M=0;M<summer_months.length;M++)
+    push_back(summer_timesteps,12*years[Y]+summer_months[M]);
+  for (var M=0;M<winter_months.length;M++)
+    push_back(winter_timesteps,12*years[Y]+winter_months[M]);
+}
+
+summer_timesteps_after=[];
+winter_timesteps_after=[];
+for (var Y=0;Y<years_after.length;Y++) 
+{
+  for (var M=0;M<summer_months.length;M++)
+    push_back(summer_timesteps_after,12*years_after[Y]+summer_months[M]);
+  for (var M=0;M<winter_months.length;M++)
+    push_back(winter_timesteps_after,12*years_after[Y]+winter_months[M]);
+}
+
+//calculate seasonal averages from 11 preceding years before volcano
+pre_summer=[];
+pre_winter=[];
+for (var T=0;T<summer_timesteps.length;T++)
+{
+  var fieldname_with_time=fieldname + '?time=' + summer_timesteps[T];
+  push_back(pre_summer,input['nopin']['output=input[\'B\'][\''+fieldname_with_time+'\'];']);
+  push_back(pre_summer,input['nopin']['output=input[\'C\'][\''+fieldname_with_time+'\'];']);
+  push_back(pre_summer,input['nopin']['output=input[\'D\'][\''+fieldname_with_time+'\'];']);
+  push_back(pre_summer,input['nopin']['output=input[\'E\'][\''+fieldname_with_time+'\'];']);
+}
+for (var T=0;T<winter_timesteps.length;T++)
+{
+  var fieldname_with_time=fieldname + '?time=' + winter_timesteps[T];
+  push_back(pre_winter,input['nopin']['output=input[\'B\'][\''+fieldname_with_time+'\'];']);
+  push_back(pre_winter,input['nopin']['output=input[\'C\'][\''+fieldname_with_time+'\'];']);
+  push_back(pre_winter,input['nopin']['output=input[\'D\'][\''+fieldname_with_time+'\'];']);
+  push_back(pre_winter,input['nopin']['output=input[\'E\'][\''+fieldname_with_time+'\'];']);
+}
+
+//calculate seasonal averages for 4 years after eruption
+post_summer=[];
+post_winter=[];
+for (var T=0;T<summer_timesteps_after.length;T++)
+{
+  var fieldname_with_time=fieldname + '?time=' + summer_timesteps_after[T];
+  push_back(post_summer,input['pin']['output=input[\'B\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer,input['pin']['output=input[\'C\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer,input['pin']['output=input[\'D\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer,input['pin']['output=input[\'E\'][\''+fieldname_with_time+'\'];']);
+}
+for (var T=0;T<winter_timesteps_after.length;T++)
+{
+  var fieldname_with_time=fieldname + '?time=' + winter_timesteps_after[T];
+  push_back(post_winter,input['pin']['output=input[\'B\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_winter,input['pin']['output=input[\'C\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_winter,input['pin']['output=input[\'D\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_winter,input['pin']['output=input[\'E\'][\''+fieldname_with_time+'\'];']);
+}
+
+summer_avg=Visus.Array.avg(pre_summer); 
+summer_avg_after=Visus.Array.avg(post_summer); 
+output=Visus.Array.sub([summer_avg_after,summer_avg]); 
+output=Visus.Array.avg(summer_avg); 
+
+winter_avg=Visus.Array.avg(pre_winter); 
+winter_avg_after=Visus.Array.avg(post_winter); 
+output=Visus.Array.sub([winter_avg_after,winter_avg]); 
+output=Visus.Array.avg(winter_avg); 
+
+
+
+-------------------------------------------------------------------------------
+// of course we can directly compare the two models as well: pin and nopin
+
+first=5;
+years_after=[11,12,13,14];
+summer_months=[0,1,2];
+winter_months=[6,7,8];
+fieldname='TSMN';
+
+//push_back helper function
+function push_back(v,value)
+{v[v.length]=value;}
+
+summer_timesteps_after=[];
+winter_timesteps_after=[];
+for (var Y=0;Y<years_after.length;Y++) 
+{
+  for (var M=0;M<summer_months.length;M++)
+    push_back(summer_timesteps_after,12*years_after[Y]+summer_months[M]);
+  for (var M=0;M<winter_months.length;M++)
+    push_back(winter_timesteps_after,12*years_after[Y]+winter_months[M]);
+}
+
+//calculate seasonal averages for 4 years after eruption
+post_summer=[];
+post_winter=[];
+for (var T=0;T<summer_timesteps_after.length;T++)
+{
+  var fieldname_with_time=fieldname + '?time=' + summer_timesteps_after[T];
+  push_back(post_summer,input['pin']['output=input[\'A\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer,input['pin']['output=input[\'B\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer,input['pin']['output=input[\'C\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer,input['pin']['output=input[\'D\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer,input['pin']['output=input[\'E\'][\''+fieldname_with_time+'\'];']);
+}
+for (var T=0;T<winter_timesteps_after.length;T++)
+{
+  var fieldname_with_time=fieldname + '?time=' + winter_timesteps_after[T];
+  push_back(post_winter,input['pin']['output=input[\'A\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_winter,input['pin']['output=input[\'B\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_winter,input['pin']['output=input[\'C\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_winter,input['pin']['output=input[\'D\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_winter,input['pin']['output=input[\'E\'][\''+fieldname_with_time+'\'];']);
+}
+
+//calculate seasonal averages for 4 years after eruption
+post_summer_nopin=[];
+post_winter_nopin=[];
+for (var T=0;T<summer_timesteps_after.length;T++)
+{
+  var fieldname_with_time=fieldname + '?time=' + summer_timesteps_after[T];
+  push_back(post_summer_nopin,input['nopin']['output=input[\'A\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer_nopin,input['nopin']['output=input[\'B\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer_nopin,input['nopin']['output=input[\'C\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer_nopin,input['nopin']['output=input[\'D\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer_nopin,input['nopin']['output=input[\'E\'][\''+fieldname_with_time+'\'];']);
+}
+for (var T=0;T<winter_timesteps_after.length;T++)
+{
+  var fieldname_with_time=fieldname + '?time=' + winter_timesteps_after[T];
+  push_back(post_winter_nopin,input['nopin']['output=input[\'A\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_winter_nopin,input['nopin']['output=input[\'B\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_winter_nopin,input['nopin']['output=input[\'C\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_winter_nopin,input['nopin']['output=input[\'D\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_winter_nopin,input['nopin']['output=input[\'E\'][\''+fieldname_with_time+'\'];']);
+}
+
+summer_avg_after=Visus.Array.avg(post_summer); 
+summer_avg_after_nopin=Visus.Array.avg(post_summer_nopin); 
+output=Visus.Array.sub([summer_avg_after,summer_avg_after_nopin]); 
+
+winter_avg_after=Visus.Array.avg(post_winter); 
+winter_avg_after_nopin=Visus.Array.avg(post_winter_nopin); 
+output=Visus.Array.sub([winter_avg_after,winter_avg_after_nopin]); 
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------
+
+a='CLDLOW';
+f0=input.A[a];
+f1=input.B[a];
+f2=input.C[a];
+f3=input.D[a];
+f4=input.E[a];
+output=Visus.Array.avg([f0,f1,f2,f3,f4]);
+
+a='CLDLOW';
+f0=input.A[a];
+f1=input.B[a];
+f2=input.C[a];
+f3=input.D[a];
+f4=input.E[a];
+output=Visus.Array.sdv([f0,f1,f2,f3,f4]);
+
+a='CLDLOW';
+f0=input.A[a];
+f1=input.B[a];
+f2=input.C[a];
+f3=input.D[a];
+f4=input.E[a];
+output=Visus.Array.min([f0,f1,f2,f3,f4]);
+
+a='CLDLOW';
+f0=input.A[a];
+f1=input.B[a];
+f2=input.C[a];
+f3=input.D[a];
+f4=input.E[a];
+output=Visus.Array.max([f0,f1,f2,f3,f4]);
+
+
+
+-------------------------------------------------------------------------------
+
+//compare two different models (summer seasonal avg)
+first=5;
+years_after=[11,12,13,14];
+summer_months=[0,1,2];
+fieldname='TSMN';
+
+//push_back helper function
+function push_back(v,value)
+{v[v.length]=value;}
+
+summer_timesteps_after=[];
+for (var Y=0;Y<years_after.length;Y++) 
+{
+  for (var M=0;M<summer_months.length;M++)
+    push_back(summer_timesteps_after,12*years_after[Y]+summer_months[M]);
+}
+
+//calculate seasonal averages for 4 years after eruption
+post_summer=[];
+for (var T=0;T<summer_timesteps_after.length;T++)
+{
+  var fieldname_with_time=fieldname + '?time=' + summer_timesteps_after[T];
+  push_back(post_summer,input['pin']['output=input[\'A\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer,input['pin']['output=input[\'B\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer,input['pin']['output=input[\'C\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer,input['pin']['output=input[\'D\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer,input['pin']['output=input[\'E\'][\''+fieldname_with_time+'\'];']);
+}
+
+//calculate seasonal averages for 4 years after eruption
+post_summer_nopin=[];
+for (var T=0;T<summer_timesteps_after.length;T++)
+{
+  var fieldname_with_time=fieldname + '?time=' + summer_timesteps_after[T];
+  push_back(post_summer_nopin,input['nopin']['output=input[\'A\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer_nopin,input['nopin']['output=input[\'B\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer_nopin,input['nopin']['output=input[\'C\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer_nopin,input['nopin']['output=input[\'D\'][\''+fieldname_with_time+'\'];']);
+  push_back(post_summer_nopin,input['nopin']['output=input[\'E\'][\''+fieldname_with_time+'\'];']);
+}
+
+summer_avg_after=Visus.Array.avg(post_summer); 
+summer_avg_after_nopin=Visus.Array.avg(post_summer_nopin); 
+output=Visus.Array.sdv([summer_avg_after,summer_avg_after_nopin]); 
+

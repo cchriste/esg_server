@@ -1,0 +1,144 @@
+Tuesday, July 22, 2014
+-----------------------------
+
+-----------------------------
+Building UV-CDAT
+-----------------------------
+
+This is the path!
+/usr/bin:/bin:/usr/sbin:/sbin:/Applications/CMake_2.8-12.app/Contents/bin
+
+symlinked /usr/local/bin/gfortran to /usr/bin
+
+[https://github.com/UV-CDAT/uvcdat/wiki/Building-UVCDAT]
+git clone uvcdat (and uvcdat-devel, see instructions on website)
+mkdir uvcdat-build
+cd uvcdat-build
+ccmake ../uvcdat
+set http:// for git protocol (if inside the lab)
+c, c, c, g
+make -j8
+
+source ./install/bin/setup_runtime.sh
+
+-------------------------------------------------------------------------------
+
+#dumps all output to console
+./install/bin/uvcdat --output=""
+
+-------------------------------------------------------------------------------
+
+-----------------------------
+ViSUS Installation
+-----------------------------
+
+Build visuspy:
+export PATH=/Users/cam/code/uvcdat-build/install/Library/Frameworks/Python.framework/Versions/2.7/bin:$PATH
+ccmake -DVISUS_SWIG=YES ../..
+(NOTE: Still had to manually change PYTHON_INCLUDE_DIR and PYTHON_LIBRARY to point to the correct places in the uvcdat installation)
+
+
+#Install visuspy to <uvcdat_install>/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages
+<visus>/visuscpp/swig/installpy.sh /Users/cam/code/uvcdat-build/install/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages
+
+mkpy.sh
+testpy.sh
+installpy.sh
+
+-------------------------------------------------------------------------------
+
+Sunday, December 07, 2014
+
+[ ] cron script to monitor directory and restart server if a new idx file appears
+[x] script to create initial tables in idx.db
+[ ] xml_to_idx script to create idx and populate idx.db tables
+[ ] converter app (can be part of server, facilitates Timo's way) to convert a var at a timestep upon request
+[ ] server modified to check idx.db to see if a variable has already been converted (not final solution)
+
+[ ] for conversion, may not need to use db. Also, cdms2 basically eats that xml file and takes care of everything.
+
+-------------------------------------------------------------------------------
+Tuesday, December 09, 2014
+
+// load one variable
+f0=input.pinA.CLDLOW;
+f1=input.pinB.CLDLOW;
+f2=input.pinC.CLDLOW;
+f3=input.pinD.CLDLOW;
+f4=input.pinE.CLDLOW;
+output=Visus.Array.avg([f0,f1,f2,f3,f4]);
+
+
+// compare two variables
+f0=input.nopin['\
+	f0=input.A.CLDLOW;\
+	f1=input.B.CLDLOW;\
+	f2=input.C.CLDLOW;\
+	f3=input.D.CLDLOW;\
+	f4=input.E.CLDLOW;\
+	output=Visus.Array.avg([f0,f1,f2,f3,f4]);\
+	'];
+f1=input.pin['\
+	f0=input.A.CLDLOW;\
+	f1=input.B.CLDLOW;\
+	f2=input.C.CLDLOW;\
+	f3=input.D.CLDLOW;\
+	f4=input.E.CLDLOW;\
+	output=Visus.Array.avg([f0,f1,f2,f3,f4]);\
+	'];
+output=Visus.Array.sub([f1,f0]);
+
+
+// Most don't work (unless marked with '*'):
+output=input.nopin['\
+  output=input.A.CLDLOW; \
+  '];
+output=input.nopin['\
+  output=input['A']['CLDLOW?time=136']; \
+  '];
+output=input['nopin']['A']['CLDLOW?time=136'];
+output=input.nopin['A']['CLDLOW?time=136'];
+output=input.nopin.A['CLDLOW?time=136'];
+output=input.nopin.A.CLDLOW;
+output=input['nopin']['A']['CLDLOW'];
+output=input[nopin][A][CLDLOW];
+* output=input.nopin['output=input.A.CLDLOW;'];
+* output=input['nopin']['output=input.A.CLDLOW;'];
+* output=input['nopin']['output=input[\'A\'][\'CLDLOW\'];'];
+output=input['nopin']['output=input.A.CLDLOW;'];
+output=input.nopin['output=input.A.CLDLOW?time=136;'];
+output=input.nopin['output=input['output=input['A']['CLDLOW'];'];]'
+
+//FINALLY!
+var fieldname_with_time='CLDLOW?time=136';
+output=input['nopin']['output=input[\'A\'][\''+fieldname_with_time+'\'];'];
+
+
+
+// compute and compare seasonal averages
+years=[0,1,2,3,4,5,6,7,8,9];
+months=[0,1,2];
+fieldname='CLDLOW';
+
+function push_back(v,value)
+{v[v.length]=value;}
+
+timesteps=[];
+for (var Y=0;Y<years.length;Y++) 
+{
+  for (var M=0;M<months.length;M++)
+    push_back(timesteps,10*years[Y]+months[M]);
+}
+
+v=[];
+for (var T=0;T<timesteps.length;T++)
+{
+  var fieldname_with_time=fieldname + '?time=' + timesteps[T];
+  push_back(v,input['nopin']['output=input[\'A\'][\''+fieldname_with_time+'\'];']);
+  push_back(v,input['nopin']['output=input[\'B\'][\''+fieldname_with_time+'\'];']);
+  push_back(v,input['nopin']['output=input[\'C\'][\''+fieldname_with_time+'\'];']);
+  push_back(v,input['nopin']['output=input[\'D\'][\''+fieldname_with_time+'\'];']);
+  push_back(v,input['nopin']['output=input[\'E\'][\''+fieldname_with_time+'\'];']);
+}
+
+output=Visus.Array.avg(v); 

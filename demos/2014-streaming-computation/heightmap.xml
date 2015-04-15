@@ -1,0 +1,377 @@
+<VisusViewer bRefreshDataOnCameraChange="True">
+	<scenegraph>
+		<root icon="resources/icons/treeview/world.png" name="World" uuid="b79472cf-ebe0-44a3-9cab-30dc2d2cfc86">
+			<child icon="resources/icons/treeview/database.png" name="file:///Users/cam/Documents/dropbox-sci/Dropbox/visus/visus_data_dir/idx/heightmaps/example0_tx.idx" uuid="f4988693-9212-4ce8-b197-cba9af681856">
+				<child name="modelview" uuid="455f2233-a594-476b-9f20-117abc7e0e81" />
+				<child name="fieldname" uuid="201c5d88-9cec-4d2c-a380-56df039169f0">
+					<object fieldname="data" typename="DbField" uuid="b2bd601f-b707-4749-8781-c02115157d76" />
+					<child name="modelview" uuid="ad3a99de-8f0a-4c76-ad58-b39cc3075c2e" />
+				</child>
+				<child name="render_bbox" uuid="f18c15f4-ae98-422c-b44a-15ee6ac06003">
+					<object typename="BoolObject" uuid="9f4dd70d-8637-418b-b3d0-ae058fbfbd77" value="True" />
+					<child name="modelview" uuid="41bfd4fc-8d0c-4fa3-aab7-a3ab4602a99c" />
+				</child>
+				<child name="time" uuid="0fe5515f-0faf-4abf-8dc4-f253226a19bf">
+					<object typename="DoubleInRange" uuid="66147a4f-efc6-48cc-8a4c-12b5f988d1e6" value="0">
+						<range from="0" step="1" to="0" />
+					</object>
+					<child name="modelview" uuid="caa8f1a7-3884-4c49-90a7-a83b14763cd2" />
+				</child>
+				<child name="progression" uuid="883b8409-0506-49fa-9b41-6d17f6bd0ebe">
+					<object typename="DoubleInRange" uuid="0eab802b-03df-4c4e-a224-003ae49337db" value="4">
+						<range from="0" step="1" to="32" />
+					</object>
+					<child name="modelview" uuid="917fcb74-589d-496e-a952-de9c1ac489fa" />
+				</child>
+				<child name="quality" uuid="a83e2968-d24c-4053-adce-d43224363596">
+					<object typename="DoubleInRange" uuid="376a3101-6fd1-44ac-a1ce-e730abe774de" value="0">
+						<range from="-8" step="1" to="8" />
+					</object>
+					<child name="modelview" uuid="c18bc14c-33d0-4d81-b29f-5440915e3aa5" />
+				</child>
+				<child icon="resources/icons/treeview/gears.png" name="Slice 1" uuid="b25ed6e5-81ed-4db9-a99d-c7e302e9acab">
+					<child name="position" uuid="ccef063e-fafa-4f1d-b2da-051b57f83f17">
+						<object typename="Position" uuid="db110eff-ea4d-4c7e-99a9-07cf01a4926b">
+							<map matrix="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1" />
+							<box p1="500 0 0" p2="899 399 0" />
+						</object>
+						<child name="modelview" uuid="74252a2e-9592-48dd-928b-1e63d2916871" />
+					</child>
+					<child name="fieldname" uuid="6776083b-5e4e-40c3-a8e1-63f6f20347e9">
+						<object fieldname="data" typename="DbField" uuid="20a3e9c7-9701-459c-a3fe-17debde819a1" />
+						<child name="modelview" uuid="9439d3dc-0ea1-405f-ab6b-10d6428542eb" />
+					</child>
+					<child name="palette" uuid="120a1145-e6ae-436f-b6f0-134ee96e3a34">
+						<object input_normalization="3" output_dtype="uint8" typename="TransferFunction1d" uuid="6a4a0b35-1d47-493e-ac00-2b5b318aa16e">
+							<input_user_range from="0" step="1" to="255" />
+							<output_range from="0" step="1" to="255" />
+							<function color="255 0 0 255" name="Red" typename="LutTransferFunction1d">
+								<![CDATA[
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0.0196078 0.0352941 0.0509804 0.0666667 0.0823529 0.0980392 0.113725 0.129412 0.145098 0.160784 0.176471 0.192157 0.207843 0.223529 0.239216 
+0.254902 0.270588 0.286275 0.301961 0.317647 0.333333 0.352941 0.368627 0.384314 0.4 0.415686 0.431373 0.447059 0.462745 0.478431 0.494118 
+0.509804 0.52549 0.541176 0.556863 0.572549 0.588235 0.603922 0.619608 0.635294 0.65098 0.666667 0.686275 0.701961 0.717647 0.733333 0.74902 
+0.764706 0.780392 0.796078 0.811765 0.827451 0.843137 0.858824 0.87451 0.890196 0.905882 0.921569 0.937255 0.952941 0.968627 0.984314 1 ]]>
+							</function>
+							<function color="0 128 0 255" name="Green" typename="LutTransferFunction1d">
+								<![CDATA[
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0.00784314 0.0156863 0.0196078 0.027451 0.0352941 0.0392157 0.0470588 0.0509804 0.0588235 0.0666667 0.0705882 0.0784314 0.0823529 0.0901961 0.0980392 
+0.101961 0.109804 0.113725 0.121569 0.129412 0.133333 0.141176 0.145098 0.152941 0.160784 0.164706 0.172549 0.176471 0.184314 0.192157 0.196078 
+0.203922 0.207843 0.215686 0.223529 0.227451 0.235294 0.239216 0.247059 0.254902 0.258824 0.266667 0.270588 0.278431 0.286275 0.290196 0.298039 
+0.301961 0.309804 0.317647 0.321569 0.329412 0.333333 0.341176 0.34902 0.352941 0.360784 0.368627 0.372549 0.380392 0.384314 0.392157 0.4 
+0.403922 0.411765 0.415686 0.423529 0.431373 0.435294 0.443137 0.447059 0.454902 0.462745 0.466667 0.47451 0.478431 0.486275 0.494118 0.498039 
+0.505882 0.509804 0.517647 0.52549 0.529412 0.537255 0.541176 0.54902 0.556863 0.560784 0.568627 0.572549 0.580392 0.588235 0.592157 0.6 
+0.603922 0.611765 0.619608 0.623529 0.631373 0.635294 0.643137 0.65098 0.654902 0.662745 0.666667 0.67451 0.682353 0.686275 0.694118 0.701961 
+0.705882 0.713725 0.717647 0.72549 0.733333 0.737255 0.745098 0.74902 0.756863 0.764706 0.768627 0.776471 0.780392 0.788235 0.796078 0.8 
+0.807843 0.811765 0.819608 0.827451 0.831373 0.839216 0.843137 0.85098 0.858824 0.862745 0.870588 0.87451 0.882353 0.890196 0.894118 0.901961 
+0.905882 0.913725 0.921569 0.92549 0.933333 0.937255 0.945098 0.952941 0.956863 0.964706 0.968627 0.976471 0.984314 0.988235 0.996078 1 ]]>
+							</function>
+							<function color="0 0 255 255" name="Blue" typename="LutTransferFunction1d">
+								<![CDATA[
+0 0.00392157 0.00784314 0.0156863 0.0196078 0.0235294 0.0313725 0.0352941 0.0392157 0.0470588 0.0509804 0.054902 0.0627451 0.0666667 0.0705882 0.0784314 
+0.0823529 0.0901961 0.0941176 0.0980392 0.105882 0.109804 0.113725 0.121569 0.12549 0.129412 0.137255 0.141176 0.145098 0.152941 0.156863 0.164706 
+0.168627 0.172549 0.180392 0.184314 0.188235 0.196078 0.2 0.203922 0.211765 0.215686 0.219608 0.227451 0.231373 0.239216 0.243137 0.247059 
+0.254902 0.258824 0.262745 0.270588 0.27451 0.278431 0.286275 0.290196 0.294118 0.301961 0.305882 0.313725 0.317647 0.321569 0.329412 0.333333 
+0.337255 0.345098 0.34902 0.352941 0.360784 0.364706 0.368627 0.376471 0.380392 0.388235 0.392157 0.396078 0.403922 0.407843 0.411765 0.419608 
+0.423529 0.427451 0.435294 0.439216 0.443137 0.45098 0.454902 0.462745 0.466667 0.470588 0.478431 0.482353 0.486275 0.494118 0.498039 0.501961 
+0.509804 0.513725 0.517647 0.52549 0.529412 0.533333 0.541176 0.545098 0.552941 0.556863 0.560784 0.568627 0.572549 0.576471 0.584314 0.588235 
+0.592157 0.6 0.603922 0.607843 0.615686 0.619608 0.627451 0.631373 0.635294 0.643137 0.647059 0.65098 0.658824 0.662745 0.666667 0.67451 
+0.678431 0.682353 0.690196 0.694118 0.701961 0.705882 0.709804 0.717647 0.721569 0.72549 0.733333 0.737255 0.741176 0.74902 0.752941 0.756863 
+0.764706 0.768627 0.776471 0.780392 0.784314 0.792157 0.796078 0.8 0.807843 0.811765 0.815686 0.823529 0.827451 0.831373 0.839216 0.843137 
+0.85098 0.854902 0.858824 0.866667 0.870588 0.87451 0.882353 0.886275 0.890196 0.898039 0.901961 0.905882 0.913725 0.917647 0.92549 0.929412 
+0.933333 0.941176 0.945098 0.94902 0.956863 0.960784 0.964706 0.972549 0.976471 0.980392 0.988235 0.992157 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 ]]>
+							</function>
+							<function color="128 128 128 255" name="Alpha" typename="LutTransferFunction1d">
+								<![CDATA[
+0.021645 0.021645 0.021645 0.021645 0.021645 0.021645 0.021645 0.027451 0.146341 0.0352941 0.0392157 0.0431373 0.0470588 0.0509804 0.054902 0.141463 
+0.0627451 0.0666667 0.0705882 0.0745098 0.0784314 0.234146 0.0862745 0.0901961 0.0941176 0.0980392 0.101961 0.105882 0.109804 0.113725 0.22439 0.121569 
+0.12549 0.129412 0.133333 0.238095 0.141176 0.145098 0.138528 0.138528 0.142857 0.147186 0.277056 0.160173 0.162338 0.164502 0.168831 0.17316 
+0.188235 0.192157 0.207792 0.337662 0.212121 0.21645 0.21645 0.21645 0.220779 0.225108 0.354978 0.229437 0.235294 0.239216 0.243137 0.247059 
+0.25098 0.254902 0.258824 0.262745 0.419512 0.270588 0.27451 0.278431 0.282353 0.286275 0.290196 0.294118 0.298039 0.55122 0.305882 0.309804 
+0.313725 0.317647 0.321569 0.32549 0.329412 0.333333 0.337255 0.341176 0.468293 0.34902 0.352941 0.356863 0.360784 0.364706 0.521951 0.372549 
+0.376471 0.380392 0.384314 0.388235 0.392157 0.396078 0.4 0.403922 0.658537 0.411765 0.415686 0.419608 0.423529 0.427451 0.431373 0.435294 
+0.439216 0.443137 0.447059 0.45098 0.454902 0.458824 0.619512 0.466667 0.470588 0.47451 0.478431 0.482353 0.486275 0.490196 0.494118 0.498039 
+0.501961 0.505882 0.653659 0.513725 0.517647 0.521569 0.52549 0.529412 0.533333 0.537255 0.645022 0.545098 0.54902 0.552941 0.556863 0.560784 
+0.564706 0.702439 0.572549 0.576471 0.580392 0.584314 0.588235 0.592157 0.69697 0.6 0.603922 0.607843 0.611765 0.615686 0.619608 0.623529 
+0.731707 0.631373 0.635294 0.639216 0.643137 0.647059 0.65098 0.654902 0.658824 0.765854 0.666667 0.670588 0.67451 0.678431 0.682353 0.834146 
+0.690196 0.694118 0.698039 0.701961 0.705882 0.709804 0.713725 0.863415 0.721569 0.72549 0.729412 0.733333 0.737255 0.741176 0.745098 0.74902 
+0.752941 0.756863 0.902439 0.764706 0.768627 0.772549 0.776471 0.780392 0.784314 0.788235 0.792157 0.796078 0.931707 0.803922 0.807843 0.811765 
+0.815686 0.819608 0.823529 0.827451 0.831373 0.835294 0.960976 0.843137 0.847059 0.85098 0.854902 0.858824 0.862745 0.866667 0.870588 0.980488 
+0.878431 0.882353 0.886275 0.890196 0.894118 0.898039 0.901961 0.905882 0.909804 0.913725 0.985366 0.921569 0.92549 0.929412 0.933333 0.937255 
+0.982684 0.945098 0.94902 0.952941 0.956863 0.896104 0.964706 0.968627 0.972549 0.976471 0.883117 0.984314 0.988235 0.992157 0.996078 1 ]]>
+							</function>
+						</object>
+						<child name="modelview" uuid="67e002e1-9edd-4852-b111-0f87ee9d1722" />
+					</child>
+					<child name="enable_viewdep" uuid="55a46afd-f403-4790-bb03-da3294e7e0ea">
+						<object typename="BoolObject" uuid="8ca116c0-5647-4e93-8d02-6bcc088ab24d" value="True" />
+						<child name="modelview" uuid="4c1a9a8a-2cbb-48ac-b995-7cd8f57b5a0f" />
+					</child>
+					<child name="Process array" uuid="f3b0465f-d10f-4335-90a2-58a3d0b5ce9d">
+						<child name="modelview" uuid="50acb08b-3110-4f18-8ab6-7c5095848e7e" />
+						<child icon="resources/icons/treeview/brush.png" name="Array render" uuid="7b1be8fd-d683-4460-aeb8-fcf96f88a588">
+							<child name="modelview" uuid="0ee41e8f-dd3b-432b-afef-c3dcdf9be473" />
+						</child>
+					</child>
+					<child hidden="True" name="Extrema Tree" uuid="11b68d14-5e0e-491d-8b6a-f583d8e57e50">
+						<child hidden="True" name="modelview" uuid="ee242b59-449a-4e2a-94e0-384713685727" />
+						<child hidden="True" name="minima_tree" uuid="88bc5ead-6d08-4faa-8f19-078f424f84b8">
+							<object typename="BoolObject" uuid="58870832-e097-4f83-b598-6af6d619bc63" value="False" />
+							<child hidden="True" name="modelview" uuid="654c3817-ca0a-45f1-a594-d388de99e146" />
+						</child>
+						<child hidden="True" name="min_persistence" uuid="15049572-21f5-45eb-9135-6db513deebb0">
+							<object typename="DoubleInRange" uuid="7e27873f-11ee-4839-80df-e69e2d6eac4c" value="0">
+								<range from="0" step="1" to="25" />
+							</object>
+							<child hidden="True" name="modelview" uuid="be26c79c-b44f-4eac-9daa-ee901096170d" />
+						</child>
+						<child hidden="True" name="threshold_min" uuid="e1d7bbb9-e4dd-4dde-b9f2-18f06bdb8c34">
+							<object typename="DoubleInRange" uuid="affc0db4-d037-44ef-8f91-61048152f58c" value="0">
+								<range from="0" step="1" to="255" />
+							</object>
+							<child hidden="True" name="modelview" uuid="0cdd2f18-0094-4c74-8c9d-be6fcdc5ca23" />
+						</child>
+						<child hidden="True" name="threshold_max" uuid="5b758a2a-1e18-48b7-8eb5-8c15cf77e171">
+							<object typename="DoubleInRange" uuid="4e10ec96-2818-4bd8-a123-874f199c9277" value="255">
+								<range from="0" step="1" to="255" />
+							</object>
+							<child hidden="True" name="modelview" uuid="f202e7a9-3198-4a9e-82c3-f60445f4e66c" />
+						</child>
+						<child hidden="True" name="auto_threshold" uuid="c1ecefc3-2fbe-4177-b4f3-2b0e45d2b30d">
+							<object typename="BoolObject" uuid="0d335f45-e290-4975-8494-c2cd6de4889f" value="False" />
+							<child hidden="True" name="modelview" uuid="a768aa8e-4d60-4097-85dc-6e22ac440e82" />
+						</child>
+						<child hidden="True" name="reduce_minmax" uuid="4e57bb81-6615-494b-b2ae-1a46483e1ea1">
+							<object typename="BoolObject" uuid="0a6d194f-0193-4d2e-918b-f03958537802" value="True" />
+							<child hidden="True" name="modelview" uuid="be967af9-a5a0-4847-b162-5b8852acf955" />
+						</child>
+						<child hidden="True" icon="resources/icons/treeview/brush.png" name="Extrema Tree Render" uuid="e95393fc-12e9-457e-8d7a-8c1c3bf75666">
+							<child hidden="True" name="modelview" uuid="00c50a55-f181-4865-a5f3-74f21d587dd0" />
+							<child hidden="True" name="color_by_component" uuid="04035974-0aae-4ea5-aec3-ea303e3507bf">
+								<object typename="BoolObject" uuid="1356e7a8-2106-49eb-832a-ec54d589e10b" value="False" />
+								<child hidden="True" name="modelview" uuid="feeb98d6-c8dd-43c8-989f-a85eb81e979b" />
+							</child>
+							<child hidden="True" name="radius" uuid="8e64210c-0e99-4a76-90d7-d207dbb859c7">
+								<object typename="DoubleInRange" uuid="f1557bc3-eeb0-4f13-a5aa-9ed5ee6da3ec" value="2.5">
+									<range from="0.1" step="0.1" to="5" />
+								</object>
+								<child hidden="True" name="modelview" uuid="ee63d107-508c-40c9-aa9b-5a1c68131b11" />
+							</child>
+							<child hidden="True" name="draw_edges" uuid="265edefc-3f63-4ddc-a4b2-dd27f1cabf73">
+								<object typename="BoolObject" uuid="20aa875d-f7db-4ec3-96a3-ee83829041f1" value="True" />
+								<child hidden="True" name="modelview" uuid="2814311b-6cd3-48fe-9847-731a6cd83ebe" />
+							</child>
+							<child hidden="True" name="draw_extrema" uuid="af3e75ed-6288-47ef-9429-979909c9c2a3">
+								<object typename="BoolObject" uuid="4668bc7f-c328-4eae-845f-c67753a31d40" value="True" />
+								<child hidden="True" name="modelview" uuid="e88c0e40-9b69-458d-be7a-1ab872052ef1" />
+							</child>
+							<child hidden="True" name="draw_saddles" uuid="92a396de-b08c-4f7a-9ed9-b6b7e7a256cb">
+								<object typename="BoolObject" uuid="f2298f17-71ee-4cd2-8791-eb53521fdb96" value="True" />
+								<child hidden="True" name="modelview" uuid="c45baf2b-8b1a-4535-9c2a-f43afb1393a4" />
+							</child>
+						</child>
+					</child>
+					<child hidden="True" name="msc" uuid="8b0568bf-37ab-40d3-9441-7fd1ac5a3926">
+						<child hidden="True" name="MSC Compute" uuid="bbeeef75-bb02-4f8c-aa12-dcd282b842b2">
+							<child hidden="True" name="modelview" uuid="9376f67a-e4ee-4d37-bbf0-d1f8917c9f21" />
+						</child>
+						<child hidden="True" name="MSC Render" uuid="15052d16-5729-4f2e-af72-677b8c8fb132">
+							<child hidden="True" name="modelview" uuid="b3119225-3908-4b22-a04e-517edbb5285b" />
+						</child>
+						<child hidden="True" name="modelview" uuid="08f93911-13d8-42f7-b106-4c59b4133259" />
+					</child>
+				</child>
+			</child>
+		</root>
+	</scenegraph>
+	<dataflow>
+		<dataflow_node name="file:///Users/cam/Documents/dropbox-sci/Dropbox/visus/visus_data_dir/idx/heightmaps/example0_tx.idx" typename="DatasetNode" uuid="0d8ab6db-7a48-4d43-9a7e-bf200c98a3e1">
+			<preferred_position height="40" width="60" x="104" y="585" />
+			<dataset typename="IdxDataset" url="file:///Users/cam/Documents/dropbox-sci/Dropbox/visus/visus_data_dir/idx/heightmaps/example0_tx.idx" />
+		</dataflow_node>
+		<dataflow_node name="fieldname" oport="fieldname" typename="ObjectNode" uuid="1b755337-a1d8-41cc-a474-1a879582a394">
+			<preferred_position height="40" width="60" x="658" y="77" />
+			<object uuid="b2bd601f-b707-4749-8781-c02115157d76" />
+		</dataflow_node>
+		<dataflow_node name="render_bbox" oport="render_bbox" typename="ObjectNode" uuid="8112a013-3215-4583-ad08-a7d46ada456b">
+			<preferred_position height="40" width="60" x="583" y="394" />
+			<object uuid="9f4dd70d-8637-418b-b3d0-ae058fbfbd77" />
+		</dataflow_node>
+		<dataflow_node name="time" oport="time" typename="ObjectNode" uuid="db9caa6c-2fef-45b9-a893-8087ee9b18c9">
+			<preferred_position height="40" width="60" x="157" y="79" />
+			<object uuid="66147a4f-efc6-48cc-8a4c-12b5f988d1e6" />
+		</dataflow_node>
+		<dataflow_node name="progression" oport="progression" typename="ObjectNode" uuid="e5e2657d-0d0c-4888-a6af-a97332ace478">
+			<preferred_position height="40" width="60" x="614" y="608" />
+			<object uuid="0eab802b-03df-4c4e-a224-003ae49337db" />
+		</dataflow_node>
+		<dataflow_node name="quality" oport="quality" typename="ObjectNode" uuid="a032a44a-2583-412d-90b1-84b7ba25e073">
+			<preferred_position height="40" width="60" x="216" y="576" />
+			<object uuid="376a3101-6fd1-44ac-a1ce-e730abe774de" />
+		</dataflow_node>
+		<dataflow_node name="Slice 1" typename="QueryNode" uuid="79280dee-a09e-4720-bac8-3bbccac8714a">
+			<preferred_position height="120" width="180" x="549" y="487" />
+		</dataflow_node>
+		<dataflow_node name="position" oport="position" typename="ObjectNode" uuid="70bcabdf-34c4-481c-a856-c0d51a477578">
+			<preferred_position height="40" width="60" x="561" y="475" />
+			<object uuid="db110eff-ea4d-4c7e-99a9-07cf01a4926b" />
+		</dataflow_node>
+		<dataflow_node name="fieldname" oport="fieldname" typename="ObjectNode" uuid="7d5986dd-6488-4b85-b7e7-0493c8c45b53">
+			<preferred_position height="40" width="60" x="336" y="434" />
+			<object uuid="20a3e9c7-9701-459c-a3fe-17debde819a1" />
+		</dataflow_node>
+		<dataflow_node name="palette" oport="palette" typename="ObjectNode" uuid="74f9dc70-0d13-4caa-9cc4-c7bc3166ddd6">
+			<preferred_position height="40" width="60" x="440" y="249" />
+			<object uuid="6a4a0b35-1d47-493e-ac00-2b5b318aa16e" />
+		</dataflow_node>
+		<dataflow_node name="enable_viewdep" oport="enable_viewdep" typename="ObjectNode" uuid="a0c4ce25-5da2-4da4-beeb-392d1384a3d9">
+			<preferred_position height="40" width="60" x="232" y="440" />
+			<object uuid="8ca116c0-5647-4e93-8d02-6bcc088ab24d" />
+		</dataflow_node>
+		<dataflow_node name="Process array" typename="ScriptingProcessArrayNode" uuid="1a5b809f-83f2-4263-9bd8-99369a35669d">
+			<preferred_position height="80" width="120" x="194" y="414" />
+			<scripting code="kernel=Visus.Array.New([3,3],[0,-2,0,  -2,11,-2,  0,-2,0]);&#x0A;output=Visus.Array.convolve(input,kernel);&#x0A;output=(1)*input;" typename="ScriptingProcessArray" />
+		</dataflow_node>
+		<dataflow_node four_channel_blend_color="0 0 0 255" four_channel_blend_enabled="False" lighting_enabled="False" lut_enabled="False" magnify_filter="9729" max_num_slices="0" minify_filter="9729" name="Array render" preintegration_enabled="False" progressive_rendering_enabled="True" ray_cast_enabled="False" raycast_quality="3" typename="ArrayRenderNode" use_view_direction_enabled="False" uuid="1dea76b0-1532-440a-aa59-30bfd557aef5">
+			<preferred_position height="56.5685" width="84.8528" x="429" y="97" />
+		</dataflow_node>
+		<dataflow_node hidden="True" name="Extrema Tree" typename="BuildJTreeNode" uuid="d5a5b24f-3629-4ca9-91c8-57a59cd62fe8">
+			<preferred_position height="132.665" width="198.997" x="542" y="241" />
+		</dataflow_node>
+		<dataflow_node hidden="True" name="minima_tree" oport="minima_tree" typename="ObjectNode" uuid="d4771272-98df-4697-be53-bf753af1d347">
+			<preferred_position height="40" width="60" x="35" y="378" />
+			<object uuid="58870832-e097-4f83-b598-6af6d619bc63" />
+		</dataflow_node>
+		<dataflow_node hidden="True" name="min_persistence" oport="min_persistence" typename="ObjectNode" uuid="123631dc-352f-4205-afb7-ec07de64d4be">
+			<preferred_position height="40" width="60" x="570" y="370" />
+			<object uuid="7e27873f-11ee-4839-80df-e69e2d6eac4c" />
+		</dataflow_node>
+		<dataflow_node hidden="True" name="threshold_min" oport="threshold_min" typename="ObjectNode" uuid="f7f91db8-ddaf-4800-a845-3bf77b4f4118">
+			<preferred_position height="40" width="60" x="497" y="169" />
+			<object uuid="affc0db4-d037-44ef-8f91-61048152f58c" />
+		</dataflow_node>
+		<dataflow_node hidden="True" name="threshold_max" oport="threshold_max" typename="ObjectNode" uuid="80a0164f-edde-4de0-bf0b-4d926fdfd88c">
+			<preferred_position height="40" width="60" x="475" y="100" />
+			<object uuid="4e10ec96-2818-4bd8-a123-874f199c9277" />
+		</dataflow_node>
+		<dataflow_node hidden="True" name="auto_threshold" oport="auto_threshold" typename="ObjectNode" uuid="bcc38d64-6951-4c31-b103-3eeda53422d5">
+			<preferred_position height="40" width="60" x="492" y="364" />
+			<object uuid="0d335f45-e290-4975-8494-c2cd6de4889f" />
+		</dataflow_node>
+		<dataflow_node hidden="True" name="reduce_minmax" oport="reduce_minmax" typename="ObjectNode" uuid="77e93818-ab08-4056-b6a2-dbf967b7a0d5">
+			<preferred_position height="40" width="60" x="680" y="78" />
+			<object uuid="0a6d194f-0193-4d2e-918b-f03958537802" />
+		</dataflow_node>
+		<dataflow_node hidden="True" name="Extrema Tree Render" typename="JTreeRenderNode" uuid="b95b7d9e-6fd7-4822-9855-4bbfc379c8e8">
+			<preferred_position height="113.137" width="169.706" x="443" y="549" />
+		</dataflow_node>
+		<dataflow_node hidden="True" name="color_by_component" oport="color_by_component" typename="ObjectNode" uuid="0b968293-d9d6-489a-abda-0e97c0f8aa59">
+			<preferred_position height="40" width="60" x="283" y="101" />
+			<object uuid="1356e7a8-2106-49eb-832a-ec54d589e10b" />
+		</dataflow_node>
+		<dataflow_node hidden="True" name="radius" oport="radius" typename="ObjectNode" uuid="2cb8924c-004a-4284-a64c-b91b7f9888e3">
+			<preferred_position height="40" width="60" x="290" y="483" />
+			<object uuid="f1557bc3-eeb0-4f13-a5aa-9ed5ee6da3ec" />
+		</dataflow_node>
+		<dataflow_node hidden="True" name="draw_edges" oport="draw_edges" typename="ObjectNode" uuid="04ac29d0-2fe4-445b-8c54-6a7653eb1bcf">
+			<preferred_position height="40" width="60" x="401" y="378" />
+			<object uuid="20aa875d-f7db-4ec3-96a3-ee83829041f1" />
+		</dataflow_node>
+		<dataflow_node hidden="True" name="draw_extrema" oport="draw_extrema" typename="ObjectNode" uuid="69799bb3-81f1-4a47-b900-28846a92fa5a">
+			<preferred_position height="40" width="60" x="587" y="100" />
+			<object uuid="4668bc7f-c328-4eae-845f-c67753a31d40" />
+		</dataflow_node>
+		<dataflow_node hidden="True" name="draw_saddles" oport="draw_saddles" typename="ObjectNode" uuid="e3a4ce09-e7bc-4434-82b1-86244ab9885b">
+			<preferred_position height="40" width="60" x="324" y="646" />
+			<object uuid="f2298f17-71ee-4cd2-8791-eb53521fdb96" />
+		</dataflow_node>
+		<dataflow_node name="_2d" oport="_2d" typename="ObjectNode" uuid="9bac3f58-a828-41d1-8ceb-ed381f96f8b5">
+			<preferred_position height="40" width="60" x="544" y="440" />
+			<object typename="BoolObject" uuid="eaea9029-df79-48df-9e28-538dec31e46e" value="True" />
+		</dataflow_node>
+		<dataflow_node hidden="True" name="MSC Compute" typename="MSCComputeNode" uuid="c56daaf7-36a5-457a-8c74-082bdfdd0431">
+			<preferred_position height="56.5685" width="84.8528" x="691" y="14" />
+		</dataflow_node>
+		<dataflow_node hidden="True" name="MSC Render" typename="MSCRenderNode" uuid="69d6199c-75fa-42c1-b947-d63f2a86f99d">
+			<preferred_position height="40" width="60" x="428" y="243" />
+		</dataflow_node>
+		<dataflow_connection from="0d8ab6db-7a48-4d43-9a7e-bf200c98a3e1" iport="dataset" oport="dataset" to="79280dee-a09e-4720-bac8-3bbccac8714a" />
+		<dataflow_connection from="db9caa6c-2fef-45b9-a893-8087ee9b18c9" iport="time" oport="time" to="79280dee-a09e-4720-bac8-3bbccac8714a" />
+		<dataflow_connection from="e5e2657d-0d0c-4888-a6af-a97332ace478" iport="progression" oport="progression" to="79280dee-a09e-4720-bac8-3bbccac8714a" />
+		<dataflow_connection from="a032a44a-2583-412d-90b1-84b7ba25e073" iport="quality" oport="quality" to="79280dee-a09e-4720-bac8-3bbccac8714a" />
+		<dataflow_connection from="79280dee-a09e-4720-bac8-3bbccac8714a" iport="data" oport="data" to="1a5b809f-83f2-4263-9bd8-99369a35669d" />
+		<dataflow_connection from="79280dee-a09e-4720-bac8-3bbccac8714a" iport="data" oport="data" to="d5a5b24f-3629-4ca9-91c8-57a59cd62fe8" />
+		<dataflow_connection from="79280dee-a09e-4720-bac8-3bbccac8714a" iport="data" oport="data" to="c56daaf7-36a5-457a-8c74-082bdfdd0431" />
+		<dataflow_connection from="70bcabdf-34c4-481c-a856-c0d51a477578" iport="position" oport="position" to="79280dee-a09e-4720-bac8-3bbccac8714a" />
+		<dataflow_connection from="7d5986dd-6488-4b85-b7e7-0493c8c45b53" iport="fieldname" oport="fieldname" to="79280dee-a09e-4720-bac8-3bbccac8714a" />
+		<dataflow_connection from="74f9dc70-0d13-4caa-9cc4-c7bc3166ddd6" iport="palette" oport="palette" to="1dea76b0-1532-440a-aa59-30bfd557aef5" />
+		<dataflow_connection from="a0c4ce25-5da2-4da4-beeb-392d1384a3d9" iport="enable_viewdep" oport="enable_viewdep" to="79280dee-a09e-4720-bac8-3bbccac8714a" />
+		<dataflow_connection from="1a5b809f-83f2-4263-9bd8-99369a35669d" iport="data" oport="data" to="1dea76b0-1532-440a-aa59-30bfd557aef5" />
+		<dataflow_connection from="d5a5b24f-3629-4ca9-91c8-57a59cd62fe8" iport="graph" oport="graph" to="b95b7d9e-6fd7-4822-9855-4bbfc379c8e8" />
+		<dataflow_connection from="d5a5b24f-3629-4ca9-91c8-57a59cd62fe8" iport="minima_tree" oport="minima_tree" to="b95b7d9e-6fd7-4822-9855-4bbfc379c8e8" />
+		<dataflow_connection from="d4771272-98df-4697-be53-bf753af1d347" iport="minima_tree" oport="minima_tree" to="d5a5b24f-3629-4ca9-91c8-57a59cd62fe8" />
+		<dataflow_connection from="d4771272-98df-4697-be53-bf753af1d347" iport="minima_tree" oport="minima_tree" to="b95b7d9e-6fd7-4822-9855-4bbfc379c8e8" />
+		<dataflow_connection from="123631dc-352f-4205-afb7-ec07de64d4be" iport="min_persistence" oport="min_persistence" to="d5a5b24f-3629-4ca9-91c8-57a59cd62fe8" />
+		<dataflow_connection from="f7f91db8-ddaf-4800-a845-3bf77b4f4118" iport="threshold_min" oport="threshold_min" to="d5a5b24f-3629-4ca9-91c8-57a59cd62fe8" />
+		<dataflow_connection from="80a0164f-edde-4de0-bf0b-4d926fdfd88c" iport="threshold_max" oport="threshold_max" to="d5a5b24f-3629-4ca9-91c8-57a59cd62fe8" />
+		<dataflow_connection from="bcc38d64-6951-4c31-b103-3eeda53422d5" iport="auto_threshold" oport="auto_threshold" to="d5a5b24f-3629-4ca9-91c8-57a59cd62fe8" />
+		<dataflow_connection from="77e93818-ab08-4056-b6a2-dbf967b7a0d5" iport="reduce_minmax" oport="reduce_minmax" to="d5a5b24f-3629-4ca9-91c8-57a59cd62fe8" />
+		<dataflow_connection from="0b968293-d9d6-489a-abda-0e97c0f8aa59" iport="color_by_component" oport="color_by_component" to="b95b7d9e-6fd7-4822-9855-4bbfc379c8e8" />
+		<dataflow_connection from="2cb8924c-004a-4284-a64c-b91b7f9888e3" iport="radius" oport="radius" to="b95b7d9e-6fd7-4822-9855-4bbfc379c8e8" />
+		<dataflow_connection from="04ac29d0-2fe4-445b-8c54-6a7653eb1bcf" iport="draw_edges" oport="draw_edges" to="b95b7d9e-6fd7-4822-9855-4bbfc379c8e8" />
+		<dataflow_connection from="69799bb3-81f1-4a47-b900-28846a92fa5a" iport="draw_extrema" oport="draw_extrema" to="b95b7d9e-6fd7-4822-9855-4bbfc379c8e8" />
+		<dataflow_connection from="e3a4ce09-e7bc-4434-82b1-86244ab9885b" iport="draw_saddles" oport="draw_saddles" to="b95b7d9e-6fd7-4822-9855-4bbfc379c8e8" />
+		<dataflow_connection from="9bac3f58-a828-41d1-8ceb-ed381f96f8b5" iport="_2d" oport="_2d" to="b95b7d9e-6fd7-4822-9855-4bbfc379c8e8" />
+		<dataflow_connection from="c56daaf7-36a5-457a-8c74-082bdfdd0431" iport="msc_data" oport="msc_data" to="69d6199c-75fa-42c1-b947-d63f2a86f99d" />
+	</dataflow>
+	<multi_node AutoConnectOutputs="True" dnode="04ac29d0-2fe4-445b-8c54-6a7653eb1bcf" snode="265edefc-3f63-4ddc-a4b2-dd27f1cabf73" />
+	<multi_node AutoConnectInputs="True" dnode="b95b7d9e-6fd7-4822-9855-4bbfc379c8e8" snode="e95393fc-12e9-457e-8d7a-8c1c3bf75666" />
+	<multi_node AutoConnectInputs="True" dnode="d5a5b24f-3629-4ca9-91c8-57a59cd62fe8" snode="11b68d14-5e0e-491d-8b6a-f583d8e57e50" />
+	<multi_node AutoConnectOutputs="True" dnode="70bcabdf-34c4-481c-a856-c0d51a477578" snode="ccef063e-fafa-4f1d-b2da-051b57f83f17" />
+	<multi_node AutoConnectOutputs="True" dnode="1b755337-a1d8-41cc-a474-1a879582a394" snode="201c5d88-9cec-4d2c-a380-56df039169f0" />
+	<multi_node AutoConnectOutputs="True" dnode="8112a013-3215-4583-ad08-a7d46ada456b" snode="f18c15f4-ae98-422c-b44a-15ee6ac06003" />
+	<multi_node AutoConnectInputs="True" dnode="1a5b809f-83f2-4263-9bd8-99369a35669d" snode="f3b0465f-d10f-4335-90a2-58a3d0b5ce9d" />
+	<multi_node AutoConnectInputs="True" dnode="69d6199c-75fa-42c1-b947-d63f2a86f99d" snode="15052d16-5729-4f2e-af72-677b8c8fb132" />
+	<multi_node AutoConnectInputs="True" dnode="1dea76b0-1532-440a-aa59-30bfd557aef5" snode="7b1be8fd-d683-4460-aeb8-fcf96f88a588" />
+	<multi_node AutoConnectOutputs="True" dnode="a0c4ce25-5da2-4da4-beeb-392d1384a3d9" snode="55a46afd-f403-4790-bb03-da3294e7e0ea" />
+	<multi_node AutoConnectOutputs="True" dnode="7d5986dd-6488-4b85-b7e7-0493c8c45b53" snode="6776083b-5e4e-40c3-a8e1-63f6f20347e9" />
+	<multi_node AutoConnectOutputs="True" dnode="123631dc-352f-4205-afb7-ec07de64d4be" snode="15049572-21f5-45eb-9135-6db513deebb0" />
+	<multi_node AutoConnectOutputs="True" dnode="bcc38d64-6951-4c31-b103-3eeda53422d5" snode="c1ecefc3-2fbe-4177-b4f3-2b0e45d2b30d" />
+	<multi_node AutoConnectOutputs="True" dnode="f7f91db8-ddaf-4800-a845-3bf77b4f4118" snode="e1d7bbb9-e4dd-4dde-b9f2-18f06bdb8c34" />
+	<multi_node AutoConnectOutputs="True" dnode="69799bb3-81f1-4a47-b900-28846a92fa5a" snode="af3e75ed-6288-47ef-9429-979909c9c2a3" />
+	<multi_node AutoConnectOutputs="True" dnode="2cb8924c-004a-4284-a64c-b91b7f9888e3" snode="8e64210c-0e99-4a76-90d7-d207dbb859c7" />
+	<multi_node AutoConnectOutputs="True" dnode="77e93818-ab08-4056-b6a2-dbf967b7a0d5" snode="4e57bb81-6615-494b-b2ae-1a46483e1ea1" />
+	<multi_node AutoConnectOutputs="True" dnode="0b968293-d9d6-489a-abda-0e97c0f8aa59" snode="04035974-0aae-4ea5-aec3-ea303e3507bf" />
+	<multi_node AutoConnectOutputs="True" dnode="d4771272-98df-4697-be53-bf753af1d347" snode="88bc5ead-6d08-4faa-8f19-078f424f84b8" />
+	<multi_node AutoConnectOutputs="True" dnode="e3a4ce09-e7bc-4434-82b1-86244ab9885b" snode="92a396de-b08c-4f7a-9ed9-b6b7e7a256cb" />
+	<multi_node AutoConnectOutputs="True" dnode="80a0164f-edde-4de0-bf0b-4d926fdfd88c" snode="5b758a2a-1e18-48b7-8eb5-8c15cf77e171" />
+	<multi_node AutoConnectInputs="True" dnode="0d8ab6db-7a48-4d43-9a7e-bf200c98a3e1" snode="f4988693-9212-4ce8-b197-cba9af681856" />
+	<multi_node AutoConnectOutputs="True" dnode="db9caa6c-2fef-45b9-a893-8087ee9b18c9" snode="0fe5515f-0faf-4abf-8dc4-f253226a19bf" />
+	<multi_node AutoConnectOutputs="True" dnode="74f9dc70-0d13-4caa-9cc4-c7bc3166ddd6" snode="120a1145-e6ae-436f-b6f0-134ee96e3a34" />
+	<multi_node AutoConnectOutputs="True" dnode="a032a44a-2583-412d-90b1-84b7ba25e073" snode="a83e2968-d24c-4053-adce-d43224363596" />
+	<multi_node AutoConnectInputs="True" dnode="79280dee-a09e-4720-bac8-3bbccac8714a" snode="b25ed6e5-81ed-4db9-a99d-c7e302e9acab" />
+	<multi_node AutoConnectOutputs="True" dnode="e5e2657d-0d0c-4888-a6af-a97332ace478" snode="883b8409-0506-49fa-9b41-6d17f6bd0ebe" />
+	<multi_node AutoConnectInputs="True" dnode="c56daaf7-36a5-457a-8c74-082bdfdd0431" snode="bbeeef75-bb02-4f8c-aa12-dcd282b842b2" />
+	<glcamera bottom="0.860177" defaultZoomFactor="1.3" dir="0 0 -1" disableRotation="False" left="469.771" max_zoom="0" pos="0 0 0" right="938.163" rotation_angle="0" top="399.86" typename="GLOrthoCamera" vup="0 1 0" zFar="-1" zNear="1" />
+</VisusViewer>

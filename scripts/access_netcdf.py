@@ -25,8 +25,9 @@ print input
 # Now lets see what variables we actually have in the file. This should get us a
 # ton of meta data some of which we will have to preserve, especially the global
 # bounds. 
-print input.getVariables()
-
+fields=input.getVariables()
+for f in fields:
+    print f.id
 
 if len(argv) < 3:
     print "Let's pick one of these variable names from the list and do\n%s %s <var-name>\n" % (argv[0],argv[1])
