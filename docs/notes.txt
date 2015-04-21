@@ -45,6 +45,18 @@ mkpy.sh
 testpy.sh
 installpy.sh
 
+***
+UPDATE: scripts will now automatically find python location, so do this:
+ (*no they won't, must manually set PYTHON_INCLUDE_DIR and PYTHON_LIBRARY)
+***
+
+source ~/code/uvcdat-build/install/bin/setup_runtime.sh
+
+ccmake -DPYTHON_INCLUDE_DIR=/Users/cam/code/uvcdat-build/install/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 -DPYTHON_LIBRARY=/Users/cam/code/uvcdat-build/install/Library/Frameworks/Python.framework/Versions/2.7/lib/libpython2.7.dylib -DVISUS_SWIG=YES ../..
+make -j12
+../../visuscpp/swig/installpy.sh
+
+
 -------------------------------------------------------------------------------
 
 Sunday, December 07, 2014
@@ -142,3 +154,9 @@ for (var T=0;T<timesteps.length;T++)
 }
 
 output=Visus.Array.avg(v); 
+
+-------------------------------------------------------------------------------
+
+Monday, April 20, 2015
+
+We have not really created a suitable mapping from cdat datasets to idx volumes. Most datasets contain fiends from many different domains, which require separate idx volumes. It is necessary to adopt a standard naming scheme that is clear, related to the original dataset(s), and as simple as possible. We also need an interface on the reader side to list the variables of a dataset since seemingly related variables may be in different domains ("plev lat lon" vs "lev lat lon") even though the domains are the same size. We can choose to identify datasets only by their shape, but then we are throwing away information (plev vs lev) that may be critical for rendering and analysis.
