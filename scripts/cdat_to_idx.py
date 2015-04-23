@@ -24,39 +24,27 @@
 import cdms2
 import os
 import sys
-#from xml.dom import minidom
-#import re
-#import string
-#import json
+import sqlite3
 import visuspy as Visus
 from copy import deepcopy
 
 #****************************************************
-# def read_xml(xml):
+def getIdxPaths(cdat_dataset,db):
+    """Looks in sqlite database db for idxfiles entries that refer to cdat_database. Returns a list of such entries."""
+    ret=[]
+    cur=db.cursor()
+    cur.execute("SELECT ds_id from datasets where pathname=\"%s\"" % cdat_dataset)
+    cdat_id=cur.fetchall()
+    assert(len(cdat_id)<=1)
+    if len(cdat_id)>0:
+        cur.execute("SELECT * from idxfiles where ds_id=%d" % cdat_id[0])
+        idxfiles=cur.fetchall()
+        for f in idxfiles:
+            ret.append(f[1])
 
-#     # read xml
-#     doc = minidom.parse(xml)
+    return ret
 
-#     # dataset
-#     ds=doc.getElementsByTagName('dataset')[0]
-
-#     # collect axes
-#     axes = ds.getElementsByTagName("axis")
-
-#     # collect variables
-#     vars = ds.getElementsByTagName("variable")
-
-#     # filemap
-#     filemap = ds.getAttribute("cdms_filemap")
-
-#     # huge pain to reconstruct this string to a list:
-#     filemap = re.sub(r",([^,]*?\.nc)",",\"\g<1>\"",filemap)
-#     filemap = re.sub(r"([\[,])([a-zA-Z0-9_]+)","\g<1>\"\g<2>\"",filemap)
-#     filemap = re.sub(r"([\[,])-", "\g<1>null", filemap)
-#     filemap = json.loads(filemap)
-
-#     return (axes,vars,filemap)
-
+        
 #****************************************************
 def create_idx(idxinfo):
     """Create a new idx volume from the information in idxinfo (fields, dims, timesteps)"""
@@ -94,31 +82,25 @@ def create_idx(idxinfo):
 
 
 #****************************************************
-def cdat_to_idx(cdat_filename,destpath):
+def cdat_to_idx(cdat_dataset,destpath,db):
     """Reads .nc or cdat .xml file and creates corresponding idx volumes, one per domain.
     In addition, it creates database tables to facilitate converting the actual data."""
 
+    app=Visus.Application()
+    app.setCommandLine("")
+    app.useModule(Visus.IdxModule.getSingleton())  
+
     # create destination path
-    idxbasename=os.path.splitext(os.path.basename(cdat_filename))[0]
+    idxbasename=os.path.splitext(os.path.basename(cdat_dataset))[0]
     destpath+="/"+idxbasename
     try:
         os.mkdir(destpath)
     except:
         None
 
-    #os.chdir(destpath)
-
-    # open idx db
-    #db = web.database(destpath+'/idx.db',dbn='sqlite',db='main')
-
-    # insert new dataset into db
-    #db_insert(db, 'datasets',idxbasename)
-    #TODO: insert the rest
-
     # open dataset
-    dataset = cdms2.open(cdat_filename)
+    dataset = cdms2.open(cdat_dataset)
     vars=dataset.variables
-    #varnames=vars.keys()
 
     # Calculate range of value for logic_to_physic
     # We need to use <axis>_bnds var to get full
@@ -188,27 +170,53 @@ def cdat_to_idx(cdat_filename,destpath):
             f=Visus.Field(v.id,Visus.DType(v.dtype.name))
             domains[axes].idxinfo.fields=[f]
 
+    # insert new dataset into db
+    cur=db.cursor()
+    cur.execute("INSERT into datasets (pathname) values (\"%s\")" % cdat_dataset)
+    cdat_id=cur.lastrowid
+
     for d in domains.values():
         # print "creating idxfile for",d.id,"containing fields",d.varlist
 
         # create the idx
         create_idx(d.idxinfo)
 
-        # insert into idx db: idx volumes indexed by variable
-        #db_insert(d)
+        # insert into idx db
+        cur.execute("INSERT into idxfiles (pathname, ds_id) values (\"%s\", %d)" % (d.idxinfo.path, cdat_id))
+
+        
 
     return 0
         
 #****************************************************
 
 if __name__ == '__main__':
-    if (len (sys.argv) < 3):
-        print "usage: python cdat_to_idx.py <path_to_source_filename> <destination_basepath>"
-        print "   ex: python cdat_to_idx.py /for_ganszberger1/xml/sample_dataset.xml /for_ganzberger1/idx"
-        exit (1)
-    app=Visus.Application()
-    app.setCommandLine("")
-    app.useModule(Visus.IdxModule.getSingleton())  
-    cdat_filename = sys.argv[1]
-    destpath = sys.argv[2]
-    cdat_to_idx(cdat_filename,destpath)
+
+    import argparse
+    parser = argparse.ArgumentParser(description="Create (empty) IDX volumes for all fields of given CDAT volume (.xml or .nc file).")
+    parser.add_argument("-i","--inputfile",required=True,help="cdat volume to read")
+    parser.add_argument("-o","--outputdir",required=True,help="basepath for idx volumes")
+    parser.add_argument("-d","--database",required=False,default="",help="path to idx<->cdat database")
+    args = parser.parse_args()
+
+#        print "   ex: python cdat_to_idx.py /for_ganszberger1/xml/sample_dataset.xml /for_ganzberger1/idx"
+
+    # open idx db
+    idxdb=args.database
+    if len(idxdb)==0:
+        idxdb=args.outputdir+'/idx.db'
+    db = sqlite3.connect(idxdb)
+
+    with db:
+        inputfile=os.path.abspath(args.inputfile)
+        outputdir=os.path.abspath(args.outputdir)
+        idx_paths=getIdxPaths(inputfile,db)
+        if len(idx_paths)==0:
+            cdat_to_idx(inputfile,outputdir,db)
+            print "done creating idx volumes for",inputfile+":"
+            idx_paths=getIdxPaths(inputfile,db)
+        else:
+            print "idx volumes already exist for",inputfile+":"
+
+        for p in idx_paths:
+            print "\t"+p
