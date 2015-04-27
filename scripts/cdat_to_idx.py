@@ -35,14 +35,16 @@ def getIdxPaths(cdat_dataset,db):
     cur=db.cursor()
     cur.execute("SELECT ds_id from datasets where pathname=\"%s\"" % cdat_dataset)
     cdat_id=cur.fetchall()
+    ds_id=-1
     assert(len(cdat_id)<=1)
     if len(cdat_id)>0:
-        cur.execute("SELECT * from idxfiles where ds_id=%d" % cdat_id[0])
+        ds_id=cdat_id[0]
+        cur.execute("SELECT * from idxfiles where ds_id=%d" % ds_id)
         idxfiles=cur.fetchall()
         for f in idxfiles:
             ret.append(f[1])
 
-    return ret
+    return ret,ds_id
 
         
 #****************************************************
@@ -72,8 +74,7 @@ def create_idx(idxinfo):
 
     # set timesteps
     if idxinfo.timesteps > 0:
-        idxfile.timesteps.insert(0);
-        idxfile.timesteps.insert(float(idxinfo.timesteps))
+        idxfile.timesteps.insertRange(0,idxinfo.timesteps,1);
         idxfile.time_template="time%0"+str(len(str(idxinfo.timesteps)))+"d/"
 
     bSaved=idxfile.save(str(idxinfo.path))
@@ -85,10 +86,6 @@ def create_idx(idxinfo):
 def cdat_to_idx(cdat_dataset,destpath,db):
     """Reads .nc or cdat .xml file and creates corresponding idx volumes, one per domain.
     In addition, it creates database tables to facilitate converting the actual data."""
-
-    app=Visus.Application()
-    app.setCommandLine("")
-    app.useModule(Visus.IdxModule.getSingleton())  
 
     # create destination path
     idxbasename=os.path.splitext(os.path.basename(cdat_dataset))[0]
@@ -157,6 +154,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
             domains[axes].idxinfo.dims=[]
             domains[axes].idxinfo.logic_to_physic=logic_to_physic[:]
             for i in range(len(axes)):
+                axis=axes[i]
                 sz=len(dataset.axes[axes[i]])
                 if axis=="time":
                     domains[axes].idxinfo.timesteps = sz
@@ -192,14 +190,19 @@ def cdat_to_idx(cdat_dataset,destpath,db):
 
 if __name__ == '__main__':
 
+    app=Visus.Application()
+    app.setCommandLine("")
+    app.useModule(Visus.IdxModule.getSingleton())  
+
     import argparse
     parser = argparse.ArgumentParser(description="Create (empty) IDX volumes for all fields of given CDAT volume (.xml or .nc file).")
     parser.add_argument("-i","--inputfile",required=True,help="cdat volume to read")
     parser.add_argument("-o","--outputdir",required=True,help="basepath for idx volumes")
     parser.add_argument("-d","--database",required=False,default="",help="path to idx<->cdat database")
+    parser.add_argument("-f","--force",action="store_true",dest="force",required=False,default=False,help="force creation even if idx volumes already exist")
     args = parser.parse_args()
 
-#        print "   ex: python cdat_to_idx.py /for_ganszberger1/xml/sample_dataset.xml /for_ganzberger1/idx"
+#        print "   ex: python cdat_to_idx.py -i /for_ganszberger1/xml/sample_dataset.xml -o /for_ganzberger1/idx"
 
     # open idx db
     idxdb=args.database
@@ -210,13 +213,24 @@ if __name__ == '__main__':
     with db:
         inputfile=os.path.abspath(args.inputfile)
         outputdir=os.path.abspath(args.outputdir)
-        idx_paths=getIdxPaths(inputfile,db)
-        if len(idx_paths)==0:
+        idx_paths,ds_id=getIdxPaths(inputfile,db)
+
+        # if force recreate, delete existing entries in database 
+        if args.force:
+            cur=db.cursor()
+            cur.execute("DELETE from datasets where ds_id=%d"%ds_id)
+            for path in idx_paths:
+                cur.execute("DELETE from idxfiles where ds_id=%d"%ds_id)
+
+        if len(idx_paths)==0 or args.force:
             cdat_to_idx(inputfile,outputdir,db)
+
             print "done creating idx volumes for",inputfile+":"
-            idx_paths=getIdxPaths(inputfile,db)
+            idx_paths,ds_id=getIdxPaths(inputfile,db)
         else:
             print "idx volumes already exist for",inputfile+":"
 
         for p in idx_paths:
             print "\t"+p
+
+    db.close()
