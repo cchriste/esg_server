@@ -31,7 +31,6 @@
 
 
 import sqlite3
-import numpy
 import visuspy as Visus
 from os import path
 
@@ -57,6 +56,8 @@ def convert(idxpath,field,timestep,box,hz,db,testonly):
     try:
         fcntl.lockf(lockfile,fcntl.LOCK_EX | fcntl.LOCK_NB)
 
+        #import pdb; pdb.set_trace()
+
         # open cdat, read the data
         import cdms2
         f=cdms2.open(cdatpath)
@@ -64,32 +65,35 @@ def convert(idxpath,field,timestep,box,hz,db,testonly):
         has_time=v.getAxisList()[0].id=="time"
         data=None
         if has_time:
-            data=numpy.ravel(v[timestep])
+            data=v[timestep]
         else:
-            data=numpy.ravel(v)
+            data=v
 
         # open idx, convert the field
         dataset=Visus.Dataset.loadDataset(idxpath);        assert(dataset)
         visus_field=dataset.getFieldByName(field);         assert(field)
         access=dataset.createAccess()
         logic_box=dataset.getLogicBox()
-        assert(len(data)==logic_box.getDimension().innerProduct())
+
+        # validate bounds
+        assert(data.size==logic_box.getDimension().innerProduct())
+        shape=data.shape[::-1]
+        for i in range(len(shape)):
+            assert(shape[i]==logic_box.getDimension()[i])
 
         query=Visus.Query(dataset,ord('w'))
         query.setLogicPosition(Visus.Position(logic_box))
         query.setField(visus_field)
         query.setAccess(access)
         query.begin()
-        assert(not query.end() and query.getNumberOfSamples().innerProduct()==len(data))
-        #import pdb; pdb.set_trace()
-        data=numpy.ones((query.getNumberOfSamples().x,query.getNumberOfSamples().y),numpy.float32)
+        assert(not query.end() and query.getNumberOfSamples().innerProduct()==data.size)
+
         visusarr=Visus.Array.fromNumPyArray(data)
         visusarrptr=Visus.ArrayPtr(visusarr)
-        #fails# arr=Visus.ArrayPtr(Visus.Array.fromNumPyArray(data))
-    	#works# arr=Visus.ArrayPtr(Visus.Array(query.getNumberOfSamples(),query.getField().dtype))
         query.setBuffer(visusarrptr)
         ret=query.execute()
-        assert(ret==Visus.QuerySucceed)
+        assert(ret)
+        print "done!"
     
     except IOError as e:
         #print "IOError({0}): {1}".format(e.errno,e.strerror)
