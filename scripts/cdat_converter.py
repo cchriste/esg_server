@@ -84,6 +84,7 @@ def convert(idxpath,field,timestep,box,hz,db,testonly):
         query=Visus.Query(dataset,ord('w'))
         query.setLogicPosition(Visus.Position(logic_box))
         query.setField(visus_field)
+        query.setTime(timestep)
         query.setAccess(access)
         query.begin()
         assert(not query.end() and query.getNumberOfSamples().innerProduct()==data.size)
