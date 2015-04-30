@@ -31,6 +31,8 @@
 
 
 import sqlite3
+import sys
+sys.path.append('/home/cam/code/nvisus/build/swig') 
 import visuspy as Visus
 from os import path
 
@@ -116,8 +118,6 @@ if __name__ == '__main__':
     app.setCommandLine("")
     app.useModule(Visus.IdxModule.getSingleton())  
 
-    idxdb="/Users/cam/Dropbox/code/uvcdat/data/idx/idx.db"
-
     import argparse
     parser = argparse.ArgumentParser(description="Convert CDAT data to IDX format.")
     parser.add_argument("-n", "--noaction", action="store_true", dest="innocuous", 
@@ -128,11 +128,14 @@ if __name__ == '__main__':
     parser.add_argument("-t","--time",required=True,type=int,help="timestep")
     parser.add_argument("-b","--box",default="",help="region to convert, default all")
     parser.add_argument("-z","--hz",default=-1,type=int,help="hz level, default max")
-    parser.add_argument("--database",default=idxdb,help="alternate database")
+    parser.add_argument("--database",default="",help="alternate cdat <--> idx database")
     args = parser.parse_args()
 
     # open idx db
-    db = sqlite3.connect(args.database)
+    idxdb=args.database
+    if len(idxdb)==0:
+        idxdb=path.dirname(path.dirname(path.abspath(args.idx)))+'/idx.db'
+    db = sqlite3.connect(idxdb)
 
     with db:
         convert(path.abspath(args.idx),args.field,args.time,args.box,args.hz,db,args.innocuous)

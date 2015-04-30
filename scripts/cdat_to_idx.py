@@ -25,6 +25,7 @@ import cdms2
 import os
 import sys
 import sqlite3
+sys.path.append('/home/cam/code/nvisus/build/swig') 
 import visuspy as Visus
 from copy import deepcopy
 
@@ -127,18 +128,18 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         axes
 
         if domains.has_key(axes):
-            #print "inserting",v.id,"into existing entry of domains["+str(axes)+"]"
+            print "inserting",v.id,"into existing entry of domains["+str(axes)+"]"
             domains[axes].varlist.append(v.id)
             f=Visus.Field(v.id,Visus.DType(v.dtype.name))
             domains[axes].idxinfo.fields.append(f)
-            #print "domains["+str(axes)+"].varlist="+str(domains[axes].varlist)
+            print "domains["+str(axes)+"].varlist="+str(domains[axes].varlist)
         else:
-            #print "inserting",v.id,"as NEW entry of domains["+str(axes)+"]"
+            print "inserting",v.id,"as NEW entry of domains["+str(axes)+"]"
             domains[axes]=deepcopy(domain)
             domains[axes].id=axes
             domains[axes].shape=v.shape[::-1]
             domains[axes].varlist=[v.id]
-            #print "domains["+str(axes)+"].varlist="+str(domains[axes].varlist)
+            print "domains["+str(axes)+"].varlist="+str(domains[axes].varlist)
             domains[axes].idxinfo=deepcopy(idxinfo)
             domains[axes].idxinfo.cdat_dataset=idxbasename
         
@@ -174,7 +175,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
     cdat_id=cur.lastrowid
 
     for d in domains.values():
-        # print "creating idxfile for",d.id,"containing fields",d.varlist
+        print "creating idxfile for",d.id,"containing fields",d.varlist
 
         # create the idx
         create_idx(d.idxinfo)
@@ -201,8 +202,6 @@ if __name__ == '__main__':
     parser.add_argument("-d","--database",required=False,default="",help="path to idx<->cdat database")
     parser.add_argument("-f","--force",action="store_true",dest="force",required=False,default=False,help="force creation even if idx volumes already exist")
     args = parser.parse_args()
-
-#        print "   ex: python cdat_to_idx.py -i /for_ganszberger1/xml/sample_dataset.xml -o /for_ganzberger1/idx"
 
     # open idx db
     idxdb=args.database
