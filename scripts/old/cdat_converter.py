@@ -21,11 +21,12 @@
 # 4) Signals caller upon completion.
 #
 #****************************************************
-# or...
+# Note:
 #
-# Less sophisticated version, no threads, just file-based locking.
-# "Advantage" is that caller is blocked until conversion is complete.
-# But since caller is probably also threaded, this may be sufficient.
+# This is the less sophisticated version of cdat_converter, no threads, just
+# file-based locking.  "Advantage" is that caller is blocked until conversion is
+# complete.  But since caller is probably also threaded, this may be sufficient
+# (it's not due to the extraordinary time needed to shut down python).
 #
 #****************************************************
 
@@ -34,9 +35,9 @@ import sqlite3
 import sys
 sys.path.append('/home/cam/code/nvisus/build/swig') 
 import visuspy as Visus
-from os import path
+from os import path,remove
 
-def convert(idxpath,field,timestep,box,hz,db,testonly):
+def convert(idxpath,field,timestep,box,hz,db,datapath):
     """Converts a timestep of a field of a cdat dataset to idx, using the idxpath to find the matching cdat volume."""
 
     # lookup dataset corresponding to idxpath
@@ -72,8 +73,8 @@ def convert(idxpath,field,timestep,box,hz,db,testonly):
             data=v
 
         # open idx, convert the field
-        dataset=Visus.Dataset.loadDataset(idxpath);        assert(dataset)
-        visus_field=dataset.getFieldByName(field);         assert(field)
+        dataset=Visus.Dataset.loadDataset(datapath+idxpath);  assert(dataset)
+        visus_field=dataset.getFieldByName(field);            assert(field)
         access=dataset.createAccess()
         logic_box=dataset.getLogicBox()
 
@@ -108,6 +109,7 @@ def convert(idxpath,field,timestep,box,hz,db,testonly):
         print "CDMSError:",e
 
     lockfile.close()
+    remove(lockfilename)
 
 
 
@@ -120,9 +122,6 @@ if __name__ == '__main__':
 
     import argparse
     parser = argparse.ArgumentParser(description="Convert CDAT data to IDX format.")
-    parser.add_argument("-n", "--noaction", action="store_true", dest="innocuous", 
-                        default=False,
-                        help="dry-run: does not perform any permanent action")
     parser.add_argument("-i","--idx",required=True,help="path to idx volume")
     parser.add_argument("-f","--field",required=True,help="field to read (e.g. ta)")
     parser.add_argument("-t","--time",required=True,type=int,help="timestep")
@@ -134,8 +133,8 @@ if __name__ == '__main__':
     # open idx db
     idxdb=args.database
     if len(idxdb)==0:
-        idxdb=path.dirname(path.dirname(path.abspath(args.idx)))+'/idx.db'
+        idxdb=path.dirname(path.abspath(args.idx))+'/idx.db'
     db = sqlite3.connect(idxdb)
 
     with db:
-        convert(path.abspath(args.idx),args.field,args.time,args.box,args.hz,db,args.innocuous)
+        convert(path.basename(args.idx),args.field,args.time,args.box,args.hz,db,path.dirname(idxdb)+"/")

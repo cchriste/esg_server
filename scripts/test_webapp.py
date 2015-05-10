@@ -2,7 +2,7 @@ import web
         
 urls = (
     '/GetIDX/(.*)', 'idxgen',
-    '/readdata/(.*)', 'convert',
+    '/convert/(.*)', 'convert',
     '/(.*)', 'hello'
 )
 app = web.application(urls, globals())
@@ -19,7 +19,7 @@ class idxgen:
             name = 'World'
         return 'Generating IDX for dataset ' + name + '...'
 
-class readdata:        
+class convert:        
     def GET(self, name):
         if not name: 
             name = 'World'

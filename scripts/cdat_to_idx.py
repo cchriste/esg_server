@@ -90,7 +90,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
 
     # create destination path
     idxbasename=os.path.splitext(os.path.basename(cdat_dataset))[0]
-    destpath+="/"+idxbasename
+    #destpath+="/"+idxbasename
     try:
         os.mkdir(destpath)
     except:
@@ -128,18 +128,18 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         axes
 
         if domains.has_key(axes):
-            print "inserting",v.id,"into existing entry of domains["+str(axes)+"]"
+            #print "inserting",v.id,"into existing entry of domains["+str(axes)+"]"
             domains[axes].varlist.append(v.id)
             f=Visus.Field(v.id,Visus.DType(v.dtype.name))
             domains[axes].idxinfo.fields.append(f)
-            print "domains["+str(axes)+"].varlist="+str(domains[axes].varlist)
+            #print "domains["+str(axes)+"].varlist="+str(domains[axes].varlist)
         else:
-            print "inserting",v.id,"as NEW entry of domains["+str(axes)+"]"
+            #print "inserting",v.id,"as NEW entry of domains["+str(axes)+"]"
             domains[axes]=deepcopy(domain)
             domains[axes].id=axes
             domains[axes].shape=v.shape[::-1]
             domains[axes].varlist=[v.id]
-            print "domains["+str(axes)+"].varlist="+str(domains[axes].varlist)
+            #print "domains["+str(axes)+"].varlist="+str(domains[axes].varlist)
             domains[axes].idxinfo=deepcopy(idxinfo)
             domains[axes].idxinfo.cdat_dataset=idxbasename
         
@@ -181,7 +181,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         create_idx(d.idxinfo)
 
         # insert into idx db
-        cur.execute("INSERT into idxfiles (pathname, ds_id) values (\"%s\", %d)" % (d.idxinfo.path, cdat_id))
+        cur.execute("INSERT into idxfiles (pathname, ds_id) values (\"%s\", %d)" % (os.path.basename(d.idxinfo.path), cdat_id))
 
         
 
