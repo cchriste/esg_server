@@ -119,7 +119,7 @@ def create_idx_query(idxpath,field,timestep,box,hz):
     logic_box=dataset.getLogicBox()
 
     if box or hz>=0:
-        print "TODO: handle subregion queries and resolution selection (box=%s,hz=%d)"%(box,hz)
+        pass #print "TODO: handle subregion queries and resolution selection (box=%s,hz=%d)"%(box,hz)
 
     # convert the field
     query=Visus.Query(dataset,ord('w'))
@@ -227,8 +227,8 @@ if __name__ == '__main__':
 
     import argparse
     parser = argparse.ArgumentParser(description="Convert CDAT data to IDX format.")
-    parser.add_argument("-p","--port"    ,default=default_port       ,help="listen on port")
-    parser.add_argument("-d","--database",default=default_idx_db_path,help="cdat <--> idx database")
+    parser.add_argument("-p","--port"    ,default=default_port,type=int,help="listen on port")
+    parser.add_argument("-d","--database",default=default_idx_db_path  ,help="cdat <--> idx database")
     args = parser.parse_args()
 
     global dbpath

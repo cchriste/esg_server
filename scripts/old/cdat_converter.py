@@ -126,7 +126,7 @@ if __name__ == '__main__':
     parser.add_argument("-f","--field",required=True,help="field to read (e.g. ta)")
     parser.add_argument("-t","--time",required=True,type=int,help="timestep")
     parser.add_argument("-b","--box",default="",help="region to convert, default all")
-    parser.add_argument("-z","--hz",default=-1,type=int,help="hz level, default max")
+    parser.add_argument("-r","--resolution",default=-1,type=int,help="hz level, default max")
     parser.add_argument("--database",default="",help="alternate cdat <--> idx database")
     args = parser.parse_args()
 
@@ -137,4 +137,4 @@ if __name__ == '__main__':
     db = sqlite3.connect(idxdb)
 
     with db:
-        convert(path.basename(args.idx),args.field,args.time,args.box,args.hz,db,path.dirname(idxdb)+"/")
+        convert(path.basename(args.idx),args.field,args.time,args.box,args.resolution,db,path.dirname(idxdb)+"/")
