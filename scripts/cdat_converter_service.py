@@ -238,16 +238,16 @@ def create(query):
         idxpath=job["destination"][0]
         server="http://localhost:10000/mod_visus"
         if job.has_key("server"):
-            hostname=job["server"][0]
+            server=job["server"][0]
         username="root"
         if job.has_key("username"):
-            hostname=job["username"][0]
+            username=job["username"][0]
         password="visus"
         if job.has_key("password"):
-            hostname=job["password"][0]
+            password=job["password"][0]
         ondemand="http://localhost:42299"
         if job.has_key("ondemand"):
-            hostname=job["ondemand"][0]
+            ondemand=job["ondemand"][0]
 
         # call program to create idx volumes from climate dataset
         import subprocess
