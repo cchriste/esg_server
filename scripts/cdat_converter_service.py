@@ -46,6 +46,13 @@ class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(result)
             return
+        if url.path=='/create':
+            result,response=create(url.query)
+            self.send_response(response)
+            self.send_header('Content-type','text/html')
+            self.end_headers()
+            self.wfile.write(result)
+            return
 
 
 def lookup_cdat_path(idxpath):
@@ -203,7 +210,7 @@ def convert(query):
         result_str=e.msg
     except Exception as e:
         result=RESULT_ERROR
-        result_str="unknown error occurred ("+str(e)+")"
+        result_str="unknown error occurred during convert ("+str(e)+")"
     finally:
         lockfile.close()
         remove(lockfilename)
@@ -214,11 +221,58 @@ def convert(query):
     return (result_str,result)
 
 
+def create(query):
+    """Create idx volumes corresponding to cdat dataset (xml or nc)."""
+
+    t1 = time.clock()
+
+    result_str="An unknown error occurred."
+    result=RESULT_ERROR
+    try:
+        # parse query request
+        job=urlparse.parse_qs(query)
+        if not job.has_key("dataset") or not job.has_key("destination"):
+            raise ConvertError(RESULT_INVALID,"Query must specify a valid and accessible .xml or .nc file and destination path")
+
+        cdatpath=job["dataset"][0]
+        idxpath=job["destination"][0]
+        server="http://localhost:10000/mod_visus"
+        if job.has_key("server"):
+            hostname=job["server"][0]
+        username="root"
+        if job.has_key("username"):
+            hostname=job["username"][0]
+        password="visus"
+        if job.has_key("password"):
+            hostname=job["password"][0]
+        ondemand="http://localhost:42299"
+        if job.has_key("ondemand"):
+            hostname=job["ondemand"][0]
+
+        # call program to create idx volumes from climate dataset
+        import subprocess
+        global cdat_to_idx, dbpath
+        args=["python",cdat_to_idx,"--inputfile",cdatpath,"--outputdir",idxpath,"--server",server,"--username",username,"--password",password,"--database",dbpath,"--service",ondemand]
+        print args
+        result_str=subprocess.Popen(args,stdout=subprocess.PIPE).stdout.read()
+        result=RESULT_SUCCESS
+
+    except ConvertError as e:
+        result=e.code
+        result_str=e.msg
+    except Exception as e:
+        result=RESULT_ERROR
+        result_str="unknown error occurred during create ("+str(e)+")"
+
+    return (result_str,result)
+
+
 
 # ############################
 if __name__ == '__main__':
 
     default_idx_db_path="/for_ganzberger1/idx/idx/idx.db"
+    default_cdat_to_idx="/home/cam/code/esg_server/scripts/cdat_to_idx.py"
     default_port=42299
 
     app=Visus.Application()
@@ -228,8 +282,13 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description="Convert CDAT data to IDX format.")
     parser.add_argument("-p","--port"    ,default=default_port,type=int,help="listen on port")
-    parser.add_argument("-d","--database",default=default_idx_db_path  ,help="cdat <--> idx database")
+    parser.add_argument("-d","--database",default=default_idx_db_path,help="cdat <--> idx database")
+    parser.add_argument("--cdat_to_idx",default=default_cdat_to_idx,help="path to cdat_to_idx.py")
+    # TODO: may make more sense to provide server,username,password and ondemand to this script rather than rely on web caller to provide it.
     args = parser.parse_args()
+
+    global cdat_to_idx
+    cdat_to_idx=args.cdat_to_idx
 
     global dbpath
     dbpath=args.database

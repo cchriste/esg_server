@@ -25,9 +25,9 @@ import cdms2
 import os
 import sys
 import sqlite3
-sys.path.append('/home/cam/code/nvisus/build/swig') 
 import visuspy as Visus
 from copy import deepcopy
+
 
 #****************************************************
 def getIdxPaths(cdat_dataset,db):
@@ -51,23 +51,17 @@ def getIdxPaths(cdat_dataset,db):
 #****************************************************
 def create_idx(idxinfo):
     """Create a new idx volume from the information in idxinfo (fields, dims, timesteps)"""
-    #import pdb; pdb.set_trace()
 
     idxfile=Visus.IdxFile()
 
     # set logical bounds
-    rngmax=Visus.NdPoint()
-    rngmax.x=1
-    if len(idxinfo.dims) == 1:
-        rngmax.x=idxinfo.dims[0]-1
-    elif len(idxinfo.dims) == 2:
-        rngmax.x=idxinfo.dims[0]-1
-        rngmax.y=idxinfo.dims[1]-1
-    elif len(idxinfo.dims) == 3:
-        rngmax.x=idxinfo.dims[0]-1
-        rngmax.y=idxinfo.dims[1]-1
-        rngmax.z=idxinfo.dims[2]-1
-    idxfile.logic_box=Visus.NdBox(Visus.NdPoint(),rngmax);
+    idxfile.logic_box=Visus.NdBox()
+    if len(idxinfo.dims) > 0:
+        idxfile.logic_box.setP2(0,idxinfo.dims[0]);
+    if len(idxinfo.dims) > 1:
+        idxfile.logic_box.setP2(1,idxinfo.dims[1]);
+    if len(idxinfo.dims) > 2:
+        idxfile.logic_box.setP2(2,idxinfo.dims[2]);
 
     # add fields
     for f in idxinfo.fields:
@@ -84,7 +78,7 @@ def create_idx(idxinfo):
 
 
 #****************************************************
-def cdat_to_idx(cdat_dataset,destpath,db):
+def cdat_to_idx(cdat_dataset,destpath,db,hostname,hostuser,hostpass,service):
     """Reads .nc or cdat .xml file and creates corresponding idx volumes, one per domain.
     In addition, it creates database tables to facilitate converting the actual data."""
 
@@ -183,12 +177,37 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         # insert into idx db
         cur.execute("INSERT into idxfiles (pathname, ds_id) values (\"%s\", %d)" % (os.path.basename(d.idxinfo.path), cdat_id))
 
-        
+        # register with server
+        from urlparse import urlparse,urlunparse
+        import urllib2
+        name=os.path.splitext(os.path.basename(d.idxinfo.path))[0]
+        print hostname
+        url=urlparse(hostname)
+        url=url._replace(query="action=add_dataset&username="+hostuser+"&password="+hostpass+"&name="+name+"&url=file://"+d.idxinfo.path+"&ondemand="+service)
+        print url
+        try:
+            ret = urllib2.urlopen(urlunparse(url)).read()
+            print ret
+        except urllib2.HTTPError, e:
+            print "HTTP error adding dataset to server: %d" % e.code
+        except urllib2.URLError, e:
+            print "Network error adding dataset to server: %s" % e.reason.args[1]        
 
-    return 0
-        
+
+
 #****************************************************
+def make_visus_config(idx_paths,dataset,hostname):
+    cfg="<?xml version=\"1.0\" ?>\n<visus>\n"
+    cfg+="  <group name=\""+os.path.splitext(os.path.basename(dataset))[0]+"\">\n"
+    for path in idx_paths:
+        dsname=os.path.splitext(os.path.basename(path))[0]
+        cfg+="    <dataset name=\""+dsname+"\" url=\""+hostname+"/"+dsname+"\" />\n"
+        # TODO: add caching? send gidx/midx?
+    cfg+="  </group>\n</visus>\n"
+    return cfg
 
+
+#****************************************************
 if __name__ == '__main__':
 
     app=Visus.Application()
@@ -200,6 +219,10 @@ if __name__ == '__main__':
     parser.add_argument("-i","--inputfile",required=True,help="cdat volume to read")
     parser.add_argument("-o","--outputdir",required=True,help="basepath for idx volumes")
     parser.add_argument("-d","--database",required=False,default="",help="path to idx<->cdat database")
+    parser.add_argument("-s","--server",required=False,default="http://localhost/mod_visus",help="server with which volumes shoud be registered")
+    parser.add_argument("-u","--username",required=False,default="root",help="username for registering with server")
+    parser.add_argument("-p","--password",required=False,default="visus",help="password for registering with server")
+    parser.add_argument("-v","--service",required=False,default="http://localhost:42299",help="on-demand climate data converter service address")
     parser.add_argument("-f","--force",action="store_true",dest="force",required=False,default=False,help="force creation even if idx volumes already exist")
     args = parser.parse_args()
 
@@ -222,14 +245,15 @@ if __name__ == '__main__':
                 cur.execute("DELETE from idxfiles where ds_id=%d"%ds_id)
 
         if len(idx_paths)==0 or args.force:
-            cdat_to_idx(inputfile,outputdir,db)
+            cdat_to_idx(inputfile,outputdir,db,args.server,args.username,args.password,args.service)
 
             print "done creating idx volumes for",inputfile+":"
             idx_paths,ds_id=getIdxPaths(inputfile,db)
         else:
             print "idx volumes already exist for",inputfile+":"
-
-        for p in idx_paths:
-            print "\t"+p
+            
+        print make_visus_config(idx_paths,inputfile,args.server)
 
     db.close()
+
+
