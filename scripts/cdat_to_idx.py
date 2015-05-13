@@ -179,11 +179,12 @@ def cdat_to_idx(cdat_dataset,destpath,db,hostname,hostuser,hostpass,service):
 
         # register with server
         from urlparse import urlparse,urlunparse
+        from urllib import quote
         import urllib2
         name=os.path.splitext(os.path.basename(d.idxinfo.path))[0]
         print hostname
         url=urlparse(hostname)
-        url=url._replace(query="action=add_dataset&username="+hostuser+"&password="+hostpass+"&name="+name+"&url=file://"+d.idxinfo.path+"&ondemand="+service)
+        url=url._replace(query="action=add_dataset&username="+hostuser+"&password="+hostpass+"&xml="+quote("<dataset name=\""+name+"\" permissions=\"public\" url=\"file://"+d.idxinfo.path+"\" ><access name=\"Multiplex\" type=\"multiplex\"><access chmod=\"r\" type=\"disk\" /><access chmod=\"r\" ondemand=\"external\" path=\""+service+"\" type=\"ondemandaccess\" /><access chmod=\"r\" type=\"disk\" /></access></dataset>"))
         print url
         try:
             ret = urllib2.urlopen(urlunparse(url)).read()
@@ -201,7 +202,7 @@ def make_visus_config(idx_paths,dataset,hostname):
     cfg+="  <group name=\""+os.path.splitext(os.path.basename(dataset))[0]+"\">\n"
     for path in idx_paths:
         dsname=os.path.splitext(os.path.basename(path))[0]
-        cfg+="    <dataset name=\""+dsname+"\" url=\""+hostname+"/"+dsname+"\" />\n"
+        cfg+="    <dataset name=\""+dsname+"\" url=\""+hostname+"?dataset="+dsname+"\" />\n"
         # TODO: add caching? send gidx/midx?
     cfg+="  </group>\n</visus>\n"
     return cfg
@@ -222,7 +223,7 @@ if __name__ == '__main__':
     parser.add_argument("-s","--server",required=False,default="http://localhost/mod_visus",help="server with which volumes shoud be registered")
     parser.add_argument("-u","--username",required=False,default="root",help="username for registering with server")
     parser.add_argument("-p","--password",required=False,default="visus",help="password for registering with server")
-    parser.add_argument("-v","--service",required=False,default="http://localhost:42299",help="on-demand climate data converter service address")
+    parser.add_argument("-v","--service",required=False,default="http://localhost:42299/convert",help="on-demand climate data converter service address")
     parser.add_argument("-f","--force",action="store_true",dest="force",required=False,default=False,help="force creation even if idx volumes already exist")
     args = parser.parse_args()
 
