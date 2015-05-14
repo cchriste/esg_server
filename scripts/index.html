@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+  <title>ESGF Search Results</title>
+</head>
+<body>
+<h1>CDAT to IDX On-Demand Data Conversion Demo Page</h1>
+
+<dl><dt>These are a selection of datasets available on pcmdi11.llnl.gov.</dt>
+<dt>For each there is a cdat .xml file generated using <code>cdscan</code>.</dt>
+<dt>Selecting a dataset for the first time will generate the associated IDX volume headers, register these new volumes with the ViSUS server, and return a configuration file specifying the url of these new volumes.</dt>
+<dt>Successive selections will simply return the config file with the volume urls.</dt>
+<dt>There is one IDX volume per domain of the climate dataset.</dt>
+<dt>The actual data is converted to the hierarchical IDX format only when it is requested by a client.</dt>
+</dl><dl><dt>Once a dataset is loaded by the client, the current variable and timestep are automatically converted by the server and sent on.</dt>
+<dt>The conversion is cached so successive requests can be immediately satisfied, amortizing the cost of the conversion.</dt>
+<dt>The conversion time depends primarily on the domain size.</dt>
+<dt>Even though some of these datasets are hundreds of gigabytes in size, their respective domains are small enough that conversion rarely requires more than a fraction of a second.</dt>
+<dt>However, for very large domains, converting data to a hierarchical format conveys the advantage of streaming multiresolution access.</dt></dl>
+<hr />
+
+<dl>
+<dt><a href="http://pcmdi11.llnl.gov:42299/create?dataset=/for_ganzberger1/idx/xml/acme-test.ORNL.HIGHRES.init.all.v1.xml&destination=/for_ganzberger1/idx/idx&server=http://pcmdi11.llnl.gov:8080/mod_visus">acme-test.ORNL.HIGHRES.init.all.v1</a></dt>
+<dt><a href="http://pcmdi11.llnl.gov:42299/create?dataset=/for_ganzberger1/idx/xml/cssef.clm4_0.cn.land-uq.g00002.v20131218.xml&destination=/for_ganzberger1/idx/idx&server=http://pcmdi11.llnl.gov:8080/mod_visus">cssef.clm4_0.cn.land-uq.g00002.v20131218</a></dt>
+<dt><a href="http://pcmdi11.llnl.gov:42299/create?dataset=/for_ganzberger1/idx/xml/cssef.clm4_0.cn.land-uq.g00007.v20130822.xml&destination=/for_ganzberger1/idx/idx&server=http://pcmdi11.llnl.gov:8080/mod_visus">cssef.clm4_0.cn.land-uq.g00007.v20130822</a></dt>
+<dt><a href="http://pcmdi11.llnl.gov:42299/create?dataset=/for_ganzberger1/idx/xml/cmip5.output1.FIO.fio-esm.historical.mon.ocean.Omon.r1i1p1.v20130717.xml&destination=/for_ganzberger1/idx/idx&server=http://pcmdi11.llnl.gov:8080/mod_visus">cmip5.output1.FIO.fio-esm.historical.mon.ocean.Omon.r1i1p1.v20130717</a></dt>
+<dt><a href="http://pcmdi11.llnl.gov:42299/create?dataset=/for_ganzberger1/idx/xml/cssef.clm4_0.cn.land-uq.g00004.v20130829.xml&destination=/for_ganzberger1/idx/idx&server=http://pcmdi11.llnl.gov:8080/mod_visus">cssef.clm4_0.cn.land-uq.g00004.v20130829</a></dt>
+<dt><a href="http://pcmdi11.llnl.gov:42299/create?dataset=/for_ganzberger1/idx/xml/pcmdi11.test2.v1.xml&destination=/for_ganzberger1/idx/idx&server=http://pcmdi11.llnl.gov:8080/mod_visus">pcmdi11.test2.v1</a></dt>
+<dt><a href="http://pcmdi11.llnl.gov:42299/create?dataset=/for_ganzberger1/idx/xml/cmip5.output1.FIO.fio-esm.historical.mon.ocean.Omon.r2i1p1.v20120522.xml&destination=/for_ganzberger1/idx/idx&server=http://pcmdi11.llnl.gov:8080/mod_visus">cmip5.output1.FIO.fio-esm.historical.mon.ocean.Omon.r2i1p1.v20120522</a></dt>
+<dt><a href="http://pcmdi11.llnl.gov:42299/create?dataset=/for_ganzberger1/idx/xml/cssef.clm4_0.cn.land-uq.g00004.v20131009.xml&destination=/for_ganzberger1/idx/idx&server=http://pcmdi11.llnl.gov:8080/mod_visus">cssef.clm4_0.cn.land-uq.g00004.v20131009</a></dt>
+<dt><a href="http://pcmdi11.llnl.gov:42299/create?dataset=/for_ganzberger1/idx/xml/pcmdi11.test.v1.xml&destination=/for_ganzberger1/idx/idx&server=http://pcmdi11.llnl.gov:8080/mod_visus">pcmdi11.test.v1</a></dt>
+<dt><a href="http://pcmdi11.llnl.gov:42299/create?dataset=/for_ganzberger1/idx/xml/cmip5.output1.FIO.fio-esm.historical.mon.ocean.Omon.r3i1p1.v20130717.xml&destination=/for_ganzberger1/idx/idx&server=http://pcmdi11.llnl.gov:8080/mod_visus">cmip5.output1.FIO.fio-esm.historical.mon.ocean.Omon.r3i1p1.v20130717</a></dt>
+<dt><a href="http://pcmdi11.llnl.gov:42299/create?dataset=/for_ganzberger1/idx/xml/cssef.clm4_0.cn.land-uq.g00005.v20130821.xml&destination=/for_ganzberger1/idx/idx&server=http://pcmdi11.llnl.gov:8080/mod_visus">cssef.clm4_0.cn.land-uq.g00005.v20130821</a></dt>
+<dt><a href="http://pcmdi11.llnl.gov:42299/create?dataset=/for_ganzberger1/idx/xml/pcmdi.llnl.esgf-pcmdi-11.test.mytest.v2.xml&destination=/for_ganzberger1/idx/idx&server=http://pcmdi11.llnl.gov:8080/mod_visus">pcmdi.llnl.esgf-pcmdi-11.test.mytest.v2</a></dt>
+<dt><a href="http://pcmdi11.llnl.gov:42299/create?dataset=/for_ganzberger1/idx/xml/cssef.clm4_0.cn.land-uq.g00001.v20131217.xml&destination=/for_ganzberger1/idx/idx&server=http://pcmdi11.llnl.gov:8080/mod_visus">cssef.clm4_0.cn.land-uq.g00001.v20131217</a></dt>
+<dt><a href="http://pcmdi11.llnl.gov:42299/create?dataset=/for_ganzberger1/idx/xml/cssef.clm4_0.cn.land-uq.g00006.v20130821.xml&destination=/for_ganzberger1/idx/idx&server=http://pcmdi11.llnl.gov:8080/mod_visus">cssef.clm4_0.cn.land-uq.g00006.v20130821</a></dt>
+</dl>
+</body>
+</html>

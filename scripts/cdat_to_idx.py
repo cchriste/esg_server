@@ -204,8 +204,12 @@ def make_visus_config(idx_paths,dataset,hostname):
     cfg+="  <group name=\""+os.path.splitext(os.path.basename(dataset))[0]+"\">\n"
     for path in idx_paths:
         dsname=os.path.splitext(os.path.basename(path))[0]
-        cfg+="    <dataset name=\""+dsname+"\" url=\""+hostname+"?dataset="+dsname+"\" />\n"
-        # TODO: add caching? send gidx/midx?
+        cfg+="    <dataset name=\""+dsname+"\" url=\""+hostname+"?dataset="+dsname+"\" >\n"
+        cfg+="      <access name=\"Multiplex\" type=\"multiplex\">\n"
+        cfg+="        <access name=\"cache\"  type=\"disk\" chmod=\"rw\" url=\"$(VisusCacheDirectory)/"+dsname+"/visus.idx\" />\n"
+        cfg+="        <access name=\"source\" type=\"network\" chmod=\"w\" compression=\"zip\" />\n"
+        cfg+="      </access>\n"
+        cfg+="    </dataset>\n"
     cfg+="  </group>\n</visus>\n"
     return cfg
 
