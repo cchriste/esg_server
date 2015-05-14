@@ -184,7 +184,7 @@ def cdat_to_idx(cdat_dataset,destpath,db,hostname,hostuser,hostpass,service):
         name=os.path.splitext(os.path.basename(d.idxinfo.path))[0]
         print hostname
         url=urlparse(hostname)
-        url=url._replace(query="action=AddDataset&username="+hostuser+"&password="+hostpass+"&xml="+quote("<dataset name=\""+name+"\" permissions=\"public\" url=\"file://"+d.idxinfo.path+"\" ><access name=\"Multiplex\" type=\"multiplex\"><access chmod=\"r\" type=\"disk\" /><access chmod=\"r\" ondemand=\"external\" path=\""+service+"\" type=\"ondemandaccess\" /><access chmod=\"r\" type=\"disk\" /></access></dataset>"))
+        url=url._replace(query="action=AddDataset&username="+hostuser+"&password="+hostpass+"&xml="+quote("<dataset name=\""+name+"\" permissions=\"public\" url=\"file://"+d.idxinfo.path+"\" ><access name=\"Multiplex\" type=\"multiplex\"><access chmod=\"r\" type=\"disk\" /><access chmod=\"r\" ondemand=\"external\" path=\""+service+"/convert\" type=\"ondemandaccess\" /><access chmod=\"r\" type=\"disk\" /></access></dataset>"))
         print url
         try:
             ret = urllib2.urlopen(urlunparse(url)).read()
@@ -193,8 +193,10 @@ def cdat_to_idx(cdat_dataset,destpath,db,hostname,hostuser,hostpass,service):
             print "HTTP error adding dataset to server: %d" % e.code
         except urllib2.URLError, e:
             print "Network error adding dataset to server: %s" % e.reason.args[1]        
-
-
+        #except httplib.BadStatusLine, e:
+            #print "BadStatusLine:",e
+        except Exception,e:
+            print "unknown exception:",e
 
 #****************************************************
 def make_visus_config(idx_paths,dataset,hostname):
@@ -223,7 +225,7 @@ if __name__ == '__main__':
     parser.add_argument("-s","--server",required=False,default="http://localhost/mod_visus",help="server with which volumes shoud be registered")
     parser.add_argument("-u","--username",required=False,default="root",help="username for registering with server")
     parser.add_argument("-p","--password",required=False,default="visus",help="password for registering with server")
-    parser.add_argument("-v","--service",required=False,default="http://localhost:42299/convert",help="on-demand climate data converter service address")
+    parser.add_argument("-v","--service",required=False,default="http://localhost:42299",help="on-demand climate data converter service address")
     parser.add_argument("-f","--force",action="store_true",dest="force",required=False,default=False,help="force creation even if idx volumes already exist")
     args = parser.parse_args()
 
