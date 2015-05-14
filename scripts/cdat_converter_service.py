@@ -245,14 +245,12 @@ def create(query):
         password="visus"
         if job.has_key("password"):
             password=job["password"][0]
-        ondemand="http://localhost:42299"
-        if job.has_key("ondemand"):
-            ondemand=job["ondemand"][0]
+        global ondemand_service_address
 
         # call program to create idx volumes from climate dataset
         import subprocess
         global cdat_to_idx, dbpath
-        args=["python",cdat_to_idx,"--inputfile",cdatpath,"--outputdir",idxpath,"--server",server,"--username",username,"--password",password,"--database",dbpath,"--service",ondemand]
+        args=["python",cdat_to_idx,"--inputfile",cdatpath,"--outputdir",idxpath,"--server",server,"--username",username,"--password",password,"--database",dbpath,"--service",ondemand_service_address]
         print args
         result_str=subprocess.Popen(args,stdout=subprocess.PIPE).stdout.read()
         result=RESULT_SUCCESS
@@ -274,6 +272,7 @@ if __name__ == '__main__':
     default_idx_db_path="/for_ganzberger1/idx/idx/idx.db"
     default_cdat_to_idx="/home/cam/code/esg_server/scripts/cdat_to_idx.py"
     default_port=42299
+    default_host=localhost
 
     app=Visus.Application()
     app.setCommandLine("")
@@ -282,9 +281,9 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description="Convert CDAT data to IDX format.")
     parser.add_argument("-p","--port"    ,default=default_port,type=int,help="listen on port")
+    parser.add_argument("-l","--hostname",default=default_host,help="ip address or hostname on which to listen")
     parser.add_argument("-d","--database",default=default_idx_db_path,help="cdat <--> idx database")
     parser.add_argument("--cdat_to_idx",default=default_cdat_to_idx,help="path to cdat_to_idx.py")
-    # TODO: may make more sense to provide server,username,password and ondemand to this script rather than rely on web caller to provide it.
     args = parser.parse_args()
 
     global cdat_to_idx
@@ -293,8 +292,11 @@ if __name__ == '__main__':
     global dbpath
     dbpath=args.database
 
+    global ondemand_service_address
+    ondemand_service_address="http://"+args.hostname+":"+args.port
+
     # start server
-    httpd = SocketServer.ThreadingTCPServer(('localhost', args.port),cdatConverter)
+    httpd = SocketServer.ThreadingTCPServer((args.hostname, args.port),cdatConverter)
     print "serving at port", args.port
     try:
         httpd.serve_forever()
