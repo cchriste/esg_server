@@ -272,7 +272,7 @@ if __name__ == '__main__':
     default_idx_db_path="/for_ganzberger1/idx/idx/idx.db"
     default_cdat_to_idx="/home/cam/code/esg_server/scripts/cdat_to_idx.py"
     default_port=42299
-    default_host=localhost
+    default_host="localhost"
 
     app=Visus.Application()
     app.setCommandLine("")
@@ -293,7 +293,7 @@ if __name__ == '__main__':
     dbpath=args.database
 
     global ondemand_service_address
-    ondemand_service_address="http://"+args.hostname+":"+args.port
+    ondemand_service_address="http://"+args.hostname+":"+str(args.port)
 
     # start server
     httpd = SocketServer.ThreadingTCPServer((args.hostname, args.port),cdatConverter)
