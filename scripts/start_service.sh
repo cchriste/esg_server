@@ -17,7 +17,7 @@ SCRIPTS=/home/cam/code/esg_server/scripts
 DB=/for_ganzberger1/idx/idx/idx.db 
 
 
-if [ -e $DB ]; then
+if [ ! -e $DB ]; then
     sqlite3 $DB < $SCRIPTS/create_tables.sql
 fi
 

@@ -174,11 +174,12 @@ def convert(query):
         return ("Database does not list associated cdat dataset for %s"%idxpath,RESULT_NOTFOUND)
 
     # try to read lock file (note: this is unix-only)
-    lockfilename="/tmp/"+idxpath+"-"+field+"-"+str(timestep)+"-"+str(box)+"-"+str(hz)+".lock"
+    lockfilename="/tmp/"+idxpath+"-"+field+"-"+str(timestep)+".lock" #+"-"+str(box)+"-"+str(hz)+".lock" (for now, regions are ignored)
     lockfile=open(lockfilename,"w")
     result=RESULT_SUCCESS
     result_str="Success!"
     try:
+        print "acquiring lock...",lockfilename
         fcntl.lockf(lockfile,fcntl.LOCK_EX | fcntl.LOCK_NB)
 
         # open cdat, read the data
@@ -206,6 +207,7 @@ def convert(query):
             raise ConvertError(RESULT_ERROR,"Error executing IDX query.")
             
     except IOError as e:
+        print "IOError"
         if e.errno==None:
             result=RESULT_ERROR
             result_str="Error reading data. Please ensure cdms2 is working and NetCDF data is accessible."
@@ -221,8 +223,9 @@ def convert(query):
     except Exception as e:
         result=RESULT_ERROR
         result_str="unknown error occurred during convert ("+str(e)+")"
-    finally:
-        lockfile.close()
+
+    lockfile.close()
+    if path.isfile(lockfilename):
         remove(lockfilename)
 
     interval=time.clock()-t1
