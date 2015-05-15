@@ -31,6 +31,7 @@ import fcntl
 import cdms2
 import urlparse
 from os import remove,path
+import cdat_to_idx
 
 RESULT_SUCCESS=200; RESULT_INVALID=400; RESULT_NOTFOUND=404; RESULT_ERROR=500; RESULT_BUSY=503
 
@@ -44,14 +45,16 @@ class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_response(response)
             self.send_header('Content-type','text/html')
             self.end_headers()
-            self.wfile.write(result)
+            self.wfile.write("<html><head></head><body>"+result+"</body></html>")
             return
         if url.path=='/create':
             result,response=create(url.query)
             self.send_response(response)
-            self.send_header('Content-type','text/html')
+            self.send_header('Content-type','text/xml')
+            if response != RESULT_SUCCESS:
+                self.send_header('Content-type','text/html')
             self.end_headers()
-            self.wfile.write(result)
+            self.wfile.write("<html><head></head><body>"+result+"</body></html>")
             return
 
 
@@ -200,11 +203,14 @@ def convert(query):
             
     except IOError as e:
         if e.errno==None:
-            raise ConvertError(RESULT_ERROR,"Error reading data. Please ensure cdms2 is working and NetCDF data is accessible.")
+            result=RESULT_ERROR
+            result_str="Error reading data. Please ensure cdms2 is working and NetCDF data is accessible."
         else:
-            raise ConvertError(RESULT_BUSY,"Could not acquire lock file: conversion may already be in progress. Returning.")
+            result=RESULT_BUSY
+            result_str="Could not acquire lock file: conversion may already be in progress. Returning."
     except cdms2.CDMSError as e:
-        raise ConvertError(RESULT_ERROR,"CDMSError: %s"%e)
+        result=RESULT_ERROR
+        result_str="CDMSError: %s"%e
     except ConvertError as e:
         result=e.code
         result_str=e.msg
@@ -246,13 +252,14 @@ def create(query):
         if job.has_key("password"):
             password=job["password"][0]
         global ondemand_service_address
+        force=False
+        if job.has_key("force"):
+            force=job["force"][0]
 
-        # call program to create idx volumes from climate dataset
-        import subprocess
-        global cdat_to_idx, dbpath
-        args=["python",cdat_to_idx,"--inputfile",cdatpath,"--outputdir",idxpath,"--server",server,"--username",username,"--password",password,"--database",dbpath,"--service",ondemand_service_address]
-        print args
-        result_str=subprocess.Popen(args,stdout=subprocess.PIPE).stdout.read()
+        # create idx volumes from climate dataset
+        import cdat_to_idx
+        global dbpath
+        result_str=cdat_to_idx.generate_idx(inputfile=cdatpath,outputdir=idxpath,database=dbpath,server=server,username=username,password=password,service=ondemand_service_address,force=force)
         result=RESULT_SUCCESS
 
     except ConvertError as e:
@@ -270,7 +277,6 @@ def create(query):
 if __name__ == '__main__':
 
     default_idx_db_path="/for_ganzberger1/idx/idx/idx.db"
-    default_cdat_to_idx="/home/cam/code/esg_server/scripts/cdat_to_idx.py"
     default_port=42299
     default_host="localhost"
 
@@ -283,11 +289,7 @@ if __name__ == '__main__':
     parser.add_argument("-p","--port"    ,default=default_port,type=int,help="listen on port")
     parser.add_argument("-l","--hostname",default=default_host,help="ip address or hostname on which to listen")
     parser.add_argument("-d","--database",default=default_idx_db_path,help="cdat <--> idx database")
-    parser.add_argument("--cdat_to_idx",default=default_cdat_to_idx,help="path to cdat_to_idx.py")
     args = parser.parse_args()
-
-    global cdat_to_idx
-    cdat_to_idx=args.cdat_to_idx
 
     global dbpath
     dbpath=args.database

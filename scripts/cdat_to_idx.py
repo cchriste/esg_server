@@ -215,52 +215,68 @@ def make_visus_config(idx_paths,dataset,hostname):
 
 
 #****************************************************
-if __name__ == '__main__':
+default_server="http://localhost:10000/mod_visus"
+default_service="http://localhost:42299/convert"
+default_username="root"
+default_password="visus"
 
-    app=Visus.Application()
-    app.setCommandLine("")
-    app.useModule(Visus.IdxModule.getSingleton())  
+#****************************************************
+def generate_idx(inputfile,outputdir,database=None,server=default_server,username=default_username,password=default_password,service=default_service,force=False):
+    """return visus.config with address of idx volumes corresponding with given climate dataset.
+    If idx volumes do not exist, they will be created and registered with the given server."""
 
-    import argparse
-    parser = argparse.ArgumentParser(description="Create (empty) IDX volumes for all fields of given CDAT volume (.xml or .nc file).")
-    parser.add_argument("-i","--inputfile",required=True,help="cdat volume to read")
-    parser.add_argument("-o","--outputdir",required=True,help="basepath for idx volumes")
-    parser.add_argument("-d","--database",required=False,default="",help="path to idx<->cdat database")
-    parser.add_argument("-s","--server",required=False,default="http://localhost/mod_visus",help="server with which volumes shoud be registered")
-    parser.add_argument("-u","--username",required=False,default="root",help="username for registering with server")
-    parser.add_argument("-p","--password",required=False,default="visus",help="password for registering with server")
-    parser.add_argument("-v","--service",required=False,default="http://localhost:42299",help="on-demand climate data converter service address")
-    parser.add_argument("-f","--force",action="store_true",dest="force",required=False,default=False,help="force creation even if idx volumes already exist")
-    args = parser.parse_args()
+    app=Visus.Application.getCurrent()
+    if not app:
+        app=Visus.Application()
+        app.setCommandLine("")
+        app.useModule(Visus.IdxModule.getSingleton())  
 
     # open idx db
-    idxdb=args.database
-    if len(idxdb)==0:
-        idxdb=args.outputdir+'/idx.db'
-    db = sqlite3.connect(idxdb)
+    if not database:
+        database=outputdir+'/idx.db'
+    db = sqlite3.connect(database)
 
     with db:
-        inputfile=os.path.abspath(args.inputfile)
-        outputdir=os.path.abspath(args.outputdir)
+        inputfile=os.path.abspath(inputfile)
+        outputdir=os.path.abspath(outputdir)
         idx_paths,ds_id=getIdxPaths(inputfile,db)
 
         # if force recreate, delete existing entries in database 
-        if args.force:
+        if force:
             cur=db.cursor()
             cur.execute("DELETE from datasets where ds_id=%d"%ds_id)
             for path in idx_paths:
                 cur.execute("DELETE from idxfiles where ds_id=%d"%ds_id)
 
-        if len(idx_paths)==0 or args.force:
-            cdat_to_idx(inputfile,outputdir,db,args.server,args.username,args.password,args.service)
+        if len(idx_paths)==0 or force:
+            cdat_to_idx(inputfile,outputdir,db,server,username,password,service)
 
-            print "done creating idx volumes for",inputfile+":"
+            print "done creating idx volumes for",inputfile
             idx_paths,ds_id=getIdxPaths(inputfile,db)
         else:
-            print "idx volumes already exist for",inputfile+":"
+            print "idx volumes already exist for",inputfile
             
-        print make_visus_config(idx_paths,inputfile,args.server)
+        xml=make_visus_config(idx_paths,inputfile,server)
 
     db.close()
+    return xml
 
+
+#****************************************************
+if __name__ == '__main__':
+
+    import argparse
+    parser = argparse.ArgumentParser(description="Create (empty) IDX volumes for all fields of given CDAT volume (.xml or .nc file).")
+    parser.add_argument("-i","--inputfile",required=True,help="cdat volume to read")
+    parser.add_argument("-o","--outputdir",required=True,help="basepath for idx volumes")
+    parser.add_argument("-d","--database",required=False,help="path to idx<->cdat database")
+    parser.add_argument("-s","--server",required=False,help="server with which volumes shoud be registered",default=default_server)
+    parser.add_argument("-u","--username",required=False,help="username for registering with server",default=default_username)
+    parser.add_argument("-p","--password",required=False,help="password for registering with server",default=default_password)
+    parser.add_argument("-v","--service",required=False,help="on-demand climate data converter service address",default=default_service)
+    parser.add_argument("-f","--force",action="store_true",dest="force",required=False,default=False,help="force creation even if idx volumes already exist")
+    args = parser.parse_args()
+
+    xml=generate_idx(args.inputfile,args.outputdir,args.database,args.server,args.username,args.password,args.service,args.force)
+    print xml
 
