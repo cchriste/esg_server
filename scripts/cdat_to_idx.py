@@ -200,17 +200,17 @@ def cdat_to_idx(cdat_dataset,destpath,db,hostname,hostuser,hostpass,service):
 
 #****************************************************
 def make_visus_config(idx_paths,dataset,hostname):
-    cfg="<?xml version=\"1.0\" ?>\n<visus>\n"
-    cfg+="  <group name=\""+os.path.splitext(os.path.basename(dataset))[0]+"\">\n"
+    cfg="<?xml version=\"1.0\" ?>\r\n<visus>\r\n"
+    cfg+="  <group name=\""+os.path.splitext(os.path.basename(dataset))[0]+"\">\r\n"
     for path in idx_paths:
         dsname=os.path.splitext(os.path.basename(path))[0]
-        cfg+="    <dataset name=\""+dsname+"\" url=\""+hostname+"?dataset="+dsname+"\" >\n"
-        cfg+="      <access name=\"Multiplex\" type=\"multiplex\">\n"
-        cfg+="        <access name=\"cache\"  type=\"disk\" chmod=\"rw\" url=\"$(VisusCacheDirectory)/"+dsname+"/visus.idx\" />\n"
-        cfg+="        <access name=\"source\" type=\"network\" chmod=\"w\" compression=\"zip\" />\n"
-        cfg+="      </access>\n"
-        cfg+="    </dataset>\n"
-    cfg+="  </group>\n</visus>\n"
+        cfg+="    <dataset name=\""+dsname+"\" url=\""+hostname+"?dataset="+dsname+"\" >\r\n"
+        cfg+="      <access name=\"Multiplex\" type=\"multiplex\">\r\n"
+        cfg+="        <access name=\"cache\"  type=\"disk\" chmod=\"rw\" url=\"$(VisusCacheDirectory)/"+dsname+"/visus.idx\" />\r\n"
+        cfg+="        <access name=\"source\" type=\"network\" chmod=\"w\" compression=\"zip\" />\r\n"
+        cfg+="      </access>\r\n"
+        cfg+="    </dataset>\r\n"
+    cfg+="  </group>\r\n</visus>\r\n"
     return cfg
 
 

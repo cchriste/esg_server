@@ -50,11 +50,15 @@ class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
         if url.path=='/create':
             result,response=create(url.query)
             self.send_response(response)
-            self.send_header('Content-type','text/xml')
             if response != RESULT_SUCCESS:
                 self.send_header('Content-type','text/html')
+            else:
+                self.send_header('Content-type','text/xml')
             self.end_headers()
-            self.wfile.write("<html><head></head><body>"+result+"</body></html>")
+            if response != RESULT_SUCCESS:
+                self.wfile.write("<html><head></head><body>"+result+"</body></html>")
+            else:
+                self.wfile.write(result)
             return
 
 
