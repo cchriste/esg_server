@@ -169,6 +169,15 @@ def cdat_to_idx(cdat_dataset,destpath,db,hostname,hostuser,hostpass,service):
     cdat_id=cur.lastrowid
 
     for d in domains.values():
+        idx=-1
+        try:
+            idx=d.id.index("time")
+        except ValueError:
+            pass
+        if len(d.id)<3 or len(d.id)>4 or idx==-1:
+            print "Skipping",d.id,"because it isn't a 2D or 3D field with time."
+            continue
+
         print "creating idxfile for",d.id,"containing fields",d.varlist
 
         # create the idx

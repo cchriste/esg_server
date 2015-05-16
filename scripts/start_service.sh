@@ -18,6 +18,7 @@ DB=/for_ganzberger1/idx/idx/idx.db
 
 
 if [ ! -e $DB ]; then
+    echo "creating idx.db..."
     sqlite3 $DB < $SCRIPTS/create_tables.sql
 fi
 
