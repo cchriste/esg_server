@@ -33,6 +33,24 @@ import urlparse
 from os import remove,path
 import cdat_to_idx
 
+class Lock:
+    """Simple file-based locking using fcntl"""    
+    def __init__(self, filename):
+        self.filename = filename
+        self.handle = open(filename, 'w')
+    
+    def acquire(self):
+        fcntl.flock(self.handle, fcntl.LOCK_EX)
+
+    def try_acquire(self):
+        fcntl.flock(self.handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        
+    def release(self):
+        fcntl.flock(self.handle, fcntl.LOCK_UN)
+        
+    def __del__(self):
+        self.handle.close()
+
 RESULT_SUCCESS=200; RESULT_INVALID=400; RESULT_NOTFOUND=404; RESULT_ERROR=500; RESULT_BUSY=503
 
 class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
@@ -42,6 +60,7 @@ class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
         url=urlparse.urlparse(self.path)
         if url.path=='/convert':
             result,response=convert(url.query)
+            print "result ("+url.query+"):",result
             self.send_response(response)
             self.send_header('Content-type','text/html')
             self.end_headers()
@@ -73,6 +92,14 @@ def lookup_cdat_path(idxpath):
     if len(cdatpath)>0:
         cur.execute("SELECT pathname from datasets where ds_id=%d" % cdatpath[0])
         cdatpath=cur.fetchone()[0]
+
+        # <ctc> remove this asap!
+        # nasty hack to work around bug in cdms2 when using opendap:
+        # solution is to run converter service from xml directory and
+        # to load xml files from local paths, not explicit paths
+        # (e.g. "filename.xml", not "/path/to/filename.xml".
+        cdatpath=path.basename(cdatpath)
+
         return cdatpath,True
     return "",False
 
@@ -115,6 +142,11 @@ def read_cdat_data(cdatpath,field,timestep):
         data=v[timestep]
     else:
         data=v
+
+    #"flatten" masked data by inserting missing_value everywhere mask is invalid
+    if isinstance(data,cdms2.tvariable.TransientVariable):
+        data=data.filled()
+
     return data
 
 
@@ -175,12 +207,12 @@ def convert(query):
 
     # try to read lock file (note: this is unix-only)
     lockfilename="/tmp/"+idxpath+"-"+field+"-"+str(timestep)+".lock" #+"-"+str(box)+"-"+str(hz)+".lock" (for now, regions are ignored)
-    lockfile=open(lockfilename,"w")
     result=RESULT_SUCCESS
     result_str="Success!"
     try:
-        print "acquiring lock...",lockfilename
-        fcntl.lockf(lockfile,fcntl.LOCK_EX | fcntl.LOCK_NB)
+        # get file lock
+        lock=Lock(lockfilename)
+        lock.try_acquire()
 
         # open cdat, read the data
         data=read_cdat_data(cdatpath,field,timestep)
@@ -207,7 +239,6 @@ def convert(query):
             raise ConvertError(RESULT_ERROR,"Error executing IDX query.")
             
     except IOError as e:
-        print "IOError"
         if e.errno==None:
             result=RESULT_ERROR
             result_str="Error reading data. Please ensure cdms2 is working and NetCDF data is accessible."
@@ -223,13 +254,12 @@ def convert(query):
     except Exception as e:
         result=RESULT_ERROR
         result_str="unknown error occurred during convert ("+str(e)+")"
-
-    lockfile.close()
-    if path.isfile(lockfilename):
-        remove(lockfilename)
+    finally:
+        lock.release()
 
     interval=time.clock()-t1
-    print('Total time %d msec.' % (interval*1000))
+    if result==RESULT_SUCCESS:
+        print('Total time %d msec.' % (interval*1000))
 
     return (result_str,result)
 
@@ -261,7 +291,9 @@ def create(query):
         global ondemand_service_address
         force=False
         if job.has_key("force"):
-            force=job["force"][0]
+            if job["force"][0]=="True" or job["force"][0]=="1" or job["force"][0]=="true":
+                print "forcing job!!! (force="+job["force"][0]+")"
+                force=True
 
         # create idx volumes from climate dataset
         import cdat_to_idx

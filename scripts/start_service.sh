@@ -27,7 +27,7 @@ fi
 #python /Users/cam/Dropbox/code/uvcdat/scripts/cdat_converter_service.py --database $DB >> $LOGFILE 2>&1 &
 
 # pcmdi11
-source /usr/local/uvcdat/1.5.0/bin/setup_runtime.sh 
+source /usr/local/uvcdat/2.2.0/bin/setup_runtime.sh 
 export PYTHONPATH=$PYTHONPATH:/home/cam/code/nvisus/build/swig
 python $SCRIPTS/cdat_converter_service.py --port 42299 --hostname localhost --database $DB >> $LOGFILE 2>&1 &
 

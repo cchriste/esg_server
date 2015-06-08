@@ -69,7 +69,7 @@ def create_idx(idxinfo):
 
     # set timesteps
     if idxinfo.timesteps > 0:
-        idxfile.timesteps.insertRange(0,idxinfo.timesteps,1);
+        idxfile.timesteps.insertRange(0,idxinfo.timesteps-1,1);
         idxfile.time_template="time%0"+str(len(str(idxinfo.timesteps)))+"d/"
 
     bSaved=idxfile.save(str(idxinfo.path))
