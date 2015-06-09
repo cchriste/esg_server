@@ -1,9 +1,8 @@
 #! /bin/bash
 
-xml=`curl "http://localhost:42299/create?${QUERY_STRING}"`
-echo "Content-type:text/xml"
+echo "Content-type:application/xml charset=utf-8"
 echo "Content-Disposition: attachment; filename=\"visus.config.xml\""
 echo ""
-echo $xml
+curl "http://localhost:42299/create?${QUERY_STRING}"
 
 exit 1

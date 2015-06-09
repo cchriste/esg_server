@@ -56,11 +56,15 @@ RESULT_SUCCESS=200; RESULT_INVALID=400; RESULT_NOTFOUND=404; RESULT_ERROR=500; R
 class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
     """http request handler for cdat to idx conversion requests"""
 
+    nqueries_=0
+
     def do_GET(self):
         url=urlparse.urlparse(self.path)
         if url.path=='/convert':
+            query_id=cdatConverter.nqueries_; cdatConverter.nqueries_+=1
+            print "("+str(query_id)+")",url.query
             result,response=convert(url.query)
-            print "result ("+url.query+"):",result
+            print "("+str(query_id)+") complete:",result
             self.send_response(response)
             self.send_header('Content-type','text/html')
             self.end_headers()
@@ -72,7 +76,7 @@ class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
             if response != RESULT_SUCCESS:
                 self.send_header('Content-type','text/html')
             else:
-                self.send_header('Content-type','text/xml')
+                self.send_header('Content-type','application/xml; charset=utf-8')
             self.end_headers()
             if response != RESULT_SUCCESS:
                 self.wfile.write("<html><head></head><body>"+result+"</body></html>")
@@ -135,7 +139,7 @@ def read_cdat_data(cdatpath,field,timestep):
     v=f.variables[field]
 
     data=None
-    has_time=v.getAxisList()[0].id=="time"
+    has_time=v.getAxisList()[0].id.startswith("time")
     if has_time:
         if len(v) <= timestep or timestep<0:
             raise ConvertError(RESULT_NOTFOUND,"Timestep %d out of range for field %s."%(timestep,field))
@@ -193,7 +197,8 @@ class ConvertError(Exception):
 def convert(query):
     """Converts a timestep of a field of a cdat dataset to idx, using the idxpath to find the matching cdat volume."""
 
-    t1 = time.clock()
+    t1  = time.time()
+    pt1 = time.clock()
 
     # parse query request
     idxpath,field,timestep,box,hz=parse_query(query)
@@ -216,6 +221,8 @@ def convert(query):
 
         # open cdat, read the data
         data=read_cdat_data(cdatpath,field,timestep)
+
+        #import pdb; pdb.set_trace()
 
         # open idx and create query
         dataset,access,query=create_idx_query(idxpath,field,timestep,box,hz)
@@ -244,7 +251,7 @@ def convert(query):
             result_str="Error reading data. Please ensure cdms2 is working and NetCDF data is accessible."
         else:
             result=RESULT_BUSY
-            result_str="Could not acquire lock file: conversion may already be in progress. Returning."
+            result_str="Conversion in progress. Duplicate request ignored."
     except cdms2.CDMSError as e:
         result=RESULT_ERROR
         result_str="CDMSError: %s"%e
@@ -257,9 +264,10 @@ def convert(query):
     finally:
         lock.release()
 
-    interval=time.clock()-t1
+    proctime=time.clock()-pt1
+    interval=time.time()-t1
     if result==RESULT_SUCCESS:
-        print('Total time %d msec.' % (interval*1000))
+        print('Total time %d msec (proc_time: %d msec)'  % (interval*1000,proctime*1000))
 
     return (result_str,result)
 
