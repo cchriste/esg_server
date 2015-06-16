@@ -31,10 +31,12 @@ import fcntl
 import cdms2
 import urlparse
 from os import remove,path
+from shutil import rmtree
 import cdat_to_idx
 
 class Lock:
     """Simple file-based locking using fcntl"""    
+    """(see http://blog.vmfarms.com/2011/03/cross-process-locking-and.html)"""
     def __init__(self, filename):
         self.filename = filename
         self.handle = open(filename, 'w')
@@ -83,6 +85,25 @@ class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
             else:
                 self.wfile.write(result)
             return
+        if url.path=='/clear':
+            result,response=clear_cache()
+            self.send_response(response)
+            self.send_header('Content-type','text/html')
+            self.end_headers()
+            self.wfile.write("<html><head></head><body>"+result+"</body></html>")
+            return
+
+
+def clear_cache():
+    """clear a specific cache directory. Be careful with this!!!"""
+    result="sample cache cleared."
+    try:
+        rmtree("/for_ganzberger1/idx/idx/acme-test.ORNL.HIGHRES.init.all.v1-lon_lat_ilev_time")
+        rmtree("/for_ganzberger1/idx/idx/acme-test.ORNL.HIGHRES.init.all.v1-lon_lat_lev_time")
+        rmtree("/for_ganzberger1/idx/idx/acme-test.ORNL.HIGHRES.init.all.v1-lon_lat_time")
+    except OSError as e:
+        result="OSError: "+str(e)
+    return result,RESULT_SUCCESS
 
 
 def lookup_cdat_path(idxpath):
@@ -136,6 +157,7 @@ def read_cdat_data(cdatpath,field,timestep):
     f=cdms2.open(cdatpath)
     if not f.variables.has_key(field):
         raise ConvertError(RESULT_NOTFOUND,"Field %s not found in cdat volume %s."%(field,cdatpath))
+    print cdatpath,"opened. Reading field",field
     v=f.variables[field]
 
     data=None
@@ -146,6 +168,7 @@ def read_cdat_data(cdatpath,field,timestep):
         data=v[timestep]
     else:
         data=v
+    print "finished reading field",field,"of",cdatpath
 
     #"flatten" masked data by inserting missing_value everywhere mask is invalid
     if isinstance(data,cdms2.tvariable.TransientVariable):
@@ -225,6 +248,7 @@ def convert(query):
         #import pdb; pdb.set_trace()
 
         # open idx and create query
+        print "creating idx query for field",field,"of",cdatpath
         dataset,access,query=create_idx_query(idxpath,field,timestep,box,hz)
 
         # validate bounds
@@ -238,12 +262,14 @@ def convert(query):
                 raise ConvertError(RESULT_ERROR,"Invalid query dimensions.")
                 
         # convert data
+        print "converting field",field,"of",cdatpath,"to idx..."
         visusarr=Visus.Array.fromNumPyArray(data)
         visusarrptr=Visus.ArrayPtr(visusarr)
         query.setBuffer(visusarrptr)
         ret=query.execute()
         if not ret:
             raise ConvertError(RESULT_ERROR,"Error executing IDX query.")
+        print "done converting field",field,"of",cdatpath
             
     except IOError as e:
         if e.errno==None:
@@ -258,6 +284,9 @@ def convert(query):
     except ConvertError as e:
         result=e.code
         result_str=e.msg
+    except MemoryError as e:
+        result_str="MemoryError: please try again ("+str(e)+")"
+        result=RESULT_ERROR
     except Exception as e:
         result=RESULT_ERROR
         result_str="unknown error occurred during convert ("+str(e)+")"
