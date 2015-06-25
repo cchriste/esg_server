@@ -1,3 +1,8 @@
+Datasets: 
+  http://atlantis.sci.utah.edu/mod_visus?dataset=all2d
+  http://atlantis.sci.utah.edu/mod_visus?dataset=all3d
+
+-------------------------------------------------------------------------------
 // calculate seasonal averages (winter: dec-feb, summer: jun-aug)
 // first month is 5 (jun), so every year is 5+12*years[i], months added to that, 0-2 for summer, 6-8 winter
 // fieldnames: 'FSNS' (net solor flux at surface) and TSMN (min surface temp)

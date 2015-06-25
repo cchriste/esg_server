@@ -74,3 +74,81 @@ Sunday, December 07, 2014
 Monday, April 20, 2015
 
 We have not really created a suitable mapping from cdat datasets to idx volumes. Most datasets contain fiends from many different domains, which require separate idx volumes. It is necessary to adopt a standard naming scheme that is clear, related to the original dataset(s), and as simple as possible. We also need an interface on the reader side to list the variables of a dataset since seemingly related variables may be in different domains ("plev lat lon" vs "lev lat lon") even though the domains are the same size. We can choose to identify datasets only by their shape, but then we are throwing away information (plev vs lev) that may be critical for rendering and analysis.
+
+-------------------------------------------------------------------------------
+
+Saturday, May 16, 2015
+
+ESG On-Demand IDX Converter Demo + Video
+
+Need to show:
+ - cache is empty
+ - cache is filled as data is requested
+ - cache is filled with more data than is actually downloaded (due to coarse-to-fine streaming)
+ - on-demand creation of idx metadata (by downloading visus.config from sample ESGF search site)
+ - on-demand data conversion (from visus viewer, also would like to try from uvcdat)
+ - what else???
+
+
+0) Loading dataset, browsing 2d and 3d data, just using visus viewer. Speaking over this...
+
+"The Earth Systems Grid On-Demand IDX data server provides streaming hierarchical versions of equivalent NetCDF climate data volumes in a user-directed manner such that specific timestep fields are converted just in time. This permits the bulk of data to remain on the server and facilitates interactive analysis and visualization by immediately sending results for specific data requests. Initial conversions are cached for future use, amortizing the cost of the conversion. This is especially important for large domain data because the hierarchical natures of IDX allows coarse resolution data to be streamed very quickly, providing a preview of the final data and facilitating interactivity. 
+
+1) Overview (use overview image to explain system)
+
+"Here is a visual overview of the system. It begins at the ESGF search page showin in the top-left. After locating the desired dataset, the user selects ViSUS IDX which will download the corresponding url configuration to load the selected volumes. 
+
+1a) show esgf search page
+
+"The link to produce the idx volumes from their corresponding cdat xml or netcdf file can be placed here on the esgf search results page. 
+
+1b) Show secondary search page.
+
+Since we can't modify the esgf pages directly, we have created a secondary page corresponding to the results of searching for a dataset on the test server pcmdi11."
+
+1c) select dataset link
+
+"When the user selects a dataset its corresponding IDX metadata is created and registered with an associated ViSUS server. This configuration will contain references to multiple IDX volumes, one for each domain of the climate dataset. 
+
+1c) open .xml file.
+
+An xml config file suitable for use with ViSUS Viewer is returned. It contains urls that can be loaded by any idx-compatible application.
+
+1d) return to the esg overview image
+
+"Once the user has the URL the dataset is loaded by the client application, such as the ViSUS Viewer or UV-CDAT as shown in the top-right. 
+
+When data is requested, a remote query is made to the ViSUS server, which checks to see if the data already exists in the cache. If so, it sends the cached data immediately. Otherwise, it calls the climate data converter service which converts the data to IDX before sending it.
+
+"We'll now demonstrate on-demand data conversion using the xml configuration we just downloaded.
+
+4) Show the cache size page to indicate that no data has yet been converted.
+
+"Notice that the server cache is currently empty."
+
+5) Open the application from the command line.
+
+"Let's start the ViSUS Viewer using the newly downloaded config.
+
+6) Once the app is opened, navigate to the special variable. 
+
+"The name of the dataset is acme-test, a high resolution simulation from ORNL. (stall) We'll look at a variable named TREFMXAV, the average daily maximum of 2-m temperature. (stall) Let's add a suitable palette."
+
+7) show the cache size page
+
+"Notice that some data has now now been converted."
+
+8) Switch back and converte a couple more timesteps.
+
+"We're able to retrieve new data on demand for any arbitrary timestep without loading the intervening timesteps. Notice how quickly data arrives due to the low conversion overhead."
+
+9) Return to cache page and show it has increased in size.
+
+"...and the cache continues to grow."
+
+10) return to visusviewer and experiment some more. (Fade out video while speaking conclusion section summarizing work.)
+
+"The Earth Systems Grid On-Demand IDX Data Server enables climate data to be provided on-demand at any resolution. Data is cached so that future requests do not incur the initial conversion overhead. Additional features such as dynamic data blending facilitate multi-model comparison, and the idx viewer can be built into external application such as UV-CDAT.
+
+Thank you for watching.
+
