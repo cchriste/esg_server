@@ -242,10 +242,10 @@ def convert(query):
         lock=Lock(lockfilename)
         lock.try_acquire()
 
+        #import pdb; pdb.set_trace()
+
         # open cdat, read the data
         data=read_cdat_data(cdatpath,field,timestep)
-
-        #import pdb; pdb.set_trace()
 
         # open idx and create query
         print "creating idx query for field",field,"of",cdatpath
@@ -374,6 +374,7 @@ if __name__ == '__main__':
     ondemand_service_address="http://"+args.hostname+":"+str(args.port)
 
     # start server
+    SocketServer.ThreadingTCPServer.allow_reuse_address = True
     httpd = SocketServer.ThreadingTCPServer((args.hostname, args.port),cdatConverter)
     print "serving at port", args.port
     try:

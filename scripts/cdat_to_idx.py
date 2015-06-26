@@ -69,7 +69,7 @@ def create_idx(idxinfo):
 
     # set timesteps
     if idxinfo.timesteps > 0:
-        idxfile.timesteps.insertRange(0,idxinfo.timesteps-1,1);
+        idxfile.timesteps.addTimesteps(0,idxinfo.timesteps-1,1);
         idxfile.time_template="time%0"+str(len(str(idxinfo.timesteps)))+"d/"
 
     bSaved=idxfile.save(str(idxinfo.path))
@@ -98,15 +98,21 @@ def cdat_to_idx(cdat_dataset,destpath,db,hostname,hostuser,hostpass,service):
     # We need to use <axis>_bnds var to get full
     # extents, which may not be accessible, so do our best.
     physical_bounds={}
-    for axis in dataset.axes:
-        if not hasattr(axis,'bounds'):
-            continue
-        try:
-            B=dataset(axis.bounds)
-            assert(len(B.shape)==2)  #bounds should be (len(arr_axis),2) where for each value of the arr axis there is a min and max
-            physical_bounds[axis.id]=(B[0][0],B[-1][1])  #assume regular spacing
-        except IOError:
-            print "bounds not found, skipping",axis.bounds
+    for name in dataset.axes:
+        axis=dataset.axes[name]
+        if hasattr(axis,'bounds'):
+            try:
+                B=dataset(axis.bounds)
+                assert(len(B.shape)==2)  #bounds should be (len(arr_axis),2) where for each value of the arr axis there is a min and max
+                physical_bounds[name]=(B[0][0],B[-1][1])  #assume regular spacing
+            except IOError:
+                print "bounds not found, skipping",axis.bounds
+        elif vars.has_key(name+"_bnds"):
+            B=dataset(name+"_bnds")
+            if len(B.shape)!=2:
+                print "WARNING: bounds should be (len(arr_axis),2) where for each value of the arr axis there is a min and max"
+                print "         B.shape =",str(B.shape)
+            physical_bounds[name]=(B[0][0],B[-1][1])  #assume regular spacing
 
     # collect variables into their associated domains
     logic_to_physic=[1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
