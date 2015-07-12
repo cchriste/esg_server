@@ -31,6 +31,7 @@ import fcntl
 import cdms2
 import urlparse
 from os import remove,path
+from sys import stdout
 from shutil import rmtree
 import cdat_to_idx
 
@@ -123,7 +124,7 @@ def lookup_cdat_path(idxpath):
         # solution is to run converter service from xml directory and
         # to load xml files from local paths, not explicit paths
         # (e.g. "filename.xml", not "/path/to/filename.xml".
-        cdatpath=path.basename(cdatpath)
+        #cdatpath=path.basename(cdatpath)
 
         return cdatpath,True
     return "",False
@@ -311,21 +312,23 @@ def create(query):
     try:
         # parse query request
         job=urlparse.parse_qs(query)
-        if not job.has_key("dataset") or not job.has_key("destination"):
+        if not job.has_key("dataset"):
             raise ConvertError(RESULT_INVALID,"Query must specify a valid and accessible .xml or .nc file and destination path")
 
-        cdatpath=job["dataset"][0]
-        idxpath=job["destination"][0]
-        server="http://localhost:10000/mod_visus"
+        global xml_path,idx_path,ondemand_service_address,dbpath,visusserver,visusserver_username,visusserver_password
+        cdatpath=xml_path+"/"+job["dataset"][0]
+        idxpath=idx_path
+        if job.has_key("destination"):
+            idxpath=idx_path+"/"+job["destination"][0]
+        server=visusserver
         if job.has_key("server"):
             server=job["server"][0]
-        username="root"
+        username=visusserver_username
         if job.has_key("username"):
             username=job["username"][0]
-        password="visus"
+        password=visusserver_password
         if job.has_key("password"):
             password=job["password"][0]
-        global ondemand_service_address
         force=False
         if job.has_key("force"):
             if job["force"][0]=="True" or job["force"][0]=="1" or job["force"][0]=="true":
@@ -334,7 +337,6 @@ def create(query):
 
         # create idx volumes from climate dataset
         import cdat_to_idx
-        global dbpath
         result_str=cdat_to_idx.generate_idx(inputfile=cdatpath,outputdir=idxpath,database=dbpath,server=server,username=username,password=password,service=ondemand_service_address,force=force)
         result=RESULT_SUCCESS
 
@@ -352,9 +354,15 @@ def create(query):
 # ############################
 if __name__ == '__main__':
 
+    # converter service default
     default_idx_db_path="/for_ganzberger1/idx/idx/idx.db"
     default_port=42299
     default_host="localhost"
+
+    # cdat_to_idx defaults
+    default_server="http://localhost:10000/mod_visus"
+    default_xml_path="/data/xml/"
+    default_idx_path="/data/idx/"
 
     app=Visus.Application()
     app.setCommandLine("")
@@ -364,19 +372,48 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Convert CDAT data to IDX format.")
     parser.add_argument("-p","--port"    ,default=default_port,type=int,help="listen on port")
     parser.add_argument("-l","--hostname",default=default_host,help="ip address or hostname on which to listen")
-    parser.add_argument("-d","--database",default=default_idx_db_path,help="cdat <--> idx database")
+    parser.add_argument("-x","--xmlpath",default=default_xml_path,help="path to cdat xml files created with uv-cdat cdscan utility")
+    parser.add_argument("-i","--idxpath",default=default_idx_path,help="path to place newly created idx volumes")
+    parser.add_argument("-d","--database",help="path to cdat-to-database (default is $IDX_PATH/idx.db)")
+    parser.add_argument("-s","--visusserver",default=default_server,help="visus server with which to register newly created idx volumes")
+    parser.add_argument("--username",default="root",help="username to register newly created idx volumes with server")
+    parser.add_argument("--password",default="visus",help="password to register newly created idx volumes with server")
     args = parser.parse_args()
 
     global dbpath
     dbpath=args.database
+    if not dbpath:
+        dbpath=args.idxpath+"/idx.db"
 
     global ondemand_service_address
     ondemand_service_address="http://"+args.hostname+":"+str(args.port)
+
+    global xml_path
+    xml_path=args.xmlpath
+
+    global idx_path
+    idx_path=args.idxpath
+
+    global visusserver
+    visusserver=args.visusserver
+
+    global visusserver_username
+    visusserver_username=args.username
+
+    global visusserver_password
+    visusserver_password=args.password
+
+    print "Starting server http://"+args.hostname+":"+str(args.port)+"..."
+    print "\txml path: "+xml_path
+    print "\tidx path: "+idx_path
+    print "\tdatabase: "+dbpath
+    print "\tvisus server: "+visusserver
 
     # start server
     SocketServer.ThreadingTCPServer.allow_reuse_address = True
     httpd = SocketServer.ThreadingTCPServer((args.hostname, args.port),cdatConverter)
     print "serving at port", args.port
+    stdout.flush()
     try:
         httpd.serve_forever()
     except:

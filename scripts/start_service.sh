@@ -1,34 +1,44 @@
 #! /bin/bash
+#
+# Starts the on_demand_converter service.
+#
+# Please see conf/ondemand-env.sh to customize your installation.
+#
 
-LOGFILE=/tmp/cdat_to_idx_service.log
-echo `date` >> $LOGFILE
-echo $* >> $LOGFILE
+# configuration
+ONDEMAND_BIN="`dirname "$0"`"
+ONDEMAND_BIN="`cd "$ONDEMAND_BIN"; pwd`"
+ONDEMAND_CONF="`cd "$ONDEMAND_BIN/../conf"; pwd`"
+. $ONDEMAND_CONF/ondemand-env.sh
+. $ONDEMAND_BIN/ondemand-defaults.sh
 
-#mercury
-#SCRIPTS=/Users/cam/Dropbox/code/uvcdat/scripts
+# start logging
+echo "==================== starting ondemand converter service `date` ====================" >> $ONDEMAND_LOGFILE
 
-#pcmdi11
-SCRIPTS=/home/cam/code/esg_server/scripts
-
-#mercury
-#DB=/Users/cam/Dropbox/code/uvcdat/data/idx/idx.db
-
-#pcmdi11
-DB=/for_ganzberger1/idx/idx/idx.db 
-
-
+# create db
 if [ ! -e $DB ]; then
-    echo "creating idx.db..."
+    echo "idx.db not found, creating..."
     sqlite3 $DB < $SCRIPTS/create_tables.sql
 fi
 
-# mercury
-#source /Users/cam/code/uvcdat-build/install/bin/setup_runtime.sh
-#python /Users/cam/Dropbox/code/uvcdat/scripts/cdat_converter_service.py --database $DB >> $LOGFILE 2>&1 &
+# source uv-cdat runtime
+source ${UVCDAT_DIR}/bin/setup_runtime.sh 
 
-# pcmdi11
-source /usr/local/uvcdat/2.2.0/bin/setup_runtime.sh 
-export PYTHONPATH=$PYTHONPATH:/home/cam/code/nvisus/build/swig
-python $SCRIPTS/cdat_converter_service.py --port 42299 --hostname localhost --database $DB >> $LOGFILE 2>&1 &
+# stop any running instance
+pid=$ONDEMAND_BIN/current_instance.pid
+if [ -f $pid ]; then
+  TARGET_ID="$(cat "$pid")"
+  if [[ $(ps -p "$TARGET_ID" -o comm=) =~ "python" ]]; then
+    echo "stopping ondemand converter service..."
+    kill "$TARGET_ID" && rm -f "$pid"
+  fi
+fi
 
-echo "====================" >> $LOGFILE
+# start service
+python $ONDEMAND_BIN/cdat_converter_service.py ${ARG_PORT} ${ARG_HOST} ${ARG_XMLPATH} ${ARG_IDXPATH} ${ARG_DB} ${ARG_VISUSSERVER} ${ARG_VISUSSERVER_USERNAME} ${ARG_VISUSSERVER_PASSWORD} >> $ONDEMAND_LOGFILE 2>&1 &
+echo $! > $pid
+
+echo "==================== started ondemand converter service (pid=$!) ====================" >> $ONDEMAND_LOGFILE
+echo "ondemand converter service started."
+
+
