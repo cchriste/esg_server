@@ -72,8 +72,10 @@ class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_header('Content-type','text/html')
             self.end_headers()
             self.wfile.write("<html><head></head><body>"+result+"</body></html>")
+            stdout.flush()
             return
         if url.path=='/create':
+            print "request received: "+url.query
             result,response=create(url.query)
             self.send_response(response)
             if response != RESULT_SUCCESS:
@@ -85,6 +87,7 @@ class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
                 self.wfile.write("<html><head></head><body>"+result+"</body></html>")
             else:
                 self.wfile.write(result)
+            stdout.flush()
             return
         if url.path=='/clear':
             result,response=clear_cache()
@@ -92,6 +95,7 @@ class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
             self.send_header('Content-type','text/html')
             self.end_headers()
             self.wfile.write("<html><head></head><body>"+result+"</body></html>")
+            stdout.flush()
             return
 
 
