@@ -345,3 +345,13 @@ summer_avg_after=Visus.Array.avg(post_summer);
 summer_avg_after_nopin=Visus.Array.avg(post_summer_nopin); 
 output=Visus.Array.sdv([summer_avg_after,summer_avg_after_nopin]); 
 
+
+
+-------------------------------------------------------------------------------
+
+x) query needs to round up p2 in the case of box queries. 
+
+2) kdquery needs its own preference, so 2D datasets can be selected to use kdquery, and 3d can be selected to use raycast. Probably add render3d, render3d
+
+
+
