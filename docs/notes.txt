@@ -152,3 +152,18 @@ When data is requested, a remote query is made to the ViSUS server, which checks
 
 Thank you for watching.
 
+-------------------------------------------------------------------------------
+
+DOCS
+
+
+python /scratch/cam/esg_server/scripts/cdat_converter_service.py --visusserver http://atlanta.sci.utah.edu/mod_visus --idxpath /usr/sci/cedmav/data/climate/ondemand/idx --xmlpath /usr/sci/cedmav/data/climate/ondemand/xml
+
+(there is already plenty in the scripts directory, including ability to startup and shutdown using a file to keep track of pid of running server)
+
+-------------------------------------------------------------------------------
+
+Friday, October 23, 2015
+
+NASA data retrieval attempt number 79
+
