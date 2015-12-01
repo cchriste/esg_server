@@ -18,6 +18,7 @@ fi
 if [[ "${UVCDAT_DIR}" = "" ]]; then
   UVCDAT_DIR="/usr/local/uvcdat/2.2.0"
 fi
+UVCDAT_ANONYMOUS_LOG=yes
 
 if [[ "${VISUSSERVER}" = "" ]]; then
   VISUSSERVER="http://localhost/mod_visus"
@@ -29,6 +30,10 @@ fi
 
 if [[ "${ONDEMAND_IDXPATH}" = "" ]]; then
   ONDEMAND_IDXPATH="/data/idx"
+fi
+
+if [[ "${ONDEMAND_DB}" = "" ]]; then
+  ONDEMAND_DB="${ONDEMAND_IDXPATH}/idx.db"
 fi
 
 # set pythonpath
