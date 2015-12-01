@@ -26,13 +26,7 @@ source ${UVCDAT_DIR}/bin/setup_runtime.sh
 
 # stop any running instance
 pid=$ONDEMAND_BIN/current_instance.pid
-if [ -f $pid ]; then
-  TARGET_ID="$(cat "$pid")"
-  if [[ $(ps -p "$TARGET_ID" -o comm=) =~ "python" ]]; then
-    echo "stopping ondemand converter service..."
-    kill "$TARGET_ID" && rm -f "$pid"
-  fi
-fi
+./stop_service.sh
 
 # start service
 python $ONDEMAND_BIN/cdat_converter_service.py ${ARG_PORT} ${ARG_HOST} ${ARG_XMLPATH} ${ARG_IDXPATH} ${ARG_DB} ${ARG_VISUSSERVER} ${ARG_VISUSSERVER_USERNAME} ${ARG_VISUSSERVER_PASSWORD} >> $ONDEMAND_LOGFILE 2>&1 &
