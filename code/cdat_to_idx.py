@@ -131,6 +131,8 @@ def cdat_to_idx(cdat_dataset,destpath,db,hostname,hostuser,hostpass,service):
             #print "inserting",v.id,"into existing entry of domains["+str(axes)+"]"
             domains[axes].varlist.append(v.id)
             f=Visus.Field(v.id,Visus.DType(v.dtype.name))
+            f.default_compression="zip"
+            f.setDescription(v.long_name)
             domains[axes].idxinfo.fields.append(f)
             #print "domains["+str(axes)+"].varlist="+str(domains[axes].varlist)
         else:

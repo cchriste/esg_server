@@ -167,3 +167,7 @@ Friday, October 23, 2015
 
 NASA data retrieval attempt number 79
 
+Notes: data should probably be converted compressed. Takes about 30% longer, but dramatically reduces volume sizes (1/16th in the case of NASA 3d climate data).
+
+-------------------------------------------------------------------------------
+
