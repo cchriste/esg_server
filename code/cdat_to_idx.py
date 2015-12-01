@@ -241,8 +241,6 @@ def generate_idx(inputfile,outputdir,database=None,server=default_server,usernam
     app=Visus.Application.getCurrent()
     if not app:
         app=Visus.Application()
-        app.setCommandLine("")
-        app.useModule(Visus.IdxModule.getSingleton())  
 
     # open idx db
     if not database:

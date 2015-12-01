@@ -369,8 +369,6 @@ if __name__ == '__main__':
     default_idx_path="/data/idx/"
 
     app=Visus.Application()
-    app.setCommandLine("")
-    app.useModule(Visus.IdxModule.getSingleton())  
 
     import argparse
     parser = argparse.ArgumentParser(description="Convert CDAT data to IDX format.")
