@@ -64,7 +64,8 @@ def create_idx(idxinfo):
         idxfile.logic_box.setP2(2,idxinfo.dims[2]);
 
     # set logic_to_physic
-    idxfile.logic_to_physic=Visus.Matrix(idxinfo.logic_to_physic)
+    m=idxinfo.logic_to_physic
+    idxfile.logic_to_physic=Visus.Matrix(m[0],m[1],m[2],m[3],m[4],m[5],m[6],m[7],m[8],m[9],m[10],m[11],m[12],m[13],m[14],m[15]) #tgtbabw!
 
     # add fields
     for f in idxinfo.fields:
