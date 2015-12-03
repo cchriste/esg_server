@@ -63,6 +63,9 @@ def create_idx(idxinfo):
     if len(idxinfo.dims) > 2:
         idxfile.logic_box.setP2(2,idxinfo.dims[2]);
 
+    # set logic_to_physic
+    idxfile.logic_to_physic=Visus.Matrix(idxinfo.logic_to_physic)
+
     # add fields
     for f in idxinfo.fields:
         idxfile.fields.push_back(f)
@@ -132,7 +135,8 @@ def cdat_to_idx(cdat_dataset,destpath,db,hostname,hostuser,hostpass,service):
             domains[axes].varlist.append(v.id)
             f=Visus.Field(v.id,Visus.DType(v.dtype.name))
             f.default_compression="zip"
-            f.setDescription(v.long_name)
+            if hasattr(v,'long_name'):
+                f.setDescription(v.long_name)
             domains[axes].idxinfo.fields.append(f)
             #print "domains["+str(axes)+"].varlist="+str(domains[axes].varlist)
         else:
@@ -169,6 +173,9 @@ def cdat_to_idx(cdat_dataset,destpath,db,hostname,hostuser,hostpass,service):
 
             # fields            
             f=Visus.Field(v.id,Visus.DType(v.dtype.name))
+            f.default_compression="zip"
+            if hasattr(v,'long_name'):
+                f.setDescription(v.long_name)
             domains[axes].idxinfo.fields=[f]
 
     # insert new dataset into db
