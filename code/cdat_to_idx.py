@@ -67,6 +67,10 @@ def create_idx(idxinfo):
     m=idxinfo.logic_to_physic
     idxfile.logic_to_physic=Visus.Matrix(m[0],m[1],m[2],m[3],m[4],m[5],m[6],m[7],m[8],m[9],m[10],m[11],m[12],m[13],m[14],m[15]) #tgtbabw!
 
+    # bitsperblock. Default is 16, but set to 12 to reduce overall volume size (increases total number of blocks/files, so we correspondingly increase blocksperfile to compensate)
+    idxfile.bitsperblock=12
+    idxfile.blocksperfile=1024
+
     # add fields
     for f in idxinfo.fields:
         idxfile.fields.push_back(f)

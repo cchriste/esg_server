@@ -171,3 +171,104 @@ Notes: data should probably be converted compressed. Takes about 30% longer, but
 
 -------------------------------------------------------------------------------
 
+How to copy a file from feedback to my laptop using ssh tunnels:
+
+ssh -L 1234:feedback.llnl.gov:22 cam@atlanta.sci.utah.edu cat -
+scp -P 1234 christensen41@127.0.0.1:/scratch/idx/raw/g5nr.nccs.nasa.gov/data/DATA/0.0625_deg/inst/inst30mn_3d_CO2_Nv/Y2007/M01/D01/c1440_NR.inst30mn_3d_CO2_Nv.20070101_0100z.nc4 .
+-------------------------------------------------------------------------------
+
+Some scripts to run 
+
+for f in `cat redo_lat.txt`; do echo "*** $f"; if [ ! -f ../xml/${f%.list}.xml ]; then cdscan --exclude ps,eta,depth,lat,type -x /scratch/for_ganzberger1/idx/ondemand/xml/${f%.list}.xml -f $f > ${f%.list}.out 2>&1; fi done
+
+for f in `cat published.txt`; do list=`echo $f | sed 's-/-_-g'`.list; find $f -name "*.nc*" > $list; done
+for f in `ls _*.list`; do echo "*** $f"; g=${f#_}; xml=${g%.list}.xml; if [ ! -f ../xml/${xml} ]; then cdscan -x /scratch/for_ganzberger1/idx/ondemand/xml/${xml} -f $f > ${f%.list}.out 2>&1; fi done
+
+-------------------------------------------------------------------------------
+
+Tuesday, December 08, 2015
+ESGF F2F Day 1
+
+Guy from COG
+http://earthsystemcog.org (look for CMPI6 whitepapers)
+
+Dave Bader, Accelerated Climate Modeling for Energy (ACME) udpate
+http://climatemodeling.science.energy.gov/projects/accelerated-climate-modeling-energy
+
+
+http://geonetwork.nci.org.au - National Environmental Research Data Collections
+
+birdhouse (data hosting service)
+
+-------------------------------------------------------------------------------
+
+Thursday, December 10, 2015
+
+Common themes:
+
+ - on-demand data conversion (e.g. for subsetting)
+ - server-side computation (theme is "download less")
+ - flexibility (e.g. a major challenge for WPS)
+ - universality (e.g. common data format, conventions to compare models)
+
+Affects existing infrastructure?
+ - this is an optional service that anyone can use with almost no installation
+ - even stubborn holdouts for data purity can secretly use it, just to see what the data you're downloading will look like ;)
+ - the on-demand server code is open source (unless Dean says otherwise), and only needs access to data store, cache, and an http port
+   -> any esgf node can install this
+
+Next steps:
+
+ - better handle temporal sampling
+ - integrate with existing libraries to read data (make idx a first class citizen, in the same spirit of netcdf4, we need to move to the future
+)
+ 
+
+https://pcmdi9.llnl.gov/esgf-idp/openid/scicameron
+@notherPassw0rd
+
+
+-------------------------------------------------------------------------------
+Thursday, December 10, 2015
+
+Creating IDX of bluemarble
+
+visusconvert --create bluemarble.idx --box "0 86399 0 43199" --time 0 12 time%02d/ --fields "data uint8[3]"
+visusconvert --import world.topo.bathy.200401.3x21600x21600.A1.png --export bluemarble.idx --box "0 21599 21600 43199" --time 0 --field data
+visusconvert --import world.topo.bathy.200401.3x21600x21600.A2.png --export bluemarble.idx --box "0 21599 0 21599" --time 0 --field data
+visusconvert --import world.topo.bathy.200401.3x21600x21600.B1.png --export bluemarble.idx --box "21600 43199 21600 43199" --time 0 --field data
+visusconvert --import world.topo.bathy.200401.3x21600x21600.B2.png --export bluemarble.idx --box "21600 43199 0 21599" --time 0 --field data
+visusconvert --import world.topo.bathy.200401.3x21600x21600.C1.png --export bluemarble.idx --box "43200 64799 21600 43199" --time 0 --field data
+visusconvert --import world.topo.bathy.200401.3x21600x21600.C2.png --export bluemarble.idx --box "43200 64799 0 21599" --time 0 --field data
+visusconvert --import world.topo.bathy.200401.3x21600x21600.D1.png --export bluemarble.idx --box "64800 86399 21600 43199" --time 0 --field data
+visusconvert --import world.topo.bathy.200401.3x21600x21600.D2.png --export bluemarble.idx --box "64800 86399 0 21599" --time 0 --field data
+
+visusconvert --create bluemarble-compressed.idx --box "0 86399 0 43199" --time 0 12 time%02d/ --fields "data uint8[3] compressed"
+visusconvert --import world.topo.bathy.200401.3x21600x21600.A1.png --export bluemarble-compressed.idx --box "0 21599 21600 43199" --time 0 --field data
+visusconvert --import world.topo.bathy.200401.3x21600x21600.A2.png --export bluemarble-compressed.idx --box "0 21599 0 21599" --time 0 --field data
+visusconvert --import world.topo.bathy.200401.3x21600x21600.B1.png --export bluemarble-compressed.idx --box "21600 43199 21600 43199" --time 0 --field data
+visusconvert --import world.topo.bathy.200401.3x21600x21600.B2.png --export bluemarble-compressed.idx --box "21600 43199 0 21599" --time 0 --field data
+visusconvert --import world.topo.bathy.200401.3x21600x21600.C1.png --export bluemarble-compressed.idx --box "43200 64799 21600 43199" --time 0 --field data
+visusconvert --import world.topo.bathy.200401.3x21600x21600.C2.png --export bluemarble-compressed.idx --box "43200 64799 0 21599" --time 0 --field data
+visusconvert --import world.topo.bathy.200401.3x21600x21600.D1.png --export bluemarble-compressed.idx --box "64800 86399 21600 43199" --time 0 --field data
+visusconvert --import world.topo.bathy.200401.3x21600x21600.D2.png --export bluemarble-compressed.idx --box "64800 86399 0 21599" --time 0 --field data
+
+-------------------------------------------------------------------------------
+Friday, December 11, 2015
+
+Thursday, December 17, 2015
+
+building netcdf on my laptop for pidx
+
+CPPFLAGS="-I/usr/local/pnetcdf/include -I/usr/local/hdf5/include -I/usr/local/mpi/include" LDFLAGS="-L/usr/local/hdf5/lib -L/usr/local/pnetcdf/lib -L/usr/local/mpi/lib -lmpi" ./configure --prefix=/usr/local/netcdf --enable-netcdf4 --enable-pnetcdf --enable-parallel-tests
+
+-------------------------------------------------------------------------------
+
+Friday, December 18, 2015
+
+Converting nasa 3d .nc4 data using new and improved PIDX template-converter.c
+
+3d dims: (5760,2881,72)
+mpirun -np 8 ./tutorial/template_converter.app/Contents/MacOS/template_converter -l 720x2881x72 -i /Users/cam/data/uvcdat/infile.txt -v /Users/cam/data/uvcdat/invars.txt -f /Users/cam/data/uvcdat/c1440_NR.inst30mn_3d_CLOUD_Nv.20060616_1100z.idx
+
+./tutorial/template_converter.app/Contents/MacOS/template_converter -l 5760x2881x72 -i /Users/cam/data/uvcdat/infile.txt -v /Users/cam/data/uvcdat/invars.txt -f /Users/cam/data/uvcdat/c1440_NR.inst30mn_3d_CLOUD_Nv.20060616_1100z.idx
