@@ -21,6 +21,7 @@ VISUSSERVER=http://localhost:80/mod_visus
 #   VISUSSERVER_PASSWORD    - password (default should be fine)
 #   ONDEMAND_XMLPATH        - path to cdat xml files created by uvcdat cdscan utility (default is /data/xml)
 #   ONDEMAND_IDXPATH        - destination path for idx volumes (default is /data/idx)
+#   ONDEMAND_CACHE_MAX_SIZE - maximum size of ondemand cache in bytes (ONDEMAND_IDXPATH, default is 5000000000000, 5T)
 ONDEMAND_XMLPATH=/Users/cam/data/ondemand/xml
 ONDEMAND_IDXPATH=/Users/cam/data/ondemand/idx
 #   ONDEMAND_DB             - path to idx-to-cdat (xml) database (default is IDXPATH/idx.db)

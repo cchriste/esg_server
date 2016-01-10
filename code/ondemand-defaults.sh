@@ -32,6 +32,10 @@ if [[ "${ONDEMAND_IDXPATH}" = "" ]]; then
   ONDEMAND_IDXPATH="/data/idx"
 fi
 
+if [[ "${ONDEMAND_CACHE_MAX_SIZE}" = "" ]]; then
+  ONDEMAND_CACHE_MAX_SIZE=5000000000000
+fi
+
 if [[ "${ONDEMAND_DB}" = "" ]]; then
   ONDEMAND_DB="${ONDEMAND_IDXPATH}/idx.db"
 fi
