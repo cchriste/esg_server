@@ -11,6 +11,7 @@
 #   ONDEMAND_PORT           - port to listen for ondemand requests (default is 42299)
 #   ONDEMAND_LOGFILE        - path to logfilee (default /tmp/idx_ondemand.log)
 ONDEMAND_LOGFILE=/scratch/for_ganzberger1/idx/log/ondemand.log
+#ONDEMAND_LOGFILE=/capt/idx/ondemand/log/ondemand.log
 #   UVCDAT_DIR              - path to uvcdat installation (default is /usr/local/uvcdat/2.2.0)
 UVCDAT_DIR=/usr/local/uvcdat/2.2.0-full
 #   VISUSPY_PATH            - path to visuspy install dir (if not installed in system-accessible location)
@@ -22,8 +23,10 @@ VISUSSERVER=http://feedback.llnl.gov:80/mod_visus
 #   ONDEMAND_XMLPATH        - path to cdat xml files created by uvcdat cdscan utility (default is /data/xml)
 #   ONDEMAND_IDXPATH        - destination path for idx volumes (default is /data/idx)
 #   ONDEMAND_CACHE_MAX_SIZE - maximum size of ondemand cache in bytes (ONDEMAND_IDXPATH, default is 5000000000000, 5T)
-ONDEMAND_CACHE_MAX_SIZE=3000000000
+ONDEMAND_CACHE_MAX_SIZE=3000000000000
 ONDEMAND_XMLPATH=/scratch/for_ganzberger1/idx/ondemand/xml
 ONDEMAND_IDXPATH=/scratch/for_ganzberger1/idx/ondemand/idx
+#ONDEMAND_XMLPATH=/capt/idx/ondemand/xml
+#ONDEMAND_IDXPATH=/capt/idx/ondemand/idx
 #   ONDEMAND_DB             - path to idx-to-cdat (xml) database (default is IDXPATH/idx.db)
 #

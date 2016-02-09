@@ -1,8 +1,8 @@
 #! /bin/bash
 
-cachesz=`du --max-depth=0  --exclude "*.idx*" /for_ganzberger1/idx/idx/acme-test*`
-cacheszh=`du -h --max-depth=1  /for_ganzberger1/idx/idx`
-diskfree=`df -h /for_ganzberger1/idx/idx`
+cachesz=`du --max-depth=0  --exclude "*.idx*" /for_ganzberger1/idx/ondemand/idx/acme-test*`
+cacheszh=`du -h --max-depth=1  /for_ganzberger1/idx/ondemand/idx`
+diskfree=`df -h /for_ganzberger1/idx/ondemand/idx`
 echo "Content-type: text/html"
 echo ""
 echo "<html>"

@@ -66,7 +66,7 @@ class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
         if url.path=='/convert':
             query_id=cdatConverter.nqueries_; cdatConverter.nqueries_+=1
             print "("+str(query_id)+")",url.query
-            result,response=convert(url.query)
+            result,response=convert_query(url.query)
             print "("+str(query_id)+") complete:",result
             self.send_response(response)
             self.send_header('Content-type','text/html')
@@ -123,12 +123,12 @@ def lookup_cdat_path(idxpath):
         cur.execute("SELECT pathname from datasets where ds_id=%d" % cdatpath[0])
         cdatpath=cur.fetchone()[0]
 
-        # <ctc> remove this asap!
+        # <warning>
         # nasty hack to work around bug in cdms2 when using opendap:
         # solution is to run converter service from xml directory and
         # to load xml files from local paths, not explicit paths
         # (e.g. "filename.xml", not "/path/to/filename.xml".
-        #cdatpath=path.basename(cdatpath)
+        cdatpath=path.basename(cdatpath)
 
         return cdatpath,True
     return "",False
@@ -182,6 +182,16 @@ def read_cdat_data(cdatpath,field,timestep):
     return data
 
 
+def get_timesteps(idxpath):
+    """open idx, returns num timesteps"""
+
+    global dbpath
+    idxpath=path.dirname(dbpath)+"/"+idxpath
+    dataset=Visus.Dataset.loadDataset(idxpath);
+    if not dataset:
+        raise ConvertError(RESULT_ERROR,"Error: could not load IDX dataset "+idxpath)
+    return dataset.getTimesteps().asVector()
+
 def create_idx_query(idxpath,field,timestep,box,hz):
     """open idx, validate inputs, create write query"""
 
@@ -222,16 +232,20 @@ class ConvertError(Exception):
         return "error "+self.code+": "+self.msg
 
 
-def convert(query):
+def convert_query(query):
     """Converts a timestep of a field of a cdat dataset to idx, using the idxpath to find the matching cdat volume."""
-
-    t1  = time.time()
-    pt1 = time.clock()
 
     # parse query request
     idxpath,field,timestep,box,hz=parse_query(query)
     if not idxpath or not field:
         return ("Invalid query: %s"%query,RESULT_INVALID)
+    return convert(idxpath,field,timestep,box,hz)
+
+def convert(idxpath,field,timestep,box,hz):
+    """Converts a timestep of a field of a cdat dataset to idx, using the idxpath to find the matching cdat volume."""
+
+    t1  = time.time()
+    pt1 = time.clock()
 
     # lookup dataset corresponding to idxpath
     cdatpath,success=lookup_cdat_path(idxpath)
@@ -354,6 +368,45 @@ def create(query):
     return (result_str,result)
 
 
+def init(database,hostname,port,xmlpath,idxpath,visus_server,username,password):
+    global visus_app
+    visus_app=Visus.Application()
+
+    global dbpath
+    dbpath=database
+    if not dbpath:
+        dbpath=idxpath+"/idx.db"
+
+    global ondemand_service_address
+    ondemand_service_address="http://"+hostname+":"+str(port)
+
+    global xml_path
+    xml_path=xmlpath
+
+    global idx_path
+    idx_path=idxpath
+
+    global visusserver
+    visusserver=visus_server
+
+    global visusserver_username
+    visusserver_username=username
+
+    global visusserver_password
+    visusserver_password=password
+
+def start_server(hostname,port):
+    # start server
+    SocketServer.ThreadingTCPServer.allow_reuse_address = True
+    httpd = SocketServer.ThreadingTCPServer((hostname, port),cdatConverter)
+    print "serving at port", port
+    stdout.flush()
+    try:
+        httpd.serve_forever()
+    except:
+        pass
+
+    httpd.shutdown()
 
 # ############################
 if __name__ == '__main__':
@@ -368,8 +421,6 @@ if __name__ == '__main__':
     default_xml_path="/data/xml/"
     default_idx_path="/data/idx/"
 
-    app=Visus.Application()
-
     import argparse
     parser = argparse.ArgumentParser(description="Convert CDAT data to IDX format.")
     parser.add_argument("-p","--port"    ,default=default_port,type=int,help="listen on port")
@@ -382,44 +433,13 @@ if __name__ == '__main__':
     parser.add_argument("--password",default="visus",help="password to register newly created idx volumes with server")
     args = parser.parse_args()
 
-    global dbpath
-    dbpath=args.database
-    if not dbpath:
-        dbpath=args.idxpath+"/idx.db"
-
-    global ondemand_service_address
-    ondemand_service_address="http://"+args.hostname+":"+str(args.port)
-
-    global xml_path
-    xml_path=args.xmlpath
-
-    global idx_path
-    idx_path=args.idxpath
-
-    global visusserver
-    visusserver=args.visusserver
-
-    global visusserver_username
-    visusserver_username=args.username
-
-    global visusserver_password
-    visusserver_password=args.password
+    init(args.database,args.hostname,args.port,args.xmlpath,args.idxpath,args.visusserver,args.username,args.password)
 
     print "Starting server http://"+args.hostname+":"+str(args.port)+"..."
     print "\txml path: "+xml_path
     print "\tidx path: "+idx_path
     print "\tdatabase: "+dbpath
     print "\tvisus server: "+visusserver
+    start_server(args.hostname,args.port)
 
-    # start server
-    SocketServer.ThreadingTCPServer.allow_reuse_address = True
-    httpd = SocketServer.ThreadingTCPServer((args.hostname, args.port),cdatConverter)
-    print "serving at port", args.port
-    stdout.flush()
-    try:
-        httpd.serve_forever()
-    except:
-        pass
-
-    httpd.shutdown()
     print "done!"
