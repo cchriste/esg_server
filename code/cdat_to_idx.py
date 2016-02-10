@@ -92,11 +92,10 @@ def cdat_to_idx(cdat_dataset,destpath,db,hostname,hostuser,hostpass,service):
 
     # create destination path
     idxbasename=os.path.splitext(os.path.basename(cdat_dataset))[0]
-    #destpath+="/"+idxbasename
     try:
         os.mkdir(destpath)
     except:
-        None
+        None  #directory likely already exists
 
     # open dataset
     dataset = cdms2.open(cdat_dataset)

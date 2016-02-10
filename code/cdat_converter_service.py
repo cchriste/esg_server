@@ -30,7 +30,7 @@ import BaseHTTPServer
 import fcntl
 import cdms2
 import urlparse
-from os import remove,path
+from os import remove,path,strerror
 from sys import stdout
 from shutil import rmtree
 import cdat_to_idx
@@ -296,7 +296,7 @@ def convert(idxpath,field,timestep,box,hz):
             result_str="Error reading data. Please ensure cdms2 is working and NetCDF data is accessible."
         else:
             result=RESULT_BUSY
-            result_str="Conversion in progress. Duplicate request ignored."
+            result_str="Conversion in progress. Duplicate request ignored. (e.errno="+strerror(e.errno)+")"
     except cdms2.CDMSError as e:
         result=RESULT_ERROR
         result_str="CDMSError: %s"%e
