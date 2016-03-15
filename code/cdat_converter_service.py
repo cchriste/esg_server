@@ -146,7 +146,7 @@ def read_cdat_data(cdatpath,field,timestep):
     f=cdms2.open(cdatpath)
     if not f.variables.has_key(field):
         raise ConvertError(RESULT_NOTFOUND,"Field %s not found in cdat volume %s."%(field,cdatpath))
-    print cdatpath,"opened. Reading field",field
+    print cdatpath,"opened. Reading field",field,"at timestep",timestep
     v=f.variables[field]
 
     data=None
@@ -157,7 +157,7 @@ def read_cdat_data(cdatpath,field,timestep):
         data=v[timestep]
     else:
         data=v
-    print "finished reading field",field,"of",cdatpath
+    print "finished reading field",field,"at timestep",timestep,"of",cdatpath
 
     #"flatten" masked data by inserting missing_value everywhere mask is invalid
     if isinstance(data,cdms2.tvariable.TransientVariable):
@@ -251,7 +251,7 @@ def convert(idxpath,field,timestep,box,hz):
         data=read_cdat_data(cdatpath,field,timestep)
 
         # open idx and create query
-        print "creating idx query for field",field,"of",cdatpath
+        print "creating idx query for field",field,"at time",timestep,"of",cdatpath
         dataset,access,query=create_idx_query(idxpath,field,timestep,box,hz)
 
         # validate bounds
@@ -265,14 +265,14 @@ def convert(idxpath,field,timestep,box,hz):
                 raise ConvertError(RESULT_ERROR,"Invalid query dimensions.")
                 
         # convert data
-        print "converting field",field,"of",cdatpath,"to idx..."
+        print "converting field",field,"at time",timestep,"of",cdatpath,"to idx..."
         visusarr=Visus.Array.fromNumPyArray(data)
         visusarrptr=Visus.ArrayPtr(visusarr)
         query.setBuffer(visusarrptr)
         ret=query.execute()
         if not ret:
             raise ConvertError(RESULT_ERROR,"Error executing IDX query.")
-        print "done converting field",field,"of",cdatpath
+        print "done converting field",field,"at time",timestep,"of",cdatpath
             
     except IOError as e:
         if e.errno==None:
@@ -293,7 +293,7 @@ def convert(idxpath,field,timestep,box,hz):
     except Exception as e:
         if e.errno==17:
             result=RESULT_BUSY
-            result_str="Conversion in progress. Duplicate request ignored. (e.errno="+os.strerror(e.errno)+")"
+            result_str="Conversion of field",field,"at time",timestep,"in progress. Duplicate request ignored. (e.errno="+os.strerror(e.errno)+")"
         else:
             result=RESULT_ERROR
             result_str="unknown error occurred during convert ("+str(e)+")"
@@ -304,7 +304,7 @@ def convert(idxpath,field,timestep,box,hz):
     proctime=time.clock()-pt1
     interval=time.time()-t1
     if result==RESULT_SUCCESS:
-        print('Total time %d msec (proc_time: %d msec)'  % (interval*1000,proctime*1000))
+        print("Total time to convert field",field,"at time",timestep,"of",cdatpath,"was %d msec (proc_time: %d msec)"  % (interval*1000,proctime*1000))
 
     return (result_str,result)
 
@@ -385,8 +385,8 @@ def init(database,hostname,port,xmlpath,idxpath,visus_server,username,password):
     visusserver_password=password
 
 #note: doesn't seem to be any huge reason in our case to prefer forking over theading, but both work fine
-#class OnDemandSocketServer(SocketServer.ThreadingTCPServer):
-class OnDemandSocketServer(SocketServer.ForkingTCPServer):
+class OnDemandSocketServer(SocketServer.ThreadingTCPServer):
+#class OnDemandSocketServer(SocketServer.ForkingTCPServer):
     """This is just to override handle_error to be less annoying when disconnections occur
     """
     def handle_error(self, request, client_address):
@@ -404,8 +404,8 @@ class OnDemandSocketServer(SocketServer.ForkingTCPServer):
 
 def start_server(hostname,port):
     # start server
-    #SocketServer.ThreadingTCPServer.allow_reuse_address = True
-    SocketServer.ForkingTCPServer.allow_reuse_address = True
+    SocketServer.ThreadingTCPServer.allow_reuse_address = True
+    #SocketServer.ForkingTCPServer.allow_reuse_address = True
     httpd = OnDemandSocketServer((hostname, port),cdatConverter)
     print "serving at port", port
     stdout.flush()
