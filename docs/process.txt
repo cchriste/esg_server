@@ -1,0 +1,167 @@
+# generate a filelist
+find /data_pcmdi/christensen41/raw/g5nr.nccs.nasa.gov/ -name "*.nc4" > filelist.txt
+# edit the filelist to ensure you only have one you what (e.g. delete 1/2 hour data points for hourly data only)
+
+#generate a varlist (use python cdms2, load .nc4 and print f.variables)
+
+# generate convert commands
+convert_filelist_2d.sh filelist.txt varlist.txt 0 /data_captarm/christensen41/idx/nature_2007_2D_hourly.idx > convert_cmds_hourly_2007_2D.txt
+convert_filelist_3d.sh filelist_BCPHOBIC_M01_hourly.txt BCPHOBIC 0 /data_pcmdi/christensen41/idx/nature_2007_BCPHOBIC_hourly.idx > convert_cmds_BCPHOBIC_hourly_M01.txt
+convert_filelist_3d.sh filelist_BCPHILIC_M01_hourly.txt BCPHILIC 0 /data_captarm/christensen41/idx/nature_2007_BCPHILIC_hourly.idx > convert_cmds_BCPHILIC_hourly_M01.txt
+# manual modifications if necessary (maybe timesteps are missing and need to be corrected, etc.)
+
+# create the destination idx volume
+FIELDS=""
+cat varlist.txt | while read var; do if [[ "$FIELDS" != "" ]]; then FIELDS="${FIELDS} + "; fi; FIELDS="${FIELDS}${var} float32 compressed"; done
+visusconvert --create /data_captarm/christensen41/idx/nature_2007_2D_hourly.idx --box "0 5759 0 2880" --fields "${FIELDS}" --time 0 4008 time%06d/
+visusconvert --create /data_pcmdi/christensen41/idx/nature_2007_BCPHOBIC_hourly.idx --box "0 5759 0 2880 0 71" --fields "BCPHOBIC float32 compressed" --time 0 4008 time%06d/
+visusconvert --create /data_captarm/christensen41/idx/nature_2007_BCPHILIC_hourly.idx --box "0 5759 0 2880 0 71" --fields "BCPHILIC float32 compressed" --time 0 4008 time%06d/
+#manually change format(0) to format(1) so that rowmajor is used instead of (slower, less efficient) hzorder
+
+# run convert commands
+~/bin/convert_batch.sh < /data_captarm/christensen41/convert_cmds_hourly_2007_2D.txt > convert_2D.log 2>&1
+~/bin/convert_batch.sh < /data_captarm/christensen41/raw/convert_cmds_BCPHILIC_hourly_M01.txt > convert_BCPHILIC_M01.log 2>&1
+~/bin/convert_batch.sh < /data_pcmdi/christensen41/raw/convert_cmds_BCPHOBIC_hourly_M01.txt > convert_BCPHOBIC_M01.log 2>&1
+
+
+
+-------------------------------------------------------------------------------
+
+generate xml for experiments
+
+# generate list of published datasets
+find /cmip5_css02/data/cmip5/output1/MIROC/MIROC4h/ -type d -regex ".*/r.+i.p." > ../tmp/MIROC4h.runs
+
+# find files associated with those datasets
+for f in `cat CSIRO-Mk3L.runs`; do list=`echo $f | sed 's-/-.-g' | cut -c2-`.list; find $f -name "*.nc*" > $list; done
+
+# run cdscan on those lists of files
+for f in `ls *.list`; do echo "*** $f"; if [ ! -f ../xml/${f%.list}.xml ]; then cdscan --exclude ps,eta,depth,lat,type -x /scratch/for_ganzberger1/idx/ondemand/xml/${f%.list}.xml -f $f > ${f%.list}.out 2>&1; fi done
+
+# clean up the stragglers (datasets that failed for one reason or another)
+for f in `ls *.out`; do echo $f; g=`sed 's/cmip5_css01_data_//g' | sed 's/_/./g'`; echo $g; echo mv ../xml/${f%.out}.xml ../xml/${g%.out}.xml; done
+for f in `cat leftovers.txt`; do tail ${f%.list}.out; done
+for f in `cat leftovers.txt`; do echo "*** $f"; if [ ! -f ../xml/${f%.list}.xml ]; then cdscan --exclude ps,eta,depth,lat,type,lon,zg,mrfso -x /scratch/for_ganzberger1/idx/ondemand/xml/${f%.list}.xml -f $f > ${f%.list}.out 2>&1; fi done
+
+
+
+
+-------------------------------------------------------------------------------
+
+# cdscan 'em all!
+find /cmip5_css02/data/cmip5/output1/ -type d -regex ".*/r.+i.p." > ../tmp/cmip5_css02_output1.runs
+find /cmip5_css01/data/cmip5/output1/ -type d -regex ".*/r.+i.p." > ../tmp/cmip5_css01_output1.runs
+find /cmip5_css02/data/cmip5/output2/ -type d -regex ".*/r.+i.p." > ../tmp/cmip5_css02_output2.runs
+find /cmip5_css01/data/cmip5/output2/ -type d -regex ".*/r.+i.p." > ../tmp/cmip5_css01_output2.runs
+# (get rid of the ones I already did: MIROC4h, HADGEM2, CSIRO-Mk3L)
+# there are about 33125 remaining runs. The first ~400 took more than 12 hours to scan, so maybe avg 600/24 hours == ~55 days ==> ~2 mo to complete scan
+#update: about 3000-4000 were actually directories, so that number is now maybe as low as ~28K. Still probably ~2mo to finish :)
+
+# find files associated with those datasets
+# from aims2, /opt/nfs/christensen41/cdscan
+for ((i=0;i<10;i++)); do for f in `cat all_part${i}.runs`; do list=`echo $f | sed 's-/-.-g' | cut -c2-`.list; find $f -type f -name "*.nc*" > $list; echo "$f $list"; done > list_all_nc_part${i}.out 2>&1; done
+# massage output files list_all_nc_partN.out to be a list of lists 
+
+#remove first part of filename "cmip5_css0[1|2].data." as well since we don't want it in the xml filename
+for f in `ls *.list`; do mv $f ${f#cmip5_css02.data.}; done
+
+# run cdscan on those lists of lists of nc files
+for ((i=0;i<10;i++)); do for f in `cat all_nc_part${i}.lists`; do echo "*** $f"; if [ ! -f ../xml/${f%.list}.xml ]; then cdscan --exclude ps,eta,depth,lat,type,lon -x /opt/nfs/christensen41/xml/${f%.list}.xml -f $f > ${f%.list}.out 2>&1; fi done; > cdscan_part${i}.out 2>&1; done > mega_cdscan.out 2>&1
+
+#actually, let's run them in parallel... the first is already going, so I'll start the other nine in the background
+for ((i=0;i<10;i++)); do { for f in `cat all_nc_part${i}.lists`; do echo "*** $f"; if [ ! -f ../xml/${f%.list}.xml ]; then echo "    scanning..."; cdscan --exclude ps,eta,depth,lat,type,lon -x /opt/nfs/christensen41/xml/${f%.list}.xml -f $f > ${f%.list}.out 2>&1; else echo "    already scanned"; fi; done & }; > new_cdscan_part${i}.out 2>&1; done > new_mega_cdscan_background.out 2>&1
+
+# use rsync periodically to ensure xml files are up-to-date (because aims2 doesn't have /scratch/for_ganzberger1 mounted)
+cd /scratch/for_ganzberger1/idx/ondemand/xml
+rsync -azvP /opt/nfs/christensen41/xml/ .
+
+
+-------------------------------------------------------------------------------
+# clean up / rename xml file to match esgf server api
+
+for f in `ls *.xml`; do g=`echo $f | sed 's/_/./g' | sed 's/cmip5\.\(css02\|css01\|gdo2\)\.data\.//g'`; if [[ "$f" != "$g" ]]; then echo mv $f $g; fi; done > ../mvcmds.out
+
+# do the same for the list files that may not have been renamed earlier
+find . -name "*.list" | xargs -n1 g=`echo $f | sed 's/_/./g' | sed 's/cmip5\.\(css02\|css01\|gdo2\)\.data\.//g'`; if [[ "$f" != "$g" ]]; then if [[ ! -e "$g" ]]; then echo mv $f $g; fi; done > ../mvlistcmds.out
+#arguments list too long :(
+create rename.sh:
+f=$1; 
+g=`echo $f | sed 's/_/./g' | sed 's/cmip5\.\(css02\|css01\|gdo2\)\.data\.//g'`
+if [[ $f != $g ]]; then
+  if [[ ! -e $g ]]; then 
+    echo mv $f $g; 
+  fi
+fi 
+find . -name "*.list" | xargs -n1 -IF ./rename.sh F > ../mvlistcmds.out
+
+gmv inst30mn_2d_aer1_Nx_M01.xml inst30mn.2d.aer1.Nx.M01.xml
+mv inst30mn_2d_aer1_Nx_M02.xml inst30mn.2d.aer1.Nx.M02.xml
+mv inst30mn_2d_aer1_Nx_M03.xml inst30mn.2d.aer1.Nx.M03.xml
+mv inst30mn_2d_aer1_Nx_M04.xml inst30mn.2d.aer1.Nx.M04.xml
+mv inst30mn_2d_aer1_Nx_M05.xml inst30mn.2d.aer1.Nx.M05.xml
+mv inst30mn_2d_aer1_Nx_M06.xml inst30mn.2d.aer1.Nx.M06.xml
+mv inst30mn_3d_C02-Y2007-M01.xml inst30mn.3d.C02-Y2007-M01.xml
+mv nasa_ganymed_7km_2d.xml nasa.ganymed.7km.2d.xml
+mv nasa_ganymed_7km_3d_9090.xml nasa.ganymed.7km.3d.9090.xml
+mv nasa_ganymed_7km_3d.xml nasa.ganymed.7km.3d.xml
+mv nasa_ganymed_7km_tavg_carbon_diagnostics.xml nasa.ganymed.7km.tavg.carbon.diagnostics.xml
+mv nasa_ganymed_7km_tavg_physics_diagnostics.xml nasa.ganymed.7km.tavg.physics.diagnostics.xml
+mv nasa_ganymed_7km_tavg_surface_diagnostics.xml nasa.ganymed.7km.tavg.surface.diagnostics.xml
+mv nasa_ganymed_tempo_sampler_aer.xml nasa.ganymed.tempo.sampler.aer.xml
+mv nasa_ganymed_tempo_sampler_chm_9090.xml nasa.ganymed.tempo.sampler.chm.9090.xml
+mv nasa_ganymed_tempo_sampler_chm.xml nasa.ganymed.tempo.sampler.chm.xml
+mv nasa_ganymed_tempo_sampler_met.xml nasa.ganymed.tempo.sampler.met.xml
+mv ornl_opendap_test.xml ornl.opendap.test.xml
+mv test_ganymed_3d.xml test.ganymed.3d.xml
+mv test_ganymed.xml test.ganymed.xml
+
+-------------------------------------------------------------------------------
+
+#rsync parallel, first create directory structure
+rsync -av -f"+ */" -f"- *" /scratch/idx/raw/g5nr.nccs.nasa.gov .
+
+#make a list of files at the granularity we'll run the rsync
+find /scratch/idx/raw/g5nr.nccs.nasa.gov -name "D*" -type d > days.list
+
+#then run the sync
+maxjobs=16;numjobs=0;for d in `cat days.list`; do if ((numjobs>=maxjobs)); then echo "waiting..."; wait; numjobs=0; fi; { rsync -navP $d  /scratch/idx/raw/$d ./`dirname $d` & }; numjobs=$(($numjobs+1)); done > rsync.out
+
+#(some more by hand commands)
+cd /data_pcmdi/christensen41/raw
+for ((i=1;i<=6i++)); do { rsync -aP $d /capt/idx/raw/g5nr.nccs.nasa.gov/data/DATA/0.0625_deg/inst/inst30mn_2d_aer1_Nx/Y2007/M0${i} ./g5nr.nccs.nasa.gov/data/DATA/0.0625_deg/inst/inst30mn_2d_aer1_Nx/Y2007 & }; done
+
+-------------------------------------------------------------------------------
+#
+#creating cdscan xml from opendap url
+#
+
+#create .txt file with opendap paths
+$ cat old_data/xml/nasa_ganymed_7km_2d.txt
+http://opendap.nccs.nasa.gov:9090/dods/OSSE/G5NR/Ganymed/7km/0.0625_deg/const/const_2d_asm_Nx
+http://opendap.nccs.nasa.gov:9090/dods/OSSE/G5NR/Ganymed/7km/0.0625_deg/inst/inst30mn_2d_aer1_Nx
+http://opendap.nccs.nasa.gov:9090/dods/OSSE/G5NR/Ganymed/7km/0.0625_deg/inst/inst30mn_2d_met1_Nx
+
+#(these exist for nasa nature dataset)
+old_data/xml/nasa_ganymed_7km_2d.txt                       old_data/xml/nasa_ganymed_7km_tavg_physics_diagnostics.txt  old_data/xml/nasa_ganymed_tempo_sampler_chm.txt
+old_data/xml/nasa_ganymed_7km_3d_9090.txt                  old_data/xml/nasa_ganymed_7km_tavg_surface_diagnostics.txt  old_data/xml/nasa_ganymed_tempo_sampler_met.txt
+old_data/xml/nasa_ganymed_7km_3d.txt                       old_data/xml/nasa_ganymed_tempo_sampler_aer.txt
+old_data/xml/nasa_ganymed_7km_tavg_carbon_diagnostics.txt  old_data/xml/nasa_ganymed_tempo_sampler_chm_9090.txt
+
+#create the cdscan .xml
+cdscan -x nasa_ganymed_7km_2d.xml -f nasa_ganymed_7km_2d.txt
+
+#that's it!
+
+#NOTE: YOU MUST RUN the cdat_conversion service from the directory containing these .xml files (due to a problem with cdms2 module)
+
+-------------------------------------------------------------------------------
+
+#building mod_visus
+export WWW=/scratch/for_ganzberger1/idx/mod_visus
+cmake -DVISUS_BUILD_MODVISUS=1 -DVISUS_CONFIG_FILE="$WWW/visus.config" -DVISUS_LOG_FILE="/tmp/visus.log" -DVISUS_BUILD_VISUSSERVER=1 -DCMAKE_BUILD_TYPE=Release -DVISUS_BUILD_SWIG_PYTHON=1 -DPYTHON_LIBRARY=/usr/local/uvcdat/2.2.0-full/lib/libpython2.7.so ../..
+sudo mv /usr/lib64/httpd/modules/mod_visus.so /usr/lib64/httpd/modules/mod_visus.so.2015.12.10
+sudo cp libmod_visus.so /usr/lib64/httpd/modules/mod_visus.so
+sudo /etc/init.d/httpd restart
+
+-------------------------------------------------------------------------------
+

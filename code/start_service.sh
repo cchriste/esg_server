@@ -30,6 +30,9 @@ source ${UVCDAT_DIR}/bin/setup_runtime.sh
 pid=${ONDEMAND_BIN}/current_instance.pid
 ${ONDEMAND_BIN}/stop_service.sh
 
+# clean up any temporary lock files
+rm /tmp/*.lock
+
 # start service
 if [ ${DEBUG_MODE} ]; then
   python ${ONDEMAND_BIN}/cdat_converter_service.py ${ARG_PORT} ${ARG_HOST} ${ARG_XMLPATH} ${ARG_IDXPATH} ${ARG_DB} ${ARG_VISUSSERVER} ${ARG_VISUSSERVER_USERNAME} ${ARG_VISUSSERVER_PASSWORD}

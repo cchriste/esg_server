@@ -1,0 +1,27 @@
+All datasets 2007: M01-M06 (164 days, 30min timestep)
+
+RAW:
+
+/data_pcmdi/christensen41/raw
+   11T  2d met1
+   ~7T  2d aer1 <copying from /capt/idx/raw>
+   11T  3d BCPHOBIC
+
+/data_captarm/christensen41/raw
+   7.3T 3d CO2
+   12T  3d BCPHILIC
+   ~7T  3d T <still copying from /scratch>
+
+IDX (60 min timestep, every other from original):
+
+/data_pcmdi/christensen41/idx
+   6.2T 2d nature_2007_met1_hourly
+   4.8T 3d nature_2007_T_hourly
+   6.8T 3d nature_2007_BCPHOBIC_hourly
+   18T total
+
+/data_captarm/christensen41/idx
+   4.2T 2d nature_2007_aer1_hourly
+   5.0T 3d nature_2007_CO2_hourly
+   7.0T 3d nature_2007_BCPHILIC_hourly
+   17T total

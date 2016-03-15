@@ -30,29 +30,12 @@ import BaseHTTPServer
 import fcntl
 import cdms2
 import urlparse
-from os import remove,path,strerror
+import os
+import socket
 from sys import stdout
 from shutil import rmtree
 import cdat_to_idx
 
-class Lock:
-    """Simple file-based locking using fcntl"""    
-    """(see http://blog.vmfarms.com/2011/03/cross-process-locking-and.html)"""
-    def __init__(self, filename):
-        self.filename = filename
-        self.handle = open(filename, 'w')
-    
-    def acquire(self):
-        fcntl.flock(self.handle, fcntl.LOCK_EX)
-
-    def try_acquire(self):
-        fcntl.flock(self.handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        
-    def release(self):
-        fcntl.flock(self.handle, fcntl.LOCK_UN)
-        
-    def __del__(self):
-        self.handle.close()
 
 RESULT_SUCCESS=200; RESULT_INVALID=400; RESULT_NOTFOUND=404; RESULT_ERROR=500; RESULT_BUSY=503
 
@@ -65,14 +48,15 @@ class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
         url=urlparse.urlparse(self.path)
         if url.path=='/convert':
             query_id=cdatConverter.nqueries_; cdatConverter.nqueries_+=1
+            t1=time.time()
             print "("+str(query_id)+")",url.query
             result,response=convert_query(url.query)
-            print "("+str(query_id)+") complete:",result
+            print "("+str(query_id)+") complete ("+str((time.time()-t1)*1000)+"ms): ["+str(response)+"] "+result
+            stdout.flush()
             self.send_response(response)
             self.send_header('Content-type','text/html')
             self.end_headers()
             self.wfile.write("<html><head></head><body>"+result+"</body></html>")
-            stdout.flush()
             return
         if url.path=='/create':
             print "request received: "+url.query
@@ -128,7 +112,7 @@ def lookup_cdat_path(idxpath):
         # solution is to run converter service from xml directory and
         # to load xml files from local paths, not explicit paths
         # (e.g. "filename.xml", not "/path/to/filename.xml".
-        cdatpath=path.basename(cdatpath)
+        cdatpath=os.path.basename(cdatpath)
 
         return cdatpath,True
     return "",False
@@ -186,7 +170,7 @@ def get_timesteps(idxpath):
     """open idx, returns num timesteps"""
 
     global dbpath
-    idxpath=path.dirname(dbpath)+"/"+idxpath
+    idxpath=os.path.dirname(dbpath)+"/"+idxpath
     dataset=Visus.Dataset.loadDataset(idxpath);
     if not dataset:
         raise ConvertError(RESULT_ERROR,"Error: could not load IDX dataset "+idxpath)
@@ -196,7 +180,7 @@ def create_idx_query(idxpath,field,timestep,box,hz):
     """open idx, validate inputs, create write query"""
 
     global dbpath
-    idxpath=path.dirname(dbpath)+"/"+idxpath
+    idxpath=os.path.dirname(dbpath)+"/"+idxpath
     dataset=Visus.Dataset.loadDataset(idxpath);
     if not dataset:
         raise ConvertError(RESULT_ERROR,"Error creating IDX query: could not load dataset "+idxpath)
@@ -254,12 +238,12 @@ def convert(idxpath,field,timestep,box,hz):
 
     # try to read lock file (note: this is unix-only)
     lockfilename="/tmp/"+idxpath+"-"+field+"-"+str(timestep)+".lock" #+"-"+str(box)+"-"+str(hz)+".lock" (for now, regions are ignored)
+    lock=None
     result=RESULT_SUCCESS
     result_str="Success!"
     try:
         # get file lock
-        lock=Lock(lockfilename)
-        lock.try_acquire()
+        lock=os.open(lockfilename,os.O_CREAT|os.O_EXCL)
 
         #import pdb; pdb.set_trace()
 
@@ -295,8 +279,8 @@ def convert(idxpath,field,timestep,box,hz):
             result=RESULT_ERROR
             result_str="Error reading data. Please ensure cdms2 is working and NetCDF data is accessible."
         else:
-            result=RESULT_BUSY
-            result_str="Conversion in progress. Duplicate request ignored. (e.errno="+strerror(e.errno)+")"
+            result=RESULT_ERROR
+            result_str="An unknown i/o error has occured (e.errno="+os.strerror(e.errno)+")"
     except cdms2.CDMSError as e:
         result=RESULT_ERROR
         result_str="CDMSError: %s"%e
@@ -307,10 +291,15 @@ def convert(idxpath,field,timestep,box,hz):
         result_str="MemoryError: please try again ("+str(e)+")"
         result=RESULT_ERROR
     except Exception as e:
-        result=RESULT_ERROR
-        result_str="unknown error occurred during convert ("+str(e)+")"
+        if e.errno==17:
+            result=RESULT_BUSY
+            result_str="Conversion in progress. Duplicate request ignored. (e.errno="+os.strerror(e.errno)+")"
+        else:
+            result=RESULT_ERROR
+            result_str="unknown error occurred during convert ("+str(e)+")"
     finally:
-        lock.release()
+        if lock:
+            os.close(lock)
 
     proctime=time.clock()-pt1
     interval=time.time()-t1
@@ -395,10 +384,29 @@ def init(database,hostname,port,xmlpath,idxpath,visus_server,username,password):
     global visusserver_password
     visusserver_password=password
 
+#note: doesn't seem to be any huge reason in our case to prefer forking over theading, but both work fine
+#class OnDemandSocketServer(SocketServer.ThreadingTCPServer):
+class OnDemandSocketServer(SocketServer.ForkingTCPServer):
+    """This is just to override handle_error to be less annoying when disconnections occur
+    """
+    def handle_error(self, request, client_address):
+        """Handle an error gracefully.  May be overridden.
+        The default is to print a traceback and continue.
+        """
+        if False:
+            print '-'*40
+            print 'Exception happened during processing of request from',
+            print client_address
+            import traceback
+            traceback.print_exc() # XXX But this goes to stderr!
+            print '-'*40
+
+
 def start_server(hostname,port):
     # start server
-    SocketServer.ThreadingTCPServer.allow_reuse_address = True
-    httpd = SocketServer.ThreadingTCPServer((hostname, port),cdatConverter)
+    #SocketServer.ThreadingTCPServer.allow_reuse_address = True
+    SocketServer.ForkingTCPServer.allow_reuse_address = True
+    httpd = OnDemandSocketServer((hostname, port),cdatConverter)
     print "serving at port", port
     stdout.flush()
     try:
