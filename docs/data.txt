@@ -1,18 +1,15 @@
-All datasets 2007: M01-M06 (164 days, 30min timestep)
+-----------------------------
+NASA Nature Run Data Summary
+-----------------------------
 
-RAW:
+All datasets 2007: M01-M06 (164 days, 30 min timestep, comprising the last 1/4 of total simulation)
+IDX datasets 2007: M01-M06 (164 days, 60 min timestep, every other from original)
 
 /data_pcmdi/christensen41/raw
    11T  2d met1
-   ~7T  2d aer1 <copying from /capt/idx/raw>
+   7T   2d aer1
    11T  3d BCPHOBIC
-
-/data_captarm/christensen41/raw
-   7.3T 3d CO2
-   12T  3d BCPHILIC
-   ~7T  3d T <still copying from /scratch>
-
-IDX (60 min timestep, every other from original):
+   29T total
 
 /data_pcmdi/christensen41/idx
    6.2T 2d nature_2007_met1_hourly
@@ -20,8 +17,170 @@ IDX (60 min timestep, every other from original):
    6.8T 3d nature_2007_BCPHOBIC_hourly
    18T total
 
+/data_captarm/christensen41/raw
+   7.3T 3d CO2
+   12T  3d BCPHILIC
+   6.9T 3d T
+   26T total
+
 /data_captarm/christensen41/idx
    4.2T 2d nature_2007_aer1_hourly
    5.0T 3d nature_2007_CO2_hourly
    7.0T 3d nature_2007_BCPHILIC_hourly
    17T total
+
+Filesystem            Size  Used Avail Use% Mounted on
+198.128.245.135:/volume1/data_pcmdi
+                       77T   51T   27T  66% /data_pcmdi
+198.128.245.133:/volume1/data_captarm
+                       77T   74T  3.6T  96% /data_captarm
+
+Total Original Data: 55T
+Total IDX Data:      35T
+Total Combined Data: 90T
+
+IDX storage efficiency vs original data: 78.6%
+
+
+-----------------------------
+Available Fields
+-----------------------------
+
+== 2D == 
+
+aer1:
+SO4 Angstrom parameter [470-870 nm] __ENSEMBLE__
+Sea Salt Extinction AOT [550 nm]
+CO Surface Concentration in ppbv __ENSEMBLE__
+Black Carbon Scattering AOT [550 nm]
+Organic Carbon Extinction AOT [550 nm] __ENSEMBLE__
+Organic Carbon Scattering AOT [550 nm] __ENSEMBLE__
+Sea Salt Column Mass Density
+SO4 Column Mass Density __ENSEMBLE__
+Sea Salt Scattering AOT [550 nm]
+Organic Carbon Column Mass Density __ENSEMBLE__
+Dust Scattering AOT [550 nm] - PM 2.5
+SO2 Column Mass Density __ENSEMBLE__
+Black Carbon Extinction AOT [550 nm]
+CO2 Surface Concentration Bin 001
+Organic Carbon Surface Mass Concentration __ENSEMBLE__
+Dust Column Mass Density
+Dust Extinction AOT [550 nm] - PM 2.5
+Black Carbon Surface Mass Concentration
+DMS Column Mass Density __ENSEMBLE__
+CO Column Burden __ENSEMBLE__
+Black Carbon Angstrom parameter [470-870 nm]
+SO4 Surface Mass Concentration __ENSEMBLE__
+Sea Salt Surface Mass Concentration
+Dust Surface Mass Concentration
+Organic Carbon Angstrom parameter [470-870 nm] __ENSEMBLE__
+Total Aerosol Angstrom parameter [470-870 nm]
+Sea Salt Column Mass Density - PM 2.5
+Dust Scattering AOT [550 nm]
+Sea Salt Surface Mass Concentration - PM 2.5
+Total Aerosol Extinction AOT [550 nm]
+SO4 Scattering AOT [550 nm] __ENSEMBLE__
+Dust Angstrom parameter [470-870 nm]
+Sea Salt Extinction AOT [550 nm] - PM 2.5
+Total Aerosol Scattering AOT [550 nm]
+Dust Column Mass Density - PM 2.5
+Black Carbon Column Mass Density
+DMS Surface Mass Concentration __ENSEMBLE__
+Sea Salt Scattering AOT [550 nm] - PM 2.5
+SO2 Surface Mass Concentration __ENSEMBLE__
+SO4 Extinction AOT [550 nm] __ENSEMBLE__
+Dust Surface Mass Concentration - PM 2.5
+Sea Salt Angstrom parameter [470-870 nm]
+Dust Extinction AOT [550 nm]
+CO2 Bulk Mixing Ratio (Column Mass/ps) Bin 001
+
+met1:
+in_cloud_optical_thickness_of_low_clouds
+cloud_top_pressure
+10-meter_eastward_wind
+total_precipitable_liquid_water
+cloud_area_fraction_for_low_clouds
+liquid_water_path
+nonanvil_large_scale_precipitation
+tropopause_temperature_using_blended_TROPP_estimate
+total_column_odd_oxygen
+toa_incoming_shortwave_flux
+total_precipitable_water_vapor
+eastward_wind_at_50_meters
+ocean_snowfall
+cape_for_surface_parcel
+surface_specific_humidity
+in_cloud_optical_thickness_of_all_clouds
+northward_wind_at_250_hPa
+air_density_at_surface
+2-meter_specific_humidity
+surface_air_temperature
+cloud_top_temperature
+convective_precipitation
+total_cloud_area_fraction
+Total_precipitation_land
+2-meter_air_temperature
+cloud_area_fraction_for_middle_clouds
+w_at_850_hPa
+2-meter_eastward_wind
+surface_skin_temperature
+eastward_wind_at_850_hPa
+anvil_precipitation
+10-meter_northward_wind
+air_temperature_at_850_hPa
+tropopause_pressure_based_on_thermal_estimate
+10-meter_specific_humidity
+ice_water_path
+surface_eastward_wind
+surface_incoming_shortwave_flux
+planetary_boundary_layer_height
+diameter_of_largest_RAS_plume
+air_temperature_at_500_hPa
+total_precipitation
+eastward_wind_at_250_hPa
+northward_wind_at_500_hPa
+surface_velocity_scale
+northward_wind_at_50_meters
+height_at_1000_mb
+surface_pressure
+specific_humidity_at_850_hPa
+condensed_water_path
+evaporation_from_turbulence
+tropopause_pressure_based_on_EPV_estimate
+sea_level_pressure
+vorticity_at_850_hPa
+surface_absorbed_longwave_radiation
+height_at_500_hPa
+specific_humidity_at_500_hPa
+tropopause_pressure_based_on_blended_estimate
+height_at_250_hPa
+specific_humidity_at_250_hPa
+ocean_rainfall
+in_cloud_optical_thickness_of_middle_clouds
+surface_layer_height
+Total_snow_storage_land
+2-meter_northward_wind
+northward_wind_at_850_hPa
+w_at_200_hPa
+snow_depth
+air_temperature_at_250_hPa
+total_precipitable_ice_water
+upwelling_longwave_flux_at_toa
+w_at_10_hPa
+snowfall
+eastward_wind_at_500_hPa
+height_at_850_hPa
+in_cloud_optical_thickness_of_high_clouds(EXPORT)
+runoff_flux
+w_at_500_hPa
+cloud_area_fraction_for_high_clouds
+tropopause_specific_humidity_using_blended_TROPP_estimate
+surface_northward_wind
+10-meter_air_temperature
+
+== 3D ==
+
+T
+CO2
+BCPHILIC: 'Hydrophilic Black Carbon'
+BCPHOBIC: 'Hydrophobic Black Carbon'

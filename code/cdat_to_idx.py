@@ -47,6 +47,15 @@ def getIdxPaths(cdat_dataset,db):
 
     return ret,ds_id
 
+
+#****************************************************
+def validatePaths(paths,basedir):
+    """Verifies the given paths exist."""
+    ret=True
+    for path in paths:
+        ret &= os.path.isfile(basedir+'/'+path)
+    return ret
+
         
 #****************************************************
 def create_idx(idxinfo):
@@ -82,7 +91,7 @@ def create_idx(idxinfo):
 
 
 #****************************************************
-def cdat_to_idx(cdat_dataset,destpath,db,hostname,hostuser,hostpass,service):
+def cdat_to_idx(cdat_dataset,destpath,db):
     """Reads .nc or cdat .xml file and creates corresponding idx volumes, one per domain.
     In addition, it creates database tables to facilitate converting the actual data."""
 
@@ -162,15 +171,22 @@ def cdat_to_idx(cdat_dataset,destpath,db,hostname,hostuser,hostpass,service):
             domains[axes].idxinfo.dims=[]
             domains[axes].idxinfo.logic_to_physic=logic_to_physic[:]
             for i in range(len(axes)):
+                #import pdb;pdb.set_trace()
                 axis=axes[i]
                 sz=len(dataset.axes[axes[i]])
                 if axis.startswith("time"):  #note: some axes named time_<ntimesteps> (with opendap), others just named time
                     domains[axes].idxinfo.timesteps = sz
                 else:
                     domains[axes].idxinfo.dims.append(sz)
+                    rng=1
                     if physical_bounds.has_key(axis):
-                       rng=physical_bounds[axis][1]-physical_bounds[axis][0]
-                       domains[axes].idxinfo.logic_to_physic[4*i+i]=float(sz)/float(rng)
+                       rng=float(physical_bounds[axis][1]-physical_bounds[axis][0])/float(sz)
+                    if not rng:              #note: assume longitude [0,360] and latitude [0,180] if not explicitly specified
+                        if axis.startswith("lon"):
+                            rng=float(360)/float(sz)
+                        elif axis.startswith("lat"):
+                            rng=float(180)/float(sz)
+                    domains[axes].idxinfo.logic_to_physic[4*i+i]=rng
 
             # fields            
             f=Visus.Field(v.id,Visus.DType(v.dtype.name))
@@ -201,14 +217,21 @@ def cdat_to_idx(cdat_dataset,destpath,db,hostname,hostuser,hostpass,service):
         # insert into idx db
         cur.execute("INSERT into idxfiles (pathname, ds_id) values (\"%s\", %d)" % (os.path.basename(d.idxinfo.path), cdat_id))
 
-        # register with server
+    return domains
+
+#****************************************************
+def register_datasets(idx_paths,outputdir,hostname,hostuser,hostpass,service):
+    """ register datasets with ViSUS data server """
+    print "Ensuring new datasets are registered with ViSUS data server"
+
+    for idx_path in idx_paths:
         from urlparse import urlparse,urlunparse
         from urllib import quote
         import urllib2
-        name=os.path.splitext(os.path.basename(d.idxinfo.path))[0]
+        name=os.path.splitext(os.path.basename(idx_path))[0]
         print hostname
         url=urlparse(hostname)
-        url=url._replace(query="action=AddDataset&username="+hostuser+"&password="+hostpass+"&xml="+quote("<dataset name=\""+name+"\" permissions=\"public\" url=\"file://"+d.idxinfo.path+"\" ><access name=\"Multiplex\" type=\"multiplex\"><access chmod=\"r\" type=\"disk\" /><access chmod=\"r\" ondemand=\"external\" path=\""+service+"/convert\" type=\"ondemandaccess\" /><access chmod=\"r\" type=\"disk\" /></access></dataset>"))
+        url=url._replace(query="action=AddDataset&username="+hostuser+"&password="+hostpass+"&xml="+quote("<dataset name=\""+name+"\" permissions=\"public\" url=\"file://"+outputdir+'/'+idx_path+"\" ><access name=\"Multiplex\" type=\"multiplex\"><access chmod=\"r\" type=\"disk\" /><access chmod=\"r\" ondemand=\"external\" path=\""+service+"/convert\" type=\"ondemandaccess\" /><access chmod=\"r\" type=\"disk\" /></access></dataset>"))
         print url
         try:
             ret = urllib2.urlopen(urlunparse(url)).read()
@@ -221,6 +244,7 @@ def cdat_to_idx(cdat_dataset,destpath,db,hostname,hostuser,hostpass,service):
             #print "BadStatusLine:",e
         except Exception,e:
             print "unknown exception:",e
+
 
 #****************************************************
 def make_visus_config(idx_paths,dataset,hostname):
@@ -263,21 +287,26 @@ def generate_idx(inputfile,outputdir,database=None,server=default_server,usernam
         outputdir=os.path.abspath(outputdir)
         idx_paths,ds_id=getIdxPaths(inputfile,db)
 
+        if not validatePaths(idx_paths,outputdir):
+            print "idx files do not exist: (re)creating them"
+            force=True
+
         # if force recreate, delete existing entries in database 
         if force:
             cur=db.cursor()
-            cur.execute("DELETE from datasets where ds_id=%d"%ds_id)
+            cur.execute("DELETE from datasets where ds_id=%d"%ds_id[0])
             for path in idx_paths:
-                cur.execute("DELETE from idxfiles where ds_id=%d"%ds_id)
+                cur.execute("DELETE from idxfiles where ds_id=%d"%ds_id[0])
 
         if len(idx_paths)==0 or force:
-            cdat_to_idx(inputfile,outputdir,db,server,username,password,service)
+            cdat_to_idx(inputfile,outputdir,db)
 
             print "done creating idx volumes for",inputfile
             idx_paths,ds_id=getIdxPaths(inputfile,db)
         else:
             print "idx volumes already exist for",inputfile
             
+        register_datasets(idx_paths,outputdir,server,username,password,service)
         xml=make_visus_config(idx_paths,inputfile,server)
 
     db.close()

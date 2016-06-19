@@ -35,6 +35,7 @@ import socket
 from sys import stdout
 from shutil import rmtree
 import cdat_to_idx
+#import convert_query
 
 
 RESULT_SUCCESS=200; RESULT_INVALID=400; RESULT_NOTFOUND=404; RESULT_ERROR=500; RESULT_BUSY=503
@@ -50,6 +51,7 @@ class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
             query_id=cdatConverter.nqueries_; cdatConverter.nqueries_+=1
             t1=time.time()
             print "("+str(query_id)+")",url.query
+            stdout.flush()
             result,response=convert_query(url.query)
             print "("+str(query_id)+") complete ("+str((time.time()-t1)*1000)+"ms): ["+str(response)+"] "+result
             stdout.flush()
@@ -129,10 +131,16 @@ def parse_query(query):
     hz=-1
     if job.has_key("idx"):
         idxpath=job["idx"][0]
-    if job.has_key("field"):
-        field=job["field"][0]
     if job.has_key("time"):
         timestep=int(job["time"][0])
+    if job.has_key("field"):
+        field=job["field"][0]
+        idx=field.find('?')
+        if idx>=0:                  # field time overrides query time
+            field=field[:idx]
+            arg=field[idx+1:]
+            if arg.startswith("time="):
+                timestep=int(arg[arg.find('=')+1:])
     if job.has_key("box"):
         box=job["box"][0]
     if job.has_key("hz"):
