@@ -35,7 +35,7 @@ import socket
 from sys import stdout
 from shutil import rmtree
 import cdat_to_idx
-#import convert_query
+import convert_query
 
 
 RESULT_SUCCESS=200; RESULT_INVALID=400; RESULT_NOTFOUND=404; RESULT_ERROR=500; RESULT_BUSY=503
@@ -97,28 +97,6 @@ def clear_cache():
     return result,RESULT_SUCCESS
 
 
-def lookup_cdat_path(idxpath):
-    """lookup dataset corresponding to idxpath"""
-
-    db=sqlite3.connect(dbpath)
-    cur=db.cursor()
-    cur.execute("SELECT ds_id from idxfiles where pathname=\"%s\"" % idxpath)
-    cdatpath=cur.fetchall()
-    assert(len(cdatpath)<=1)
-    if len(cdatpath)>0:
-        cur.execute("SELECT pathname from datasets where ds_id=%d" % cdatpath[0])
-        cdatpath=cur.fetchone()[0]
-
-        # <warning>
-        # nasty hack to work around bug in cdms2 when using opendap:
-        # solution is to run converter service from xml directory and
-        # to load xml files from local paths, not explicit paths
-        # (e.g. "filename.xml", not "/path/to/filename.xml".
-        cdatpath=os.path.basename(cdatpath)
-
-        return cdatpath,True
-    return "",False
-
 
 def parse_query(query):
     """parse the cdat to idx conversion query string"""
@@ -148,81 +126,15 @@ def parse_query(query):
     return idxpath,field,timestep,box,hz
 
 
-def read_cdat_data(cdatpath,field,timestep):
-    """open and read a field from a cdat dataset"""
-
-    f=cdms2.open(cdatpath)
-    if not f.variables.has_key(field):
-        raise ConvertError(RESULT_NOTFOUND,"Field %s not found in cdat volume %s."%(field,cdatpath))
-    print cdatpath,"opened. Reading field",field,"at timestep",timestep
-    v=f.variables[field]
-
-    data=None
-    has_time=v.getAxisList()[0].id.startswith("time")
-    if has_time:
-        if len(v) <= timestep or timestep<0:
-            raise ConvertError(RESULT_NOTFOUND,"Timestep %d out of range for field %s."%(timestep,field))
-        data=v[timestep]
-    else:
-        data=v
-    print "finished reading field",field,"at timestep",timestep,"of",cdatpath
-
-    #"flatten" masked data by inserting missing_value everywhere mask is invalid
-    if isinstance(data,cdms2.tvariable.TransientVariable):
-        data=data.filled()
-
-    return data
-
-
-def get_timesteps(idxpath):
-    """open idx, returns num timesteps"""
-
-    global dbpath
-    idxpath=os.path.dirname(dbpath)+"/"+idxpath
-    dataset=Visus.Dataset.loadDataset(idxpath);
-    if not dataset:
-        raise ConvertError(RESULT_ERROR,"Error: could not load IDX dataset "+idxpath)
-    return dataset.getTimesteps().asVector()
-
-def create_idx_query(idxpath,field,timestep,box,hz):
-    """open idx, validate inputs, create write query"""
-
-    global dbpath
-    idxpath=os.path.dirname(dbpath)+"/"+idxpath
-    dataset=Visus.Dataset.loadDataset(idxpath);
-    if not dataset:
-        raise ConvertError(RESULT_ERROR,"Error creating IDX query: could not load dataset "+idxpath)
-    visus_field=dataset.getFieldByName(field);
-    if not visus_field:
-        raise ConvertError(RESULT_ERROR,"Error creating IDX query: could not find field "+field)
-    access=dataset.createAccess()
-    logic_box=dataset.getLogicBox()
-
-    if box or hz>=0:
-        pass #print "TODO: handle subregion queries and resolution selection (box=%s,hz=%d)"%(box,hz)
-
-    # convert the field
-    query=Visus.Query(dataset,ord('w'))
-    query.setLogicPosition(Visus.Position(logic_box))
-    query.setField(visus_field)
-    query.setTime(timestep)
-    query.setAccess(access)
-    query.begin()
-    return dataset,access,query  # IMPORTANT: need to return dataset,access because otherwise they go out of scope and query fails
-
-class ConvertError(Exception):
-    """Exception raised for errors during converstion.
-
-    Attributes:
-        ret  -- http return code for the exception
-        msg  -- explanation of the error
-    """
-    def __init__(self, code, msg):
-        self.code = code
-        self.msg = msg
-    def __str__(self):
-        return "error "+self.code+": "+self.msg
-
+def parse_return(args_str):
+    print args_str
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-c","--code"    ,default=200,type=int,help="return code")
+    parser.add_argument("-s","--string",default="This is a test",help="return string")
+    args = parser.parse_args(args_str.split(";"))
+    print "returning ("+str(args.code)+","+args.string+")"
+    return (args.code,args.string)
 
 def convert_query(query):
     """Converts a timestep of a field of a cdat dataset to idx, using the idxpath to find the matching cdat volume."""
@@ -231,90 +143,17 @@ def convert_query(query):
     idxpath,field,timestep,box,hz=parse_query(query)
     if not idxpath or not field:
         return ("Invalid query: %s"%query,RESULT_INVALID)
-    return convert(idxpath,field,timestep,box,hz)
-
-def convert(idxpath,field,timestep,box,hz):
-    """Converts a timestep of a field of a cdat dataset to idx, using the idxpath to find the matching cdat volume."""
-
-    t1  = time.time()
-    pt1 = time.clock()
-
-    # lookup dataset corresponding to idxpath
-    cdatpath,success=lookup_cdat_path(idxpath)
-    if not success:
-        return ("Database does not list associated cdat dataset for %s"%idxpath,RESULT_NOTFOUND)
-
-    # try to read lock file (note: this is unix-only)
-    lockfilename="/tmp/"+idxpath+"-"+field+"-"+str(timestep)+".lock" #+"-"+str(box)+"-"+str(hz)+".lock" (for now, regions are ignored)
-    lock=None
-    result=RESULT_SUCCESS
-    result_str="Success!"
+    
+    from subprocess import check_output,CalledProcessError
     try:
-        # get file lock
-        lock=os.open(lockfilename,os.O_CREAT|os.O_EXCL)
-
-        #import pdb; pdb.set_trace()
-
-        # open cdat, read the data
-        data=read_cdat_data(cdatpath,field,timestep)
-
-        # open idx and create query
-        print "creating idx query for field",field,"at time",timestep,"of",cdatpath
-        dataset,access,query=create_idx_query(idxpath,field,timestep,box,hz)
-
-        # validate bounds
-        if query.end() or data.size!=query.getNumberOfSamples().innerProduct():
-            raise ConvertError(RESULT_ERROR,"Invalid IDX query.")
-            
-        # validate shape
-        shape=data.shape[::-1]
-        for i in range(len(shape)):
-            if shape[i]!=query.getNumberOfSamples()[i]:
-                raise ConvertError(RESULT_ERROR,"Invalid query dimensions.")
-                
-        # convert data
-        print "converting field",field,"at time",timestep,"of",cdatpath,"to idx..."
-        visusarr=Visus.Array.fromNumPyArray(data)
-        visusarrptr=Visus.ArrayPtr(visusarr)
-        query.setBuffer(visusarrptr)
-        ret=query.execute()
-        if not ret:
-            raise ConvertError(RESULT_ERROR,"Error executing IDX query.")
-        print "done converting field",field,"at time",timestep,"of",cdatpath
-            
-    except IOError as e:
-        if e.errno==None:
-            result=RESULT_ERROR
-            result_str="Error reading data. Please ensure cdms2 is working and NetCDF data is accessible."
-        else:
-            result=RESULT_ERROR
-            result_str="An unknown i/o error has occured (e.errno="+os.strerror(e.errno)+")"
-    except cdms2.CDMSError as e:
-        result=RESULT_ERROR
-        result_str="CDMSError: %s"%e
-    except ConvertError as e:
-        result=e.code
-        result_str=e.msg
-    except MemoryError as e:
-        result_str="MemoryError: please try again ("+str(e)+")"
-        result=RESULT_ERROR
+        global dbpath
+        cmd="python -c 'import convert_query; convert_query.convert(\""+idxpath+"\",\""+field+"\","+str(timestep)+",\""+box+"\","+str(hz)+",\""+dbpath+"\")'"
+        ret=check_output(cmd,shell=True)
+        return parse_return(ret)
+    #except CalledProcessError as e:
     except Exception as e:
-        if e.errno==17:
-            result=RESULT_BUSY
-            result_str="Conversion of field",field,"at time",timestep,"in progress. Duplicate request ignored. (e.errno="+os.strerror(e.errno)+")"
-        else:
-            result=RESULT_ERROR
-            result_str="unknown error occurred during convert ("+str(e)+")"
-    finally:
-        if lock:
-            os.close(lock)
-
-    proctime=time.clock()-pt1
-    interval=time.time()-t1
-    if result==RESULT_SUCCESS:
-        print("Total time to convert field",field,"at time",timestep,"of",cdatpath,"was %d msec (proc_time: %d msec)"  % (interval*1000,proctime*1000))
-
-    return (result_str,result)
+        #TODO: probably some error handling here
+        raise
 
 
 def create(query):

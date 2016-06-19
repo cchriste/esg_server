@@ -7,6 +7,8 @@
 #
 
 # Env vars that must be set:
+#   ONDEMAND_PATH           - full path to ../code
+ONDEMAND_PATH=/export/christensen41/code/esg_server/code
 #   ONDEMAND_HOST           - host to listen for ondemand requests (default is localhost)
 #   ONDEMAND_PORT           - port to listen for ondemand requests (default is 42299)
 #   ONDEMAND_LOGFILE        - path to logfilee (default /tmp/idx_ondemand.log)

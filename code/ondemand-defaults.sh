@@ -24,6 +24,10 @@ if [[ "${VISUSSERVER}" = "" ]]; then
   VISUSSERVER="http://localhost/mod_visus"
 fi
 
+if [[ "${ONDEMAND_PATH}" = "" ]]; then
+  ONDEMAND_PATH="`pwd`"
+fi
+
 if [[ "${ONDEMAND_XMLPATH}" = "" ]]; then
   ONDEMAND_XMLPATH="/data/xml"
 fi
@@ -41,7 +45,7 @@ if [[ "${ONDEMAND_DB}" = "" ]]; then
 fi
 
 # set pythonpath
-PYTHONPATH=$PYTHONPATH:$VISUSPY_PATH
+PYTHONPATH=$PYTHONPATH:$ONDEMAND_PATH:$VISUSPY_PATH
 
 # setup command line arguments
 ARG_PORT=""
