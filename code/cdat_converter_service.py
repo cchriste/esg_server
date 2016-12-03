@@ -50,7 +50,7 @@ class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
         if url.path=='/convert':
             query_id=cdatConverter.nqueries_; cdatConverter.nqueries_+=1
             t1=time.time()
-            print "("+str(query_id)+")",url.query
+            print "("+str(query_id)+") started: ",url.query
             stdout.flush()
             result,response=convert_query(url.query)
             print "("+str(query_id)+") complete ("+str((time.time()-t1)*1000)+"ms): ["+str(response)+"] "+result
@@ -127,13 +127,15 @@ def parse_query(query):
 
 
 def parse_return(args_str):
-    print args_str
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("-c","--code"    ,default=200,type=int,help="return code")
     parser.add_argument("-s","--string",default="This is a test",help="return string")
+    args_str=args_str[args_str.find("-c"):] #filter visus copyright message
+    #print "args str:",args_str
     args = parser.parse_args(args_str.split(";"))
-    print "returning ("+str(args.code)+","+args.string+")"
+    #print "args:",args
+    #print "returning ("+str(args.code)+","+args.string+")"
     return (args.code,args.string)
 
 def convert_query(query):
@@ -148,11 +150,14 @@ def convert_query(query):
     try:
         global dbpath
         cmd="python -c 'import convert_query; convert_query.convert(\""+idxpath+"\",\""+field+"\","+str(timestep)+",\""+box+"\","+str(hz)+",\""+dbpath+"\")'"
+        #print "cmd:",cmd
         ret=check_output(cmd,shell=True)
+        #print "ret:",ret
         return parse_return(ret)
     #except CalledProcessError as e:
     except Exception as e:
         #TODO: probably some error handling here
+        print "Exception:",e
         raise
 
 
@@ -206,6 +211,7 @@ def create(query):
 
 def init(database,hostname,port,xmlpath,idxpath,visus_server,username,password):
     global visus_app
+    #visus_app=Visus.Application(1,["--visus-log /scratch/for_ganzberger1/idx/log/visus.log"])
     visus_app=Visus.Application()
 
     global dbpath
@@ -254,6 +260,7 @@ def start_server(hostname,port):
     SocketServer.ThreadingTCPServer.allow_reuse_address = True
     #SocketServer.ForkingTCPServer.allow_reuse_address = True
     httpd = OnDemandSocketServer((hostname, port),cdatConverter)
+    httpd.request_queue_size=socket.SOMAXCONN
     print "serving at port", port
     stdout.flush()
     try:
@@ -295,6 +302,8 @@ if __name__ == '__main__':
     print "\tidx path: "+idx_path
     print "\tdatabase: "+dbpath
     print "\tvisus server: "+visusserver
+    print "\tmax sockets:",socket.SOMAXCONN
     start_server(args.hostname,args.port)
+
 
     print "done!"

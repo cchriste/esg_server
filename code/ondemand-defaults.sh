@@ -4,86 +4,86 @@
 
 # configure defaults 
 if [[ "${ONDEMAND_HOST}" = "" ]]; then
-  ONDEMAND_HOST=localhost
+  export ONDEMAND_HOST=localhost
 fi
 
 if [[ "${ONDEMAND_PORT}" = "" ]]; then
-  ONDEMAND_PORT=42299
+  export ONDEMAND_PORT=42299
 fi
 
 if [[ "${ONDEMAND_LOGFILE}" = "" ]]; then
-  ONDEMAND_LOGFILE="/tmp/idx_ondemandlog"
+  export ONDEMAND_LOGFILE="/tmp/idx_ondemandlog"
 fi
 
 if [[ "${UVCDAT_DIR}" = "" ]]; then
-  UVCDAT_DIR="/usr/local/uvcdat/2.2.0"
+  export UVCDAT_DIR="/usr/local/uvcdat/2.2.0"
 fi
-UVCDAT_ANONYMOUS_LOG=yes
+export UVCDAT_ANONYMOUS_LOG=yes
 
 if [[ "${VISUSSERVER}" = "" ]]; then
-  VISUSSERVER="http://localhost/mod_visus"
+  export VISUSSERVER="http://localhost/mod_visus"
 fi
 
 if [[ "${ONDEMAND_PATH}" = "" ]]; then
-  ONDEMAND_PATH="`pwd`"
+  export ONDEMAND_PATH="`pwd`"
 fi
 
 if [[ "${ONDEMAND_XMLPATH}" = "" ]]; then
-  ONDEMAND_XMLPATH="/data/xml"
+  export ONDEMAND_XMLPATH="/data/xml"
 fi
 
 if [[ "${ONDEMAND_IDXPATH}" = "" ]]; then
-  ONDEMAND_IDXPATH="/data/idx"
+  export ONDEMAND_IDXPATH="/data/idx"
 fi
 
 if [[ "${ONDEMAND_CACHE_MAX_SIZE}" = "" ]]; then
-  ONDEMAND_CACHE_MAX_SIZE=5000000000000
+  export ONDEMAND_CACHE_MAX_SIZE=5000000000000
 fi
 
 if [[ "${ONDEMAND_DB}" = "" ]]; then
-  ONDEMAND_DB="${ONDEMAND_IDXPATH}/idx.db"
+  export ONDEMAND_DB="${ONDEMAND_IDXPATH}/idx.db"
 fi
 
 # set pythonpath
-PYTHONPATH=$PYTHONPATH:$ONDEMAND_PATH:$VISUSPY_PATH
+export PYTHONPATH=$PYTHONPATH:$ONDEMAND_PATH:$VISUSPY_PATH
 
 # setup command line arguments
-ARG_PORT=""
+export ARG_PORT=""
 if [[ "${ONDEMAND_PORT}" != "" ]]; then
-    PORT="--port ${ONDEMAND_PORT}"
+    export ARG_PORT="--port ${ONDEMAND_PORT}"
 fi
 
-ARG_HOST=""
+export ARG_HOST=""
 if [[ "${ONDEMAND_HOST}" != "" ]]; then
-    ARG_HOST="--hostname ${ONDEMAND_HOST}"
+    export ARG_HOST="--hostname ${ONDEMAND_HOST}"
 fi
 
-ARG_XMLPATH=""
+export ARG_XMLPATH=""
 if [[ "${ONDEMAND_XMLPATH}" != "" ]]; then
-    ARG_XMLPATH="--xmlpath ${ONDEMAND_XMLPATH}"
+    export ARG_XMLPATH="--xmlpath ${ONDEMAND_XMLPATH}"
 fi
 
-ARG_IDXPATH=""
+export ARG_IDXPATH=""
 if [[ "${ONDEMAND_IDXPATH}" != "" ]]; then
-    ARG_IDXPATH="--idxpath ${ONDEMAND_IDXPATH}"
+    export ARG_IDXPATH="--idxpath ${ONDEMAND_IDXPATH}"
 fi
 
-ARG_DB=""
+export ARG_DB=""
 if [[ "${ONDEMAND_DB}" != "" ]]; then
-    ARG_DB="--database ${ONDEMAND_DB}"
+    export ARG_DB="--database ${ONDEMAND_DB}"
 fi
 
-ARG_VISUSSERVER=""
+export ARG_VISUSSERVER=""
 if [[ "${VISUSSERVER}" != "" ]]; then
-    ARG_VISUSSERVER="--visusserver ${VISUSSERVER}"
+    export ARG_VISUSSERVER="--visusserver ${VISUSSERVER}"
 fi
 
-ARG_VISUSSERVER_USERNAME=""
+export ARG_VISUSSERVER_USERNAME=""
 if [[ "${VISUSSERVER_USERNAME}" != "" ]]; then
-    ARG_VISUSSERVER_USERNAME="--username ${VISUSSERVER_USERNAME}"
+    export ARG_VISUSSERVER_USERNAME="--username ${VISUSSERVER_USERNAME}"
 fi
 
-ARG_VISUSSERVER_PASSWORD=""
+export ARG_VISUSSERVER_PASSWORD=""
 if [[ "${VISUSSERVER_PASSWORD}" != "" ]]; then
-    ARG_VISUSSERVER_PASSWORD="--password ${VISUSSERVER_PASSWORD}"
+    export ARG_VISUSSERVER_PASSWORD="--password ${VISUSSERVER_PASSWORD}"
 fi

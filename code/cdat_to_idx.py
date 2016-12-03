@@ -144,7 +144,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
             domains[axes].varlist.append(v.id)
             f=Visus.Field(v.id,Visus.DType(v.dtype.name))
             f.default_layout="rowmajor"
-            f.default_compression="zip"
+            #f.default_compression="zip"
             if hasattr(v,'long_name'):
                 f.setDescription(v.long_name)
             domains[axes].idxinfo.fields.append(f)
@@ -191,7 +191,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
             # fields            
             f=Visus.Field(v.id,Visus.DType(v.dtype.name))
             f.default_layout="rowmajor"
-            f.default_compression="zip"
+            #f.default_compression="zip"
             if hasattr(v,'long_name'):
                 f.setDescription(v.long_name)
             domains[axes].idxinfo.fields=[f]
