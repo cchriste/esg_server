@@ -135,8 +135,8 @@ def parse_return(args_str):
     #print "args str:",args_str
     args = parser.parse_args(args_str.split(";"))
     #print "args:",args
-    #print "returning ("+str(args.code)+","+args.string+")"
-    return (args.code,args.string)
+    #print "returning ("+args.string+","+str(args.code)+")"
+    return (args.string,args.code)
 
 def convert_query(query):
     """Converts a timestep of a field of a cdat dataset to idx, using the idxpath to find the matching cdat volume."""
@@ -149,9 +149,9 @@ def convert_query(query):
     from subprocess import check_output,CalledProcessError
     try:
         global dbpath
-        cmd="python -c 'import convert_query; convert_query.convert(\""+idxpath+"\",\""+field+"\","+str(timestep)+",\""+box+"\","+str(hz)+",\""+dbpath+"\")'"
+        cmd=["python","-c","import convert_query; convert_query.convert(\""+idxpath+"\",\""+field+"\","+str(timestep)+",\""+box+"\","+str(hz)+",\""+dbpath+"\")"]
         #print "cmd:",cmd
-        ret=check_output(cmd,shell=True)
+        ret=check_output(cmd,shell=False)
         #print "ret:",ret
         return parse_return(ret)
     #except CalledProcessError as e:
