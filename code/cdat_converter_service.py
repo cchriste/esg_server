@@ -52,8 +52,8 @@ class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
             t1=time.time()
             print "("+str(query_id)+") started: ",url.query
             stdout.flush()
-            result,response=convert_query(url.query)
-            print "("+str(query_id)+") complete ("+str((time.time()-t1)*1000)+"ms): ["+str(response)+"] "+result
+            result,response=call_convert_query(url.query)
+            print "("+str(query_id)+") complete ("+str((time.time()-t1)*1000)+"ms): ["+str(response)+"] "+result,url.query
             stdout.flush()
             self.send_response(response)
             self.send_header('Content-type','text/html')
@@ -127,6 +127,7 @@ def parse_query(query):
 
 
 def parse_return(args_str):
+    print "parse_return:",args_str
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("-c","--code"    ,default=200,type=int,help="return code")
@@ -138,7 +139,7 @@ def parse_return(args_str):
     #print "returning ("+args.string+","+str(args.code)+")"
     return (args.string,args.code)
 
-def convert_query(query):
+def call_convert_query(query):
     """Converts a timestep of a field of a cdat dataset to idx, using the idxpath to find the matching cdat volume."""
 
     # parse query request
@@ -146,19 +147,27 @@ def convert_query(query):
     if not idxpath or not field:
         return ("Invalid query: %s"%query,RESULT_INVALID)
     
-    from subprocess import check_output,CalledProcessError
     try:
         global dbpath
-        cmd=["python","-c","import convert_query; convert_query.convert(\""+idxpath+"\",\""+field+"\","+str(timestep)+",\""+box+"\","+str(hz)+",\""+dbpath+"\")"]
-        #print "cmd:",cmd
-        ret=check_output(cmd,shell=False)
+        ret=convert_query.convert(idxpath,field,timestep,box,hz,dbpath)
         #print "ret:",ret
-        return parse_return(ret)
-    #except CalledProcessError as e:
+        return ret #parse_return(ret)
     except Exception as e:
-        #TODO: probably some error handling here
         print "Exception:",e
         raise
+    # from subprocess import check_output,CalledProcessError
+    # try:
+    #     global dbpath
+    #     cmd=["python","-c","import convert_query; convert_query.convert(\""+idxpath+"\",\""+field+"\","+str(timestep)+",\""+box+"\","+str(hz)+",\""+dbpath+"\")"]
+    #     #print "cmd:",cmd
+    #     ret=check_output(cmd,shell=False)
+    #     #print "ret:",ret
+    #     return parse_return(ret)
+    # #except CalledProcessError as e:
+    # except Exception as e:
+    #     #TODO: probably some error handling here
+    #     print "Exception:",e
+    #     raise
 
 
 def create(query):

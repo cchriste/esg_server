@@ -127,7 +127,7 @@ class ConvertError(Exception):
 def convert(idxpath,field,timestep,box,hz,dbpath):
     """Converts a timestep of a field of a cdat dataset to idx, using the idxpath to find the matching cdat volume."""
     global visus_app
-    visus_app=Visus.Application()
+    #visus_app=Visus.Application()  #uncomment this to call as a separate process
 
     t1  = time.time()
     pt1 = time.clock()
@@ -195,7 +195,7 @@ def convert(idxpath,field,timestep,box,hz,dbpath):
         result_str="MemoryError: please try again ("+str(e)+")"
         result=RESULT_ERROR
     except Exception as e:
-        if e.errno==17:
+        if hasattr(e,"errno") and e.errno==17:
             result=RESULT_BUSY
             result_str="Conversion of field "+field+" at time "+str(timestep)+" in progress. Duplicate request ignored. (e.errno="+os.strerror(e.errno)+")"
         else:
@@ -211,9 +211,10 @@ def convert(idxpath,field,timestep,box,hz,dbpath):
     if result==RESULT_SUCCESS:
         print("Total time to convert field "+field+" at time "+str(timestep)+" of "+cdatpath+" was %d msec (proc_time: %d msec)"  % (interval*1000,proctime*1000))
         
-    from sys import stdout
-    stdout.write("-c;"+str(result)+";-s;\\\""+result_str+"\\\"")
-    stdout.flush()
+    return (result_str,result)
+    # from sys import stdout
+    # stdout.write("-c;"+str(result)+";-s;\\\""+result_str+"\\\"")
+    # stdout.flush()
 
 
 # ############################
