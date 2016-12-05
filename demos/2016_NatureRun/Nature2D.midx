@@ -1,0 +1,4 @@
+<dataset typename="IdxMultipleDataset">
+	<dataset name="met" url="http://feedback.llnl.gov/mod_visus?dataset=nature_2007_met1_hourly"  />
+	<dataset name="aer" url="http://feedback.llnl.gov/mod_visus?dataset=nature_2007_aer1_hourly"  />
+</dataset>
