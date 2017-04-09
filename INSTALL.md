@@ -37,6 +37,14 @@ Adding a Cron Job to maage the cache
 --------------------------------------
 There is a script to maintain the cache size that should be executed periodically using *cron*. The script can be found in code/cleanup_lru.sh.
 
+A typical crontab entry might look like, to start daily at 02:15::
+
+  15 2 * * * /export/christensen41/code/esg_server/code/cleanup_lru.sh
+
+Here is the command to edit the crontab for a specific user::
+
+  sudo crontab -u <user> -e
+
 --------------------------------------
 Starting the IDX Data Server
 --------------------------------------
