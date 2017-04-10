@@ -19,7 +19,7 @@ UVCDAT_DIR=/usr/local/uvcdat/2.2.0-full
 #   VISUSPY_PATH            - path to visuspy install dir (if not installed in system-accessible location)
 VISUSPY_PATH=/usr/local/visus/visuspy
 #   VISUSSERVER             - server with which to register newly created idx volumes (default is http://localhost:80/mod_visus)
-VISUSSERVER=http://feedback.llnl.gov:80/mod_visus
+VISUSSERVER=https://feedback.llnl.gov:443/mod_visus
 #   VISUSSERVER_USERNAME    - username (default should be fine)
 #   VISUSSERVER_PASSWORD    - password (default should be fine)
 #   ONDEMAND_XMLPATH        - path to cdat xml files created by uvcdat cdscan utility (default is /data/xml)
