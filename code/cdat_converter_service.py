@@ -179,7 +179,7 @@ def create(query):
     result=RESULT_ERROR
     try:
         # parse query request
-        job=urlparse.parse_qs(query)
+        job=urlparse.parse_qs(query, True, True)   #keep empty fields, strict checking
         if not job.has_key("dataset"):
             raise ConvertError(RESULT_INVALID,"Query must specify a valid and accessible .xml or .nc file and destination path")
 
@@ -215,6 +215,8 @@ def create(query):
         result=RESULT_ERROR
         result_str="unknown error occurred during create ("+str(e)+")"
 
+    #print "result_str: "+result_str
+    #print "result: "+str(result)
     return (result_str,result)
 
 
