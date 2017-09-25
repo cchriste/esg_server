@@ -103,14 +103,17 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         None  #directory likely already exists
 
     # open dataset
+    print "cdat_to_idx: datasets="+cdat_dataset
     dataset = cdms2.open(cdat_dataset)
     vars=dataset.variables
+    print "vars: "+str(vars)
 
     # Calculate range of value for logic_to_physic
     # We need to use <axis>_bnds var to get full
     # extents, which may not be accessible, so do our best.
     physical_bounds={}
     for name in dataset.axes:
+        print "considering axis: "+name
         axis=dataset.axes[name]
         if hasattr(axis,'bounds'):
             try:
@@ -118,7 +121,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
                 assert(len(B.shape)==2)  #bounds should be (len(arr_axis),2) where for each value of the arr axis there is a min and max
                 physical_bounds[name]=(B[0][0],B[-1][1])  #assume regular spacing
             except IOError:
-                print "bounds not found, skipping",axis.bounds
+                print "bounds not found, skipping",str(axis.bounds)
         elif vars.has_key(name+"_bnds"):
             B=dataset(name+"_bnds")
             if len(B.shape)!=2:
@@ -127,6 +130,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
             physical_bounds[name]=(B[0][0],B[-1][1])  #assume regular spacing
 
     # collect variables into their associated domains
+    print "finished considering axes"
     logic_to_physic=[1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
     field=type('field',(object,),{'name':None,'ndtype':1,'dtype':None})()  #cheap class-like defs
     idxinfo=type('idxinfo',(object,),{'cdat_dataset':None,'path':None,'fields':None,'dims':None,'logic_to_physic':None,'timesteps':0})()
@@ -140,7 +144,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         axes
 
         if domains.has_key(axes):
-            #print "inserting",v.id,"into existing entry of domains["+str(axes)+"]"
+            print "inserting",v.id,"into existing entry of domains["+str(axes)+"]"
             domains[axes].varlist.append(v.id)
             f=Visus.Field(v.id,Visus.DType(v.dtype.name))
             f.default_layout="rowmajor"
@@ -148,14 +152,14 @@ def cdat_to_idx(cdat_dataset,destpath,db):
             if hasattr(v,'long_name'):
                 f.setDescription(v.long_name)
             domains[axes].idxinfo.fields.append(f)
-            #print "domains["+str(axes)+"].varlist="+str(domains[axes].varlist)
+            print "domains["+str(axes)+"].varlist="+str(domains[axes].varlist)
         else:
-            #print "inserting",v.id,"as NEW entry of domains["+str(axes)+"]"
+            print "inserting",v.id,"as NEW entry of domains["+str(axes)+"]"
             domains[axes]=deepcopy(domain)
             domains[axes].id=axes
             domains[axes].shape=v.shape[::-1]
             domains[axes].varlist=[v.id]
-            #print "domains["+str(axes)+"].varlist="+str(domains[axes].varlist)
+            print "domains["+str(axes)+"].varlist="+str(domains[axes].varlist)
             domains[axes].idxinfo=deepcopy(idxinfo)
             domains[axes].idxinfo.cdat_dataset=idxbasename
         
@@ -197,6 +201,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
             domains[axes].idxinfo.fields=[f]
 
     # insert new dataset into db
+    print "inserting into db..."
     cur=db.cursor()
     cur.execute("INSERT into datasets (pathname) values (\"%s\")" % cdat_dataset)
     cdat_id=cur.lastrowid

@@ -9,7 +9,7 @@
 #
 
 # configuration
-ONDEMAND_BIN="`dirname "$0"`"
+ONDEMAND_BIN="`dirname "$0"`/.."
 ONDEMAND_BIN="`cd "${ONDEMAND_BIN}"; pwd`"
 ONDEMAND_CONF="`cd "${ONDEMAND_BIN}/../conf"; pwd`"
 . ${ONDEMAND_CONF}/ondemand-env.sh
@@ -20,7 +20,7 @@ echo "Logging to ${ONDEMAND_LOGFILE}..."
 # start logging
 echo "==================== starting hard convert of $1 `date` ====================" >> ${ONDEMAND_LOGFILE}
 
-python ${ONDEMAND_BIN}/convert_var.py $1 >> ${ONDEMAND_LOGFILE} 2>&1
+python ${ONDEMAND_BIN}/manual_conversion_scripts/convert_var.py $1 >> ${ONDEMAND_LOGFILE} 2>&1
 
 echo "==================== finished hard convert of $1 `date` ====================" >> ${ONDEMAND_LOGFILE}
 

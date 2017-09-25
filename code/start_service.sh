@@ -14,6 +14,15 @@ ONDEMAND_CONF="`cd "${ONDEMAND_BIN}/../conf"; pwd`"
 . ${ONDEMAND_CONF}/ondemand-env.sh
 . ${ONDEMAND_BIN}/ondemand-defaults.sh
 
+echo "starting ondemand converter service..."
+# <warning> from convert_query.py:
+# nasty hack to work around bug in cdms2 when using opendap:
+# solution is to run converter service from xml directory and
+# to load xml files from local paths, not explicit paths
+# (e.g. "filename.xml", not "/path/to/filename.xml".
+#Therefore we MUST run converter server from ${ONDEMAND_XMLPATH}.
+pushd ${ONDEMAND_XMLPATH}
+
 # start logging
 echo "==================== starting ondemand converter service `date` ====================" >> ${ONDEMAND_LOGFILE}
 
@@ -45,3 +54,4 @@ echo "==================== started ondemand converter service (pid=$!) =========
 echo "ondemand converter service started."
 
 
+popd

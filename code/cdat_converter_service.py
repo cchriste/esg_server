@@ -205,6 +205,7 @@ def create(query):
 
         # create idx volumes from climate dataset
         import cdat_to_idx
+        print "generate_idx(inputfile=",cdatpath,",outputdir=",idxpath,",database=",dbpath,",server=",server,",username=",username,",password=",password,",service=",ondemand_service_address,",force=",str(force),")"
         result_str=cdat_to_idx.generate_idx(inputfile=cdatpath,outputdir=idxpath,database=dbpath,server=server,username=username,password=password,service=ondemand_service_address,force=force)
         result=RESULT_SUCCESS
 
@@ -215,8 +216,8 @@ def create(query):
         result=RESULT_ERROR
         result_str="unknown error occurred during create ("+str(e)+")"
 
-    #print "result_str: "+result_str
-    #print "result: "+str(result)
+    print "result_str: "+result_str
+    print "result: "+str(result)
     return (result_str,result)
 
 

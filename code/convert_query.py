@@ -65,7 +65,7 @@ def read_cdat_data(cdatpath,field,timestep):
     f=cdms2.open(cdatpath)
     if not f.variables.has_key(field):
         raise ConvertError(RESULT_NOTFOUND,"Field %s not found in cdat volume %s."%(field,cdatpath))
-    #print cdatpath,"opened. Reading field",field,"at timestep",timestep
+    print cdatpath,"opened. Reading field",field,"at timestep",timestep
     v=f.variables[field]
 
     data=None
@@ -76,7 +76,7 @@ def read_cdat_data(cdatpath,field,timestep):
         data=v[timestep]
     else:
         data=v
-    #print "finished reading field",field,"at timestep",timestep,"of",cdatpath
+    print "finished reading field",field,"at timestep",timestep,"of",cdatpath
 
     #"flatten" masked data by inserting missing_value everywhere mask is invalid
     if isinstance(data,cdms2.tvariable.TransientVariable):
@@ -147,15 +147,17 @@ def convert(idxpath,field,timestep,box,hz,dbpath):
     result_str="Success!"
     try:
         # get file lock
+        print "opening lockfile:",lockfilename
         lock=os.open(lockfilename,os.O_CREAT|os.O_EXCL)
 
         #import pdb; pdb.set_trace()
 
         # open cdat, read the data
+        print "reading cdat data for field",field,"at time",timestep,"of",cdatpath
         data=read_cdat_data(cdatpath,field,timestep)
 
         # open idx and create query
-        #print "creating idx query for field",field,"at time",timestep,"of",cdatpath
+        print "creating idx query for field",field,"at time",timestep,"of",cdatpath
         dataset,access,query=create_idx_query(idxpath,field,timestep,box,hz,dbpath)
 
         # validate bounds
@@ -169,14 +171,14 @@ def convert(idxpath,field,timestep,box,hz,dbpath):
                 raise ConvertError(RESULT_ERROR,"Invalid query dimensions.")
                 
         # convert data
-        #print "converting field",field,"at time",timestep,"of",cdatpath,"to idx..."
+        print "converting field",field,"at time",timestep,"of",cdatpath,"to idx..."
         visusarr=Visus.Array.fromNumPyArray(data)
         visusarrptr=Visus.ArrayPtr(visusarr)
         query.setBuffer(visusarrptr)
         ret=query.execute()
         if not ret:
             raise ConvertError(RESULT_ERROR,"Error executing IDX query.")
-        #print "done converting field",field,"at time",timestep,"of",cdatpath
+        print "done converting field",field,"at time",timestep,"of",cdatpath
             
     except IOError as e:
         if e.errno==None:
