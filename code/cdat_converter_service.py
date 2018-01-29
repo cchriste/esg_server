@@ -150,7 +150,7 @@ def call_convert_query(query):
     try:
         global dbpath
         ret=convert_query.convert(idxpath,field,timestep,box,hz,dbpath)
-        #print "ret:",ret
+        print "ret:",ret
         return ret #parse_return(ret)
     except Exception as e:
         print "Exception:",e
