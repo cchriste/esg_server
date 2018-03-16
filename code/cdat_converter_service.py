@@ -222,9 +222,7 @@ def create(query):
 
 
 def init(database,hostname,port,xmlpath,idxpath,visus_server,username,password):
-    global visus_app
-    #visus_app=Visus.Application(1,["--visus-log /scratch/for_ganzberger1/idx/log/visus.log"])
-    visus_app=Visus.Application()
+    Visus.IdxModule.attach()
 
     global dbpath
     dbpath=database
@@ -316,6 +314,6 @@ if __name__ == '__main__':
     print "\tvisus server: "+visusserver
     print "\tmax sockets:",socket.SOMAXCONN
     start_server(args.hostname,args.port)
-
+    Visus.IdxModule.detach()
 
     print "done!"

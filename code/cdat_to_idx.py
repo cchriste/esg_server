@@ -27,7 +27,7 @@ import sys
 import sqlite3
 import visuspy as Visus
 from copy import deepcopy
-
+from lxml import etree
 
 #****************************************************
 def getIdxPaths(cdat_dataset,db):
@@ -56,36 +56,46 @@ def validatePaths(paths,basedir):
         ret &= os.path.isfile(basedir+'/'+path)
     return ret
 
+#****************************************************
+def create_midx(cdat_dataset,destpath,idxinfo):
+    """Create a new midx file that contains path to idx file and the matrices that describe the volume"""
+    root=etree.Element("dataset",typename="IdxMultipleDataset")
+    name=os.path.splitext(os.path.basename(idxinfo.path))[0]
+    child=etree.SubElement(root,"dataset",url="file://"+idxinfo.path,name=name)
+    M=etree.SubElement(child,"M",value=idxinfo.logic_to_physic)
+    tree=etree.ElementTree(root)
+    
+    idxbasename=os.path.splitext(os.path.basename(idxinfo.path))[0]
+    filename=destpath+"/"+idxbasename+'.midx'
+    tree.write(filename,pretty_print=True,xml_declaration=False,encoding="utf-8")
         
 #****************************************************
 def create_idx(idxinfo):
     """Create a new idx volume from the information in idxinfo (fields, dims, timesteps)"""
-
-    idxfile=Visus.IdxFile()
+    dims = [0]*3
+    if len(idxinfo.dims) > 0:
+        dims[0] = idxinfo.dims[0];
+    if len(idxinfo.dims) > 1:
+        dims[1] = idxinfo.dims[1];
+    if len(idxinfo.dims) > 2:
+        dims[2] = idxinfo.dims[2];
 
     # set logical bounds
-    idxfile.logic_box=Visus.NdBox()
-    if len(idxinfo.dims) > 0:
-        idxfile.logic_box.setP2(0,idxinfo.dims[0]);
-    if len(idxinfo.dims) > 1:
-        idxfile.logic_box.setP2(1,idxinfo.dims[1]);
-    if len(idxinfo.dims) > 2:
-        idxfile.logic_box.setP2(2,idxinfo.dims[2]);
-
-    # set logic_to_physic
-    m=idxinfo.logic_to_physic
-    idxfile.logic_to_physic=Visus.Matrix(m[0],m[1],m[2],m[3],m[4],m[5],m[6],m[7],m[8],m[9],m[10],m[11],m[12],m[13],m[14],m[15]) #tgtbabw!
+    dataset_logicbox = Visus.NdBox(Visus.NdPoint(0, 0, 0), Visus.NdPoint.one(dims[0], dims[1], dims[2]))
+    idxfile = Visus.IdxFile()
+    idxfile.box = Visus.NdBox(dataset_logicbox)
 
     # add fields
-    for f in idxinfo.fields:
-        idxfile.fields.push_back(f)
+    for f in idxinfo.fields.keys():
+        field = Visus.Field(f, Visus.DType.parseFromString(idxinfo.fields[f]))
+        idxfile.fields.push_back(field)
 
     # set timesteps
     if idxinfo.timesteps > 0:
-        idxfile.timesteps.addTimesteps(0,idxinfo.timesteps-1,1);
+        idxfile.timesteps.addTimesteps(0, idxinfo.timesteps-1,1);
         idxfile.time_template="time%0"+str(len(str(idxinfo.timesteps)))+"d/"
 
-    bSaved=idxfile.save(str(idxinfo.path))
+    bSaved = idxfile.save(str(idxinfo.path))
     if not bSaved:
         print "ERROR creating idx "+ idxinfo.path
 
@@ -146,7 +156,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         if domains.has_key(axes):
             print "inserting",v.id,"into existing entry of domains["+str(axes)+"]"
             domains[axes].varlist.append(v.id)
-            f=Visus.Field(v.id,Visus.DType(v.dtype.name))
+            f=Visus.Field(v.id,Visus.DType.parseFromString(v.dtype.name))
             f.default_layout="rowmajor"
             #f.default_compression="zip"
             if hasattr(v,'long_name'):
@@ -193,7 +203,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
                     domains[axes].idxinfo.logic_to_physic[4*i+i]=rng
 
             # fields            
-            f=Visus.Field(v.id,Visus.DType(v.dtype.name))
+            f=Visus.Field(v.id,Visus.DType.parseFromString(v.dtype.name))
             f.default_layout="rowmajor"
             #f.default_compression="zip"
             if hasattr(v,'long_name'):
@@ -218,10 +228,11 @@ def cdat_to_idx(cdat_dataset,destpath,db):
 
         # create the idx
         create_idx(d.idxinfo)
-
+        # create the midx that contains path to idx file and logic_to_physic
+        create_midx(cdat_dataset,destpath,d.idxinfo)
         # insert into idx db
         cur.execute("INSERT into idxfiles (pathname, ds_id) values (\"%s\", %d)" % (os.path.basename(d.idxinfo.path), cdat_id))
-
+    
     return domains
 
 #****************************************************
@@ -233,13 +244,19 @@ def register_datasets(idx_paths,outputdir,hostname,hostuser,hostpass,service):
         from urlparse import urlparse,urlunparse
         from urllib import quote
         import urllib2
+        import base64
         name=os.path.splitext(os.path.basename(idx_path))[0]
+        midx_path=os.path.splitext(idx_path)[0]+'.midx'
         print hostname
         url=urlparse(hostname)
-        url=url._replace(query="action=AddDataset&username="+hostuser+"&password="+hostpass+"&xml="+quote("<dataset name=\""+name+"\" permissions=\"public\" url=\"file://"+outputdir+'/'+idx_path+"\" ><access name=\"Multiplex\" type=\"multiplex\"><access chmod=\"r\" type=\"disk\" /><access chmod=\"r\" ondemand=\"external\" path=\""+service+"/convert\" type=\"ondemandaccess\" /><access chmod=\"r\" type=\"disk\" /></access></dataset>"))
-        print url
+        xml="<dataset name=\""+name+"\" permissions=\"public\" url=\"file://"+outputdir+'/'+midx_path+"\" ><access name=\"Multiplex\" type=\"multiplex\"><access chmod=\"r\" type=\"disk\" /><access chmod=\"r\" ondemand=\"external\" path=\""+service+"/convert\" type=\"ondemandaccess\" /><access chmod=\"r\" type=\"disk\" /></access></dataset>"
+        url=url._replace(query="action=AddDataset&xml="+quote(xml))
+        print urlunparse(url)
         try:
-            ret = urllib2.urlopen(urlunparse(url)).read()
+            request = urllib2.Request(urlunparse(url))
+            base64string = base64.encodestring('%s:%s' % ('visus', 'P@ssw0rd!')).replace('\n', '')
+            request.add_header("Authorization", "Basic %s" % base64string)
+            ret = urllib2.urlopen(request).read()
             print ret
         except urllib2.HTTPError, e:
             print "HTTP error adding dataset to server: %d" % e.code
@@ -249,7 +266,6 @@ def register_datasets(idx_paths,outputdir,hostname,hostuser,hostpass,service):
             #print "BadStatusLine:",e
         except Exception,e:
             print "unknown exception:",e
-
 
 #****************************************************
 def make_visus_config(idx_paths,dataset,hostname):
@@ -278,9 +294,7 @@ def generate_idx(inputfile,outputdir,database=None,server=default_server,usernam
     """return visus.config with address of idx volumes corresponding with given climate dataset.
     If idx volumes do not exist, they will be created and registered with the given server."""
 
-    app=Visus.Application.getCurrent()
-    if not app:
-        app=Visus.Application()
+    Visus.IdxModule.attach()
 
     # open idx db
     if not database:

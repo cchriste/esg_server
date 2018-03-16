@@ -92,22 +92,22 @@ def create_idx_query(idxpath,field,timestep,box,hz,dbpath):
     dataset=Visus.Dataset.loadDataset(idxpath);
     if not dataset:
         raise ConvertError(RESULT_ERROR,"Error creating IDX query: could not load dataset "+idxpath)
-    visus_field=dataset.getFieldByName(field);
+    visus_field=dataset.get().getFieldByName(field);
     if not visus_field:
         raise ConvertError(RESULT_ERROR,"Error creating IDX query: could not find field "+field)
-    access=dataset.createAccess()
-    logic_box=dataset.getLogicBox()
+    access=dataset.get().createAccess()
+    logic_box=dataset.get().getBox()
 
     if box or hz>=0:
         pass #print "TODO: handle subregion queries and resolution selection (box=%s,hz=%d)"%(box,hz)
 
     # convert the field
-    query=Visus.Query(dataset,ord('w'))
-    query.setLogicPosition(Visus.Position(logic_box))
-    query.setField(visus_field)
-    query.setTime(timestep)
-    query.setAccess(access)
-    query.begin()
+    query=Visus.QueryPtr(Visus.Query(dataset.get(), ord('w')))
+    query.get().position=Visus.Position(logic_box)
+    query.get().field=visus_field
+    query.get().time=timestep
+
+    dataset.get().beginQuery(query)
     return dataset,access,query  # IMPORTANT: need to return dataset,access because otherwise they go out of scope and query fails
 
 class ConvertError(Exception):
@@ -126,8 +126,7 @@ class ConvertError(Exception):
 
 def convert(idxpath,field,timestep,box,hz,dbpath):
     """Converts a timestep of a field of a cdat dataset to idx, using the idxpath to find the matching cdat volume."""
-    global visus_app
-    #visus_app=Visus.Application()  #uncomment this to call as a separate process
+    Visus.IdxModule.attach()
 
     t1  = time.time()
     pt1 = time.clock()
@@ -161,7 +160,7 @@ def convert(idxpath,field,timestep,box,hz,dbpath):
         dataset,access,query=create_idx_query(idxpath,field,timestep,box,hz,dbpath)
 
         # validate bounds
-        if query.end() or data.size!=query.getNumberOfSamples().innerProduct():
+        if query.end() or data.size!=query.get().nsamples.innerProduct():
             raise ConvertError(RESULT_ERROR,"Invalid IDX query.")
             
         # validate shape
@@ -172,10 +171,10 @@ def convert(idxpath,field,timestep,box,hz,dbpath):
                 
         # convert data
         print "converting field",field,"at time",timestep,"of",cdatpath,"to idx..."
-        visusarr=Visus.Array.fromNumPyArray(data)
-        visusarrptr=Visus.ArrayPtr(visusarr)
-        query.setBuffer(visusarrptr)
-        ret=query.execute()
+        buffer=Visus.convertToVisusArray(data)
+        query.get().buffer=buffer.get()
+        ret=dataset.get().executeQuery(access, query)
+
         if not ret:
             raise ConvertError(RESULT_ERROR,"Error executing IDX query.")
         print "done converting field",field,"at time",timestep,"of",cdatpath
