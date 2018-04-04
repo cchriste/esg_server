@@ -26,6 +26,7 @@ import os
 import sys
 import sqlite3
 import visuspy as Visus
+import VisusIdxPy
 from copy import deepcopy
 from lxml import etree
 
@@ -60,9 +61,14 @@ def validatePaths(paths,basedir):
 def create_midx(cdat_dataset,destpath,idxinfo):
     """Create a new midx file that contains path to idx file and the matrices that describe the volume"""
     root=etree.Element("dataset",typename="IdxMultipleDataset")
+
     name=os.path.splitext(os.path.basename(idxinfo.path))[0]
     child=etree.SubElement(root,"dataset",url="file://"+idxinfo.path,name=name)
-    M=etree.SubElement(child,"M",value=idxinfo.logic_to_physic)
+    val = ""
+    for m in idxinfo.logic_to_physic:
+    	val+=str(m)+" "
+
+    M=etree.SubElement(child,"M",value=val)
     tree=etree.ElementTree(root)
     
     idxbasename=os.path.splitext(os.path.basename(idxinfo.path))[0]
@@ -82,13 +88,12 @@ def create_idx(idxinfo):
 
     # set logical bounds
     dataset_logicbox = Visus.NdBox(Visus.NdPoint(0, 0, 0), Visus.NdPoint.one(dims[0], dims[1], dims[2]))
-    idxfile = Visus.IdxFile()
+    idxfile = VisusIdxPy.IdxFile()
     idxfile.box = Visus.NdBox(dataset_logicbox)
 
     # add fields
-    for f in idxinfo.fields.keys():
-        field = Visus.Field(f, Visus.DType.parseFromString(idxinfo.fields[f]))
-        idxfile.fields.push_back(field)
+    for f in idxinfo.fields:
+        idxfile.fields.push_back(f)
 
     # set timesteps
     if idxinfo.timesteps > 0:
@@ -156,7 +161,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         if domains.has_key(axes):
             print "inserting",v.id,"into existing entry of domains["+str(axes)+"]"
             domains[axes].varlist.append(v.id)
-            f=Visus.Field(v.id,Visus.DType.parseFromString(v.dtype.name))
+            f=Visus.Field(v.id,Visus.DType.fromString(v.dtype.name))
             f.default_layout="rowmajor"
             #f.default_compression="zip"
             if hasattr(v,'long_name'):
@@ -203,7 +208,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
                     domains[axes].idxinfo.logic_to_physic[4*i+i]=rng
 
             # fields            
-            f=Visus.Field(v.id,Visus.DType.parseFromString(v.dtype.name))
+            f=Visus.Field(v.id,Visus.DType.fromString(v.dtype.name))
             f.default_layout="rowmajor"
             #f.default_compression="zip"
             if hasattr(v,'long_name'):
@@ -231,7 +236,10 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         # create the midx that contains path to idx file and logic_to_physic
         create_midx(cdat_dataset,destpath,d.idxinfo)
         # insert into idx db
-        cur.execute("INSERT into idxfiles (pathname, ds_id) values (\"%s\", %d)" % (os.path.basename(d.idxinfo.path), cdat_id))
+        # since we add path to .midx into visus config, we will get the path to .midx in query string
+        # therefore add path to .midx also into idx db 
+        name=os.path.splitext(os.path.basename(idx_path))[0]+'.midx'
+        cur.execute("INSERT into idxfiles (pathname, ds_id) values (\"%s\", %d)" % (name, cdat_id))
     
     return domains
 
@@ -294,7 +302,7 @@ def generate_idx(inputfile,outputdir,database=None,server=default_server,usernam
     """return visus.config with address of idx volumes corresponding with given climate dataset.
     If idx volumes do not exist, they will be created and registered with the given server."""
 
-    Visus.IdxModule.attach()
+    VisusIdxPy.IdxModule.attach()
 
     # open idx db
     if not database:

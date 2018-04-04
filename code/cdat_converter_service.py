@@ -25,6 +25,8 @@
 import time
 import sqlite3
 import visuspy as Visus
+import VisusIdxPy
+import VisusKernelPy
 import SocketServer
 import BaseHTTPServer
 import fcntl
@@ -52,7 +54,11 @@ class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
             t1=time.time()
             print "("+str(query_id)+") started: ",url.query
             stdout.flush()
-            result,response=call_convert_query(url.query)
+            try:
+                result,response=call_convert_query(url.query)
+            except Exception as e:
+                print "Exception: ",e
+                raise
             print "("+str(query_id)+") complete ("+str((time.time()-t1)*1000)+"ms): ["+str(response)+"] "+result,url.query
             stdout.flush()
             self.send_response(response)
@@ -110,7 +116,7 @@ def parse_query(query):
     if job.has_key("idx"):
         idxpath=job["idx"][0]
     if job.has_key("time"):
-        timestep=int(job["time"][0])
+        timestep=int(float(job["time"][0]))
     if job.has_key("field"):
         field=job["field"][0]
         idx=field.find('?')
@@ -143,7 +149,14 @@ def call_convert_query(query):
     """Converts a timestep of a field of a cdat dataset to idx, using the idxpath to find the matching cdat volume."""
 
     # parse query request
-    idxpath,field,timestep,box,hz=parse_query(query)
+    try:
+        idxpath,field,timestep,box,hz=parse_query(query)
+        print idxpath,field,timestep,box,hz
+
+    except Exception as e:
+        print "Exception: ",e
+        raise
+ 
     if not idxpath or not field:
         return ("Invalid query: %s"%query,RESULT_INVALID)
     
@@ -222,7 +235,8 @@ def create(query):
 
 
 def init(database,hostname,port,xmlpath,idxpath,visus_server,username,password):
-    Visus.IdxModule.attach()
+    VisusKernelPy.SetCommandLine("__main__")
+    VisusIdxPy.IdxModule.attach()
 
     global dbpath
     dbpath=database
@@ -314,6 +328,6 @@ if __name__ == '__main__':
     print "\tvisus server: "+visusserver
     print "\tmax sockets:",socket.SOMAXCONN
     start_server(args.hostname,args.port)
-    Visus.IdxModule.detach()
+    VisusIdxPy.IdxModule.detach()
 
     print "done!"
