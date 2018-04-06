@@ -77,13 +77,3 @@ export ARG_VISUSSERVER=""
 if [[ "${VISUSSERVER}" != "" ]]; then
     export ARG_VISUSSERVER="--visusserver ${VISUSSERVER}"
 fi
-
-export ARG_VISUSSERVER_USERNAME=""
-if [[ "${VISUSSERVER_USERNAME}" != "" ]]; then
-    export ARG_VISUSSERVER_USERNAME="--username ${VISUSSERVER_USERNAME}"
-fi
-
-export ARG_VISUSSERVER_PASSWORD=""
-if [[ "${VISUSSERVER_PASSWORD}" != "" ]]; then
-    export ARG_VISUSSERVER_PASSWORD="--password ${VISUSSERVER_PASSWORD}"
-fi
