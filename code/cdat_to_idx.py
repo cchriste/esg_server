@@ -223,6 +223,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
 
     for d in domains.values():
         found_time=False
+        print d
         for axis in d.id:
             found_time |= axis.startswith("time")
         if len(d.id)<3 or len(d.id)>4 or not found_time:
@@ -238,13 +239,14 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         # insert into idx db
         # since we add path to .midx into visus config, we will get the path to .midx in query string
         # therefore add path to .midx also into idx db 
-        name=os.path.splitext(os.path.basename(idx_path))[0]+'.midx'
+        name=os.path.splitext(os.path.basename(d.idxinfo.path))[0]+'.midx'
+        print name, cdat_id
         cur.execute("INSERT into idxfiles (pathname, ds_id) values (\"%s\", %d)" % (name, cdat_id))
     
     return domains
 
 #****************************************************
-def register_datasets(idx_paths,outputdir,hostname,hostuser,hostpass,service):
+def register_datasets(idx_paths,outputdir,hostname,service):
     """ register datasets with ViSUS data server """
     print "Ensuring new datasets are registered with ViSUS data server"
 
@@ -294,11 +296,9 @@ def make_visus_config(idx_paths,dataset,hostname):
 #****************************************************
 default_server="http://localhost:10000/mod_visus"
 default_service="http://localhost:42299/convert"
-default_username="root"
-default_password="visus"
 
 #****************************************************
-def generate_idx(inputfile,outputdir,database=None,server=default_server,username=default_username,password=default_password,service=default_service,force=False):
+def generate_idx(inputfile,outputdir,database=None,server=default_server,service=default_service,force=False):
     """return visus.config with address of idx volumes corresponding with given climate dataset.
     If idx volumes do not exist, they will be created and registered with the given server."""
 
@@ -333,7 +333,7 @@ def generate_idx(inputfile,outputdir,database=None,server=default_server,usernam
         else:
             print "idx volumes already exist for",inputfile
             
-        register_datasets(idx_paths,outputdir,server,username,password,service)
+        register_datasets(idx_paths,outputdir,server,service)
         xml=make_visus_config(idx_paths,inputfile,server)
 
     db.close()
@@ -349,12 +349,10 @@ if __name__ == '__main__':
     parser.add_argument("-o","--outputdir",required=True,help="basepath for idx volumes")
     parser.add_argument("-d","--database",required=False,help="path to idx<->cdat database")
     parser.add_argument("-s","--server",required=False,help="server with which volumes shoud be registered",default=default_server)
-    parser.add_argument("-u","--username",required=False,help="username for registering with server",default=default_username)
-    parser.add_argument("-p","--password",required=False,help="password for registering with server",default=default_password)
     parser.add_argument("-v","--service",required=False,help="on-demand climate data converter service address",default=default_service)
     parser.add_argument("-f","--force",action="store_true",dest="force",required=False,default=False,help="force creation even if idx volumes already exist")
     args = parser.parse_args()
 
-    xml=generate_idx(args.inputfile,args.outputdir,args.database,args.server,args.username,args.password,args.service,args.force)
+    xml=generate_idx(args.inputfile,args.outputdir,args.database,args.server,args.service,args.force)
     print xml
 
