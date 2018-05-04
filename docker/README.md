@@ -10,6 +10,9 @@ popd
 pushd ..\conf 
 dos2unix *.sh # fix git problem
 popd
+pushd ..\cgi 
+dos2unix *.cgi # fix git problem
+popd
 
 tar --directory=../ -c -z -f ondemand.tar.gz code conf cgi docs html media
 
