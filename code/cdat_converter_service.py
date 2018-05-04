@@ -291,7 +291,7 @@ if __name__ == '__main__':
     default_host="localhost"
 
     # cdat_to_idx defaults
-    default_server="http://localhost:10000/mod_visus"
+    default_server="http://localhost:80/mod_visus"
     default_xml_path="/data/xml/"
     default_idx_path="/data/idx/"
 

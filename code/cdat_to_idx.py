@@ -29,6 +29,10 @@ import visuspy as Visus
 import VisusIdxPy
 from copy import deepcopy
 from lxml import etree
+import urllib2
+import base64
+from urlparse import urlparse,urlunparse
+from urllib import quote
 
 #****************************************************
 def getIdxPaths(cdat_dataset,db):
@@ -238,12 +242,30 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         create_midx(cdat_dataset,destpath,d.idxinfo)
         # insert into idx db
         # since we add path to .midx into visus config, we will get the path to .midx in query string
-        # therefore add path to .midx also into idx db 
-        name=os.path.splitext(os.path.basename(d.idxinfo.path))[0]+'.midx'
-        print name, cdat_id
-        cur.execute("INSERT into idxfiles (pathname, ds_id) values (\"%s\", %d)" % (name, cdat_id))
-    
+        # therefore add path to .midx also into idx db
+        idx=os.path.basename(d.idxinfo.path) 
+        midx=os.path.splitext(idx)[0]+'.midx'
+        cur.execute("INSERT into midxfiles (pathname, ds_id) values (\"%s\", %d)" % (midx, cdat_id))
+        cur.execute("INSERT into idxfiles (pathname, ds_id) values (\"%s\", %d)" % (idx, cdat_id))
+
     return domains
+
+def send_url(url):
+    """ sendurl using urllib2 """
+    try:
+        request = urllib2.Request(urlunparse(url))
+        base64string = base64.encodestring('%s:%s' % ('visus', 'P@ssw0rd!')).replace('\n', '')
+        request.add_header("Authorization", "Basic %s" % base64string)
+        ret = urllib2.urlopen(request).read()
+        print ret
+    except urllib2.HTTPError, e:
+        print "HTTP error adding dataset to server: %d" % e.code
+    except urllib2.URLError, e:
+        print "Network error adding dataset to server: %s" % e.reason.args[1]        
+    #except httplib.BadStatusLine, e:
+        #print "BadStatusLine:",e
+    except Exception,e:
+        print "unknown exception:",e
 
 #****************************************************
 def register_datasets(idx_paths,outputdir,hostname,service):
@@ -251,31 +273,19 @@ def register_datasets(idx_paths,outputdir,hostname,service):
     print "Ensuring new datasets are registered with ViSUS data server"
 
     for idx_path in idx_paths:
-        from urlparse import urlparse,urlunparse
-        from urllib import quote
-        import urllib2
-        import base64
-        name=os.path.splitext(os.path.basename(idx_path))[0]
+        dataset_name=os.path.splitext(os.path.basename(idx_path))[0]
         midx_path=os.path.splitext(idx_path)[0]+'.midx'
+        # need to add both idx and midx to config becuase webviewer uses idx and visus viewer uses midx
+        p = [idx_path, midx_path]
+        n = [dataset_name+"_idx", dataset_name]
         print hostname
-        url=urlparse(hostname)
-        xml="<dataset name=\""+name+"\" permissions=\"public\" url=\"file://"+outputdir+'/'+midx_path+"\" ><access name=\"Multiplex\" type=\"multiplex\"><access chmod=\"r\" type=\"disk\" /><access chmod=\"r\" ondemand=\"external\" path=\""+service+"/convert\" type=\"ondemandaccess\" /><access chmod=\"r\" type=\"disk\" /></access></dataset>"
-        url=url._replace(query="action=AddDataset&xml="+quote(xml))
-        print urlunparse(url)
-        try:
-            request = urllib2.Request(urlunparse(url))
-            base64string = base64.encodestring('%s:%s' % ('visus', 'P@ssw0rd!')).replace('\n', '')
-            request.add_header("Authorization", "Basic %s" % base64string)
-            ret = urllib2.urlopen(request).read()
-            print ret
-        except urllib2.HTTPError, e:
-            print "HTTP error adding dataset to server: %d" % e.code
-        except urllib2.URLError, e:
-            print "Network error adding dataset to server: %s" % e.reason.args[1]        
-        #except httplib.BadStatusLine, e:
-            #print "BadStatusLine:",e
-        except Exception,e:
-            print "unknown exception:",e
+        for path, name in zip(p, n):
+            url=urlparse(hostname)
+            xml="<dataset name=\""+name+"\" permissions=\"public\" url=\"file://"+outputdir+'/'+path+"\" ><access name=\"Multiplex\" type=\"multiplex\"><access chmod=\"r\" type=\"disk\" /><access chmod=\"r\" ondemand=\"external\" path=\""+service+"/convert\" type=\"ondemandaccess\" /><access chmod=\"r\" type=\"disk\" /></access></dataset>"
+            url=url._replace(query="action=AddDataset&xml="+quote(xml))
+            print urlunparse(url)
+            send_url(url)
+        
 
 #****************************************************
 def make_visus_config(idx_paths,dataset,hostname):
@@ -324,6 +334,7 @@ def generate_idx(inputfile,outputdir,database=None,server=default_server,service
             cur.execute("DELETE from datasets where ds_id=%d"%ds_id[0])
             for path in idx_paths:
                 cur.execute("DELETE from idxfiles where ds_id=%d"%ds_id[0])
+                cur.execute("DELETE from midxfiles where ds_id=%d"%ds_id[0])
 
         if len(idx_paths)==0 or force:
             cdat_to_idx(inputfile,outputdir,db)

@@ -5,6 +5,7 @@
 
 PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
-CREATE TABLE datasets ( ds_id integer primary key autoincrement, pathname varchar(255));
+CREATE TABLE datasets (ds_id integer primary key autoincrement, pathname varchar(255));
 CREATE TABLE idxfiles (idx_id integer primary key autoincrement, pathname varchar(255), ds_id integer);
+CREATE TABLE midxfiles (idx_id integer primary key autoincrement, pathname varchar(255), ds_id integer);
 COMMIT;

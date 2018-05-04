@@ -24,6 +24,7 @@ import sqlite3
 import visuspy as Visus
 import VisusIdxPy
 import VisusDbPy
+import VisusKernelPy
 #import SocketServer
 #import BaseHTTPServer
 #import fcntl
@@ -43,7 +44,10 @@ def lookup_cdat_path(idxpath,dbpath):
 
     db=sqlite3.connect(dbpath)
     cur=db.cursor()
-    cur.execute("SELECT ds_id from idxfiles where pathname=\"%s\"" % idxpath)
+    if ".midx" in idxpath:
+        cur.execute("SELECT ds_id from midxfiles where pathname=\"%s\"" % idxpath)
+    else:
+        cur.execute("SELECT ds_id from idxfiles where pathname=\"%s\"" % idxpath)
     cdatpath=cur.fetchall()
     #assert(len(cdatpath)<=1)  # shouldn't be dups, but for some early datasets (e.g. ganymed 2d) there are
     if len(cdatpath)>0:
@@ -159,8 +163,11 @@ def convert(idxpath,field,timestep,box,hz,dbpath):
         # open cdat, read the data
         # we receive field in this format output=input[<datasetname>].<fieldname>
         # we need extract the fieldname and pass this to read_cdat_data
-        field_name=field.split('.')[-1]
-        field_name=field_name[:-1]
+        if "output" in field:
+            field_name=field.split('.')[-1]
+            field_name=field_name[:-1]
+        else:
+            field_name=field
         print "reading cdat data for field",field_name,"at time",timestep,"of",cdatpath
         data=read_cdat_data(cdatpath,field_name,timestep)
 
@@ -180,7 +187,7 @@ def convert(idxpath,field,timestep,box,hz,dbpath):
                 
         # convert data
         print "converting field",field_name,"at time",timestep,"of",cdatpath,"to idx..."
-        buffer=Visus.convertToVisusArray(data)
+        buffer=VisusKernelPy.convertToVisusArray(data)
         query.get().buffer=buffer.get()
         ret=dataset.get().executeQuery(access, query)
 

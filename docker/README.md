@@ -3,13 +3,15 @@ Docker container with ViSUS, Miniconda and On-demand conversion service
 
 ```
 cd <path/to/directory/containing/this/file>
-tar --directory=../ -c -z -f ondemand.tar.gz code conf cgi docs html media
-
 On Windows:
-dos2unix *.sh # fix git problem
-pushd ../conf 
+pushd ..\code
 dos2unix *.sh # fix git problem
 popd
+pushd ..\conf 
+dos2unix *.sh # fix git problem
+popd
+
+tar --directory=../ -c -z -f ondemand.tar.gz code conf cgi docs html media
 
 docker build -t ondemand -f Dockerfile .
 ```
