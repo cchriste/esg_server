@@ -8,7 +8,7 @@
 #   ONDEMAND_PATH           - full path to ../code
 ONDEMAND_PATH=/home/visus/ondemand/code
 #   ONDEMAND_HOST           - host to listen for ondemand requests (default is localhost)
-ONDEMAND_HOST=0.0.0.0
+ONDEMAND_HOST=localhost
 #   ONDEMAND_PORT           - port to listen for ondemand requests (default is 42299)
 #   ONDEMAND_LOGFILE        - path to logfilee (default /tmp/idx_ondemand.log)
 ONDEMAND_LOGFILE=/home/visus/ondemand.log
