@@ -1,19 +1,25 @@
-FROM visus-anaconda
+FROM mod_visus-ubuntu-miniconda
 
+# enable CGI
+RUN a2enmod cgid
+
+# install conda packages
 RUN conda install -c conda-forge cdms2 && \
     conda install -c conda-forge genutil && \
     conda install -c conda-forge lxml
-    
-#RUN curl https://codeload.github.com/sci-visus/ondemand/zip/porting-to-new-visus -o master.zip \
-#    && unzip master.zip \
-#    && rm master.zip \
-#    && mv ondemand-porting-to-new-visus ondemand
 
-ADD ondemand.tar.gz /visus/ondemand
-RUN cp /visus/ondemand/cgi/cdat_to_idx_create.cgi /usr/lib/cgi-bin/ && \
-    cp /visus/ondemand/cgi/datasize.cgi /usr/lib/cgi-bin/
+# clone ondemand
+ENV ONDEMAND_HOME $VISUS_HOME/ondemand
+RUN git clone https://github.com/sci-visus/ondemand $ONDEMAND_HOME   
 
-WORKDIR /visus/ondemand/code
+# configure webviewer
+ADD config.js   $VISUS_HOME/webviewer
+
+# copy cgi scripts to cgi-bin
+RUN cp $ONDEMAND_HOME/cgi/cdat_to_idx_create.cgi /usr/lib/cgi-bin/ && \
+    cp $ONDEMAND_HOME/cgi/datasize.cgi /usr/lib/cgi-bin/
+
+WORKDIR $ONDEMAND_HOME/code
 EXPOSE 42299
 
-CMD ["/visus/ondemand/code/start_service.sh"]
+CMD ["/home/visus/ondemand/code/start_service.sh"]

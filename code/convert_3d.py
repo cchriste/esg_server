@@ -2,7 +2,7 @@
 
 import time
 import cdat_converter_service as ccs
-ccs.init(database="/scratch/for_ganzberger1/idx/ondemand/idx/idx.db",hostname="none",port=80,xmlpath="/scratch/for_ganzberger1/idx/ondemand/xml",idxpath="/scratch/for_ganzberger1/idx/ondemand/idx",visus_server="none",username="user",password="pass")
+ccs.init(database="/data/idx/idx.db",hostname="none",port=80,xmlpath="/data/xml",idxpath="/data/idx",visus_server="none")
 
 idxpaths=["nasa3d-lon_lat_lev_time.idx"]
 field="CO2"

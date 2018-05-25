@@ -286,7 +286,7 @@ def start_server(hostname,port):
 if __name__ == '__main__':
 
     # converter service default
-    default_idx_db_path="/for_ganzberger1/idx/idx/idx.db"
+    default_idx_db_path="/data/idx/idx.db"
     default_port=42299
     default_host="localhost"
 

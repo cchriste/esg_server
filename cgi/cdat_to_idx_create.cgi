@@ -9,19 +9,19 @@
 #query string changed after link was recreated on 2017/09
 #QUERY_STRING=`echo ${QUERY_STRING} | sed -e 's/cmip5rt/cmip5/g' | sed -e 's/\.[^\.]*\.[^\.]*|.*/.xml/g'`
 
-QUERY_STRING=`echo ${QUERY_STRING} | sed -e 's/cmip5rt/cmip5/g' | sed -e 's/\.[^\.]*|.*/.xml/g'`
-####echo ${QUERY_STRING}    #use for debugging
+QUERY_STRING=`echo ${QUERY_STRING} | sed -e 's/cmip5rt/cmip5/g' | sed -r -e 's/\.v[0-9]+(%7C|\|)+.*/.xml/g'`
+#echo ${QUERY_STRING} > /tmp/query_string.out  #use for debugging
 curl "http://localhost:42299/create?${QUERY_STRING}" -o /tmp/idx_create.out
 
-# TODO: need to find a way to get the server name associated with the converter above
-server="https://feedback.llnl.gov/mod_visus?"
+server="http://localhost:80/mod_visus?"
 
-# TODO: grep for the last (first?) dataset in the config
-#dataset="cmip5.output1.CMCC.CMCC-CM.decadal1980.mon.land.Lmon.r1i1p1-lon_lat_time"
-dataset="nature_2007_aer1_hourly"
+dataset=`echo ${QUERY_STRING} | cut -d'=' -f 2 | sed -r -e 's/\.(nc|xml)+//'`
+append="-lon_lat_plev_time_idx"
+dataset="$dataset$append"
+#echo $dataset > /tmp/dataset_name.out
 
-palette="ExtendedCoolWarm"
-
+palette=""
+vr=1
 #exit 1
 
 rawurlencode() {
@@ -34,7 +34,7 @@ rawurlencode() {
      c=${string:$pos:1}
      case "$c" in
         [-_.~a-zA-Z0-9] ) o="${c}" ;;
-        * )               printf -v o '%%%02x' "'$c"
+        * )               printf -v o '%%%02X' "'$c"
      esac
      encoded+="${o}"
   done
@@ -46,5 +46,5 @@ rawurlencode() {
 echo "Content-type: text/html"
 echo ""
 echo "<html><head>"
-echo "<script>window.open(\"https://feedback.llnl.gov/webviewer/viewer.html?server=$( rawurlencode $server )&dataset=$( rawurlencode $dataset )&palette=$palette\",'_self');</script>"
+echo "<script>window.open(\"http://localhost/viewer?server=$( rawurlencode $server )&dataset=$( rawurlencode $dataset )&palette=$palette&vr=$vr\",'_self');</script>"
 echo "</head></html>"

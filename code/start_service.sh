@@ -57,9 +57,9 @@ echo $! > $pid
 echo "==================== started ondemand converter service (pid=$!) ====================" >> ${ONDEMAND_LOGFILE}
 echo "ondemand converter service started."
 
-if [ -f /visus/start_server.sh ]; then
+if [ -f /usr/local/bin/httpd-foreground.sh ]; then
 echo "starting visus server."
-	/visus/start_server.sh
+	/usr/local/bin/httpd-foreground.sh
 fi
 
 popd
