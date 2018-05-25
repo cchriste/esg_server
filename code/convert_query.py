@@ -22,6 +22,9 @@
 import time
 import sqlite3
 import visuspy as Visus
+import VisusIdxPy
+import VisusDbPy
+import VisusKernelPy
 #import SocketServer
 #import BaseHTTPServer
 #import fcntl
@@ -41,7 +44,10 @@ def lookup_cdat_path(idxpath,dbpath):
 
     db=sqlite3.connect(dbpath)
     cur=db.cursor()
-    cur.execute("SELECT ds_id from idxfiles where pathname=\"%s\"" % idxpath)
+    if ".midx" in idxpath:
+        cur.execute("SELECT ds_id from midxfiles where pathname=\"%s\"" % idxpath)
+    else:
+        cur.execute("SELECT ds_id from idxfiles where pathname=\"%s\"" % idxpath)
     cdatpath=cur.fetchall()
     #assert(len(cdatpath)<=1)  # shouldn't be dups, but for some early datasets (e.g. ganymed 2d) there are
     if len(cdatpath)>0:
@@ -54,14 +60,12 @@ def lookup_cdat_path(idxpath,dbpath):
         # to load xml files from local paths, not explicit paths
         # (e.g. "filename.xml", not "/path/to/filename.xml".
         cdatpath=os.path.basename(cdatpath)
-
         return cdatpath,True
     return "",False
 
 
 def read_cdat_data(cdatpath,field,timestep):
     """open and read a field from a cdat dataset"""
-
     f=cdms2.open(cdatpath)
     if not f.variables.has_key(field):
         raise ConvertError(RESULT_NOTFOUND,"Field %s not found in cdat volume %s."%(field,cdatpath))
@@ -87,27 +91,32 @@ def read_cdat_data(cdatpath,field,timestep):
 
 def create_idx_query(idxpath,field,timestep,box,hz,dbpath):
     """open idx, validate inputs, create write query"""
-
+    # we receive .midx path in query string. However, we need idx path to start conversion
+    # since both .midx and .idx are created under the same basepath, just changing the extension from .midx to .idx is sufficient
     idxpath=os.path.dirname(dbpath)+"/"+idxpath
-    dataset=Visus.Dataset.loadDataset(idxpath);
+    idxpath=os.path.splitext(idxpath)[0]+'.idx'  
+
+    dataset=VisusDbPy.Dataset.loadDataset(idxpath);
     if not dataset:
         raise ConvertError(RESULT_ERROR,"Error creating IDX query: could not load dataset "+idxpath)
-    visus_field=dataset.getFieldByName(field);
+    visus_field=dataset.get().getFieldByName(field);
     if not visus_field:
         raise ConvertError(RESULT_ERROR,"Error creating IDX query: could not find field "+field)
-    access=dataset.createAccess()
-    logic_box=dataset.getLogicBox()
+
+    access=dataset.get().createAccess()
+    logic_box=dataset.get().getBox()
 
     if box or hz>=0:
         pass #print "TODO: handle subregion queries and resolution selection (box=%s,hz=%d)"%(box,hz)
 
     # convert the field
-    query=Visus.Query(dataset,ord('w'))
-    query.setLogicPosition(Visus.Position(logic_box))
-    query.setField(visus_field)
-    query.setTime(timestep)
-    query.setAccess(access)
-    query.begin()
+    query=VisusDbPy.QueryPtr(VisusDbPy.Query(dataset.get(), ord('w')))
+    query.get().position=Visus.Position(logic_box)
+    query.get().field=visus_field
+    query.get().time=timestep
+
+    dataset.get().beginQuery(query)
+
     return dataset,access,query  # IMPORTANT: need to return dataset,access because otherwise they go out of scope and query fails
 
 class ConvertError(Exception):
@@ -126,8 +135,7 @@ class ConvertError(Exception):
 
 def convert(idxpath,field,timestep,box,hz,dbpath):
     """Converts a timestep of a field of a cdat dataset to idx, using the idxpath to find the matching cdat volume."""
-    global visus_app
-    #visus_app=Visus.Application()  #uncomment this to call as a separate process
+    VisusIdxPy.IdxModule.attach()
 
     t1  = time.time()
     pt1 = time.clock()
@@ -153,32 +161,39 @@ def convert(idxpath,field,timestep,box,hz,dbpath):
         #import pdb; pdb.set_trace()
 
         # open cdat, read the data
-        print "reading cdat data for field",field,"at time",timestep,"of",cdatpath
-        data=read_cdat_data(cdatpath,field,timestep)
+        # we receive field in this format output=input[<datasetname>].<fieldname>
+        # we need extract the fieldname and pass this to read_cdat_data
+        if "output" in field:
+            field_name=field.split('.')[-1]
+            field_name=field_name[:-1]
+        else:
+            field_name=field
+        print "reading cdat data for field",field_name,"at time",timestep,"of",cdatpath
+        data=read_cdat_data(cdatpath,field_name,timestep)
 
         # open idx and create query
-        print "creating idx query for field",field,"at time",timestep,"of",cdatpath
-        dataset,access,query=create_idx_query(idxpath,field,timestep,box,hz,dbpath)
+        print "creating idx query for field",field_name,"at time",timestep,"of",cdatpath
+        dataset,access,query=create_idx_query(idxpath,field_name,timestep,box,hz,dbpath)
 
         # validate bounds
-        if query.end() or data.size!=query.getNumberOfSamples().innerProduct():
-            raise ConvertError(RESULT_ERROR,"Invalid IDX query.")
+        if data.size!=query.get().nsamples.innerProduct():
+            raise ConvertError(RESULT_ERROR,"Invalid IDX query")
             
         # validate shape
         shape=data.shape[::-1]
         for i in range(len(shape)):
-            if shape[i]!=query.getNumberOfSamples()[i]:
+            if shape[i]!=query.get().nsamples[i]:
                 raise ConvertError(RESULT_ERROR,"Invalid query dimensions.")
                 
         # convert data
-        print "converting field",field,"at time",timestep,"of",cdatpath,"to idx..."
-        visusarr=Visus.Array.fromNumPyArray(data)
-        visusarrptr=Visus.ArrayPtr(visusarr)
-        query.setBuffer(visusarrptr)
-        ret=query.execute()
+        print "converting field",field_name,"at time",timestep,"of",cdatpath,"to idx..."
+        buffer=VisusKernelPy.convertToVisusArray(data)
+        query.get().buffer=buffer.get()
+        ret=dataset.get().executeQuery(access, query)
+
         if not ret:
             raise ConvertError(RESULT_ERROR,"Error executing IDX query.")
-        print "done converting field",field,"at time",timestep,"of",cdatpath
+        print "done converting field",field_name,"at time",timestep,"of",cdatpath
             
     except IOError as e:
         if e.errno==None:

@@ -33,25 +33,33 @@ if [ ! -e ${ONDEMAND_DB} ]; then
 fi
 
 # source uv-cdat runtime
-source ${UVCDAT_DIR}/bin/setup_runtime.sh 
+if [ -d {UVCDAT_DIR} ]; then
+	source ${UVCDAT_DIR}/bin/setup_runtime.sh 
+fi
 
 # stop any running instance
 pid=${ONDEMAND_BIN}/current_instance.pid
 ${ONDEMAND_BIN}/stop_service.sh
 
 # clean up any temporary lock files
-rm /tmp/*.lock
+if [ -f /tmp/*.lock ]; then
+	rm /tmp/*.lock
+fi
 
 # start service
 if [ ${DEBUG_MODE} ]; then
-  python ${ONDEMAND_BIN}/cdat_converter_service.py ${ARG_PORT} ${ARG_HOST} ${ARG_XMLPATH} ${ARG_IDXPATH} ${ARG_DB} ${ARG_VISUSSERVER} ${ARG_VISUSSERVER_USERNAME} ${ARG_VISUSSERVER_PASSWORD} 2>&1
+  python ${ONDEMAND_BIN}/cdat_converter_service.py ${ARG_PORT} ${ARG_HOST} ${ARG_XMLPATH} ${ARG_IDXPATH} ${ARG_DB} ${ARG_VISUSSERVER} 2>&1
 else
-  python ${ONDEMAND_BIN}/cdat_converter_service.py ${ARG_PORT} ${ARG_HOST} ${ARG_XMLPATH} ${ARG_IDXPATH} ${ARG_DB} ${ARG_VISUSSERVER} ${ARG_VISUSSERVER_USERNAME} ${ARG_VISUSSERVER_PASSWORD} >> $ONDEMAND_LOGFILE 2>&1 &
+  python ${ONDEMAND_BIN}/cdat_converter_service.py ${ARG_PORT} ${ARG_HOST} ${ARG_XMLPATH} ${ARG_IDXPATH} ${ARG_DB} ${ARG_VISUSSERVER} >> $ONDEMAND_LOGFILE 2>&1 &
 fi
 echo $! > $pid
 
 echo "==================== started ondemand converter service (pid=$!) ====================" >> ${ONDEMAND_LOGFILE}
 echo "ondemand converter service started."
 
+if [ -f /usr/local/bin/httpd-foreground.sh ]; then
+echo "starting visus server."
+	/usr/local/bin/httpd-foreground.sh
+fi
 
 popd

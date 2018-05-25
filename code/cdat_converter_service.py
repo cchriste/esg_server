@@ -25,6 +25,8 @@
 import time
 import sqlite3
 import visuspy as Visus
+import VisusIdxPy
+import VisusKernelPy
 import SocketServer
 import BaseHTTPServer
 import fcntl
@@ -52,7 +54,11 @@ class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
             t1=time.time()
             print "("+str(query_id)+") started: ",url.query
             stdout.flush()
-            result,response=call_convert_query(url.query)
+            try:
+                result,response=call_convert_query(url.query)
+            except Exception as e:
+                print "Exception: ",e
+                raise
             print "("+str(query_id)+") complete ("+str((time.time()-t1)*1000)+"ms): ["+str(response)+"] "+result,url.query
             stdout.flush()
             self.send_response(response)
@@ -110,7 +116,7 @@ def parse_query(query):
     if job.has_key("idx"):
         idxpath=job["idx"][0]
     if job.has_key("time"):
-        timestep=int(job["time"][0])
+        timestep=int(float(job["time"][0]))
     if job.has_key("field"):
         field=job["field"][0]
         idx=field.find('?')
@@ -143,7 +149,14 @@ def call_convert_query(query):
     """Converts a timestep of a field of a cdat dataset to idx, using the idxpath to find the matching cdat volume."""
 
     # parse query request
-    idxpath,field,timestep,box,hz=parse_query(query)
+    try:
+        idxpath,field,timestep,box,hz=parse_query(query)
+        print idxpath,field,timestep,box,hz
+
+    except Exception as e:
+        print "Exception: ",e
+        raise
+ 
     if not idxpath or not field:
         return ("Invalid query: %s"%query,RESULT_INVALID)
     
@@ -183,7 +196,7 @@ def create(query):
         if not job.has_key("dataset"):
             raise ConvertError(RESULT_INVALID,"Query must specify a valid and accessible .xml or .nc file and destination path")
 
-        global xml_path,idx_path,ondemand_service_address,dbpath,visusserver,visusserver_username,visusserver_password
+        global xml_path,idx_path,ondemand_service_address,dbpath,visusserver
         cdatpath=xml_path+"/"+job["dataset"][0]
         idxpath=idx_path
         if job.has_key("destination"):
@@ -191,12 +204,6 @@ def create(query):
         server=visusserver
         if job.has_key("server"):
             server=job["server"][0]
-        username=visusserver_username
-        if job.has_key("username"):
-            username=job["username"][0]
-        password=visusserver_password
-        if job.has_key("password"):
-            password=job["password"][0]
         force=False
         if job.has_key("force"):
             if job["force"][0]=="True" or job["force"][0]=="1" or job["force"][0]=="true":
@@ -205,8 +212,8 @@ def create(query):
 
         # create idx volumes from climate dataset
         import cdat_to_idx
-        print "generate_idx(inputfile=",cdatpath,",outputdir=",idxpath,",database=",dbpath,",server=",server,",username=",username,",password=",password,",service=",ondemand_service_address,",force=",str(force),")"
-        result_str=cdat_to_idx.generate_idx(inputfile=cdatpath,outputdir=idxpath,database=dbpath,server=server,username=username,password=password,service=ondemand_service_address,force=force)
+        print "generate_idx(inputfile=",cdatpath,",outputdir=",idxpath,",database=",dbpath,",server=",server,",service=",ondemand_service_address,",force=",str(force),")"
+        result_str=cdat_to_idx.generate_idx(inputfile=cdatpath,outputdir=idxpath,database=dbpath,server=server,service=ondemand_service_address,force=force)
         result=RESULT_SUCCESS
 
     except ConvertError as e:
@@ -221,10 +228,9 @@ def create(query):
     return (result_str,result)
 
 
-def init(database,hostname,port,xmlpath,idxpath,visus_server,username,password):
-    global visus_app
-    #visus_app=Visus.Application(1,["--visus-log /scratch/for_ganzberger1/idx/log/visus.log"])
-    visus_app=Visus.Application()
+def init(database,hostname,port,xmlpath,idxpath,visus_server):
+    VisusKernelPy.SetCommandLine("__main__")
+    VisusIdxPy.IdxModule.attach()
 
     global dbpath
     dbpath=database
@@ -242,12 +248,6 @@ def init(database,hostname,port,xmlpath,idxpath,visus_server,username,password):
 
     global visusserver
     visusserver=visus_server
-
-    global visusserver_username
-    visusserver_username=username
-
-    global visusserver_password
-    visusserver_password=password
 
 #note: doesn't seem to be any huge reason in our case to prefer forking over theading, but both work fine
 class OnDemandSocketServer(SocketServer.ThreadingTCPServer):
@@ -286,12 +286,12 @@ def start_server(hostname,port):
 if __name__ == '__main__':
 
     # converter service default
-    default_idx_db_path="/for_ganzberger1/idx/idx/idx.db"
+    default_idx_db_path="/data/idx/idx.db"
     default_port=42299
     default_host="localhost"
 
     # cdat_to_idx defaults
-    default_server="http://localhost:10000/mod_visus"
+    default_server="http://localhost:80/mod_visus"
     default_xml_path="/data/xml/"
     default_idx_path="/data/idx/"
 
@@ -303,11 +303,9 @@ if __name__ == '__main__':
     parser.add_argument("-i","--idxpath",default=default_idx_path,help="path to place newly created idx volumes")
     parser.add_argument("-d","--database",help="path to cdat-to-database (default is $IDX_PATH/idx.db)")
     parser.add_argument("-s","--visusserver",default=default_server,help="visus server with which to register newly created idx volumes")
-    parser.add_argument("--username",default="root",help="username to register newly created idx volumes with server")
-    parser.add_argument("--password",default="visus",help="password to register newly created idx volumes with server")
     args = parser.parse_args()
 
-    init(args.database,args.hostname,args.port,args.xmlpath,args.idxpath,args.visusserver,args.username,args.password)
+    init(args.database,args.hostname,args.port,args.xmlpath,args.idxpath,args.visusserver)
 
     print "Starting server http://"+args.hostname+":"+str(args.port)+"..."
     print "\txml path: "+xml_path
@@ -316,6 +314,6 @@ if __name__ == '__main__':
     print "\tvisus server: "+visusserver
     print "\tmax sockets:",socket.SOMAXCONN
     start_server(args.hostname,args.port)
-
+    VisusIdxPy.IdxModule.detach()
 
     print "done!"
