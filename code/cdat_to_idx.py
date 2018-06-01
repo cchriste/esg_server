@@ -128,9 +128,12 @@ def cdat_to_idx(cdat_dataset,destpath,db):
     print "destination", destpath
 
     ## XIDX init start
-    
+
     # create time group
     time_group = Group("TimeSeries", Group.TEMPORAL_GROUP_TYPE)
+
+    # create a list domain for the temporal group
+    time_dom = ListDomainDouble("Time")
 
     # XIDX set group time domain
     time_group.SetDomain(time_dom)
@@ -141,9 +144,6 @@ def cdat_to_idx(cdat_dataset,destpath,db):
     # group of variables sharing this domain
     geo_vars = Group("geo_vars", Group.SPATIAL_GROUP_TYPE, geo_dom);
     
-    # create a list domain for the temporal group
-    time_dom = ListDomainDouble("Time")
-
     ## XIDX init end
     
     # open dataset
