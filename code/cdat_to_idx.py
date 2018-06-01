@@ -191,7 +191,8 @@ def cdat_to_idx(cdat_dataset,destpath,db):
             else:
               new_axis.AddAttribute(att,values)
         
-        if new_axis:
+        # add non-time axis to the geometry domain
+        if not name=="time":
           geo_dom.AddAxis(new_axis)  
 
         ## XIDX create axis end
@@ -329,7 +330,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         idx=os.path.basename(d.idxinfo.path) 
         midx=os.path.splitext(idx)[0]+'.midx'
         # XIDX path assuming only one dataset per IDX file
-        xidxpath=os.path.splitext(idx)[0]+'.xidx'
+        xidxpath=destpath+"/"+os.path.splitext(idx)[0]+'.xidx'
         cur.execute("INSERT into midxfiles (pathname, ds_id) values (\"%s\", %d)" % (midx, cdat_id))
         cur.execute("INSERT into idxfiles (pathname, ds_id) values (\"%s\", %d)" % (idx, cdat_id))
 
