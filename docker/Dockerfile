@@ -1,4 +1,4 @@
-FROM mod_visus-ubuntu-miniconda
+FROM visus/miniconda
 
 # enable CGI
 RUN a2enmod cgid
