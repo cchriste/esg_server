@@ -127,12 +127,8 @@ def cdat_to_idx(cdat_dataset,destpath,db):
 
     print "destination", destpath
 
-    filepath = destpath+"/test.xidx"
-
     ## XIDX init start
-    # create metadata file
-    meta = XidxFile(filepath)
-
+    
     # create time group
     time_group = Group("TimeSeries", Group.TEMPORAL_GROUP_TYPE)
 
@@ -310,6 +306,8 @@ def cdat_to_idx(cdat_dataset,destpath,db):
     cur.execute("INSERT into datasets (pathname) values (\"%s\")" % cdat_dataset)
     cdat_id=cur.lastrowid
 
+    xidxpath = destpath+"/test.xidx"
+
     for d in domains.values():
         found_time=False
         print d
@@ -330,6 +328,8 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         # therefore add path to .midx also into idx db
         idx=os.path.basename(d.idxinfo.path) 
         midx=os.path.splitext(idx)[0]+'.midx'
+        # XIDX path assuming only one dataset per IDX file
+        xidxpath=os.path.splitext(idx)[0]+'.xidx'
         cur.execute("INSERT into midxfiles (pathname, ds_id) values (\"%s\", %d)" % (midx, cdat_id))
         cur.execute("INSERT into idxfiles (pathname, ds_id) values (\"%s\", %d)" % (idx, cdat_id))
 
@@ -337,6 +337,8 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         source = DataSource("data", idx)
         time_group.AddDataSource(source)
 
+    # create metadata file
+    meta = XidxFile(xidxpath)
 
     # XIDX write metadata to disk             
     meta.SetRootGroup(time_group);
