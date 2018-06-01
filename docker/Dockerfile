@@ -9,12 +9,12 @@ RUN conda install -c conda-forge cdms2 && \
     conda install -c conda-forge lxml
 
 # install libxml2
-RUN apt install libxml2-dev
+RUN apt-get install -y libxml2-dev
 
 # clone XIDX
 ENV XIDX_HOME $VISUS_HOME/XIDX
 RUN git clone https://github.com/sci-visus/XIDX.git $XIDX_HOME
-RUN cd $XIDX_HOME/include/xidx
+WORKDIR $XIDX_HOME/include/xidx
 RUN python setup.py build_ext --inplace
 ENV PYTHONPATH $XIDX_HOME/include/xidx:$PYTHONPATH
 
