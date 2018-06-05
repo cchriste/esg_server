@@ -34,6 +34,10 @@ import base64
 from urlparse import urlparse,urlunparse
 from urllib import quote
 
+import numpy
+import XidxPy
+from XidxPy import *
+
 #****************************************************
 def getIdxPaths(cdat_dataset,db):
     """Looks in sqlite database db for idxfiles entries that refer to cdat_database. Returns a list of such entries."""
@@ -121,6 +125,27 @@ def cdat_to_idx(cdat_dataset,destpath,db):
     except:
         None  #directory likely already exists
 
+    print "destination", destpath
+
+    ## XIDX init start
+
+    # create time group
+    time_group = Group("TimeSeries", Group.TEMPORAL_GROUP_TYPE)
+
+    # create a list domain for the temporal group
+    time_dom = ListDomainDouble("Time")
+
+    # XIDX set group time domain
+    time_group.SetDomain(time_dom)
+ 
+    # create grid domain
+    geo_dom = MultiAxisDomain("Geospatial")
+
+    # group of variables sharing this domain
+    geo_vars = Group("geo_vars", Group.SPATIAL_GROUP_TYPE, geo_dom);
+    
+    ## XIDX init end
+    
     # open dataset
     print "cdat_to_idx: datasets="+cdat_dataset
     dataset = cdms2.open(cdat_dataset)
@@ -134,6 +159,44 @@ def cdat_to_idx(cdat_dataset,destpath,db):
     for name in dataset.axes:
         print "considering axis: "+name
         axis=dataset.axes[name]
+
+        ## XIDX create axis start
+        attributes = axis.attributes
+
+        # use time axis for time domain
+        # or create new axis for others
+        if not name=="time":
+          new_axis = Variable(name);
+            
+        for att in attributes:
+          if att=="bounds":
+            B=dataset(axis.bounds)
+            shape=B.shape
+            #print shape
+            for i in range(shape[0]):
+                entry=[]
+                for j in range(shape[1]):
+                  entry.append(B[i][j])
+                if name=="time":
+                  time_dom.AddDomainItems(IndexSpace(entry))
+                else:
+                  new_axis.AddValues(IndexSpace(entry))
+          else:
+            values=attributes[att]
+            if isinstance(values, numpy.ndarray):
+              values=numpy.array2string(attributes[att])
+            #print att, attributes[att], type(attributes[att]), type(values)
+            if attributes[att] and name=="time":
+              time_dom.AddAttribute(att,attributes[att])
+            else:
+              new_axis.AddAttribute(att,values)
+        
+        # add non-time axis to the geometry domain
+        if not name=="time":
+          geo_dom.AddAxis(new_axis)  
+
+        ## XIDX create axis end
+        
         if hasattr(axis,'bounds'):
             try:
                 B=dataset(axis.bounds)
@@ -148,6 +211,10 @@ def cdat_to_idx(cdat_dataset,destpath,db):
                 print "         B.shape =",str(B.shape)
             physical_bounds[name]=(B[0][0],B[-1][1])  #assume regular spacing
 
+            
+    # XIDX add geometric domain
+    time_group.AddGroup(geo_vars);
+    
     # collect variables into their associated domains
     print "finished considering axes"
     logic_to_physic=[1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
@@ -162,6 +229,21 @@ def cdat_to_idx(cdat_dataset,destpath,db):
             continue;
         axes
 
+        ## XIDX add variables start
+        if not v.id.endswith("_bnds"): 
+          # create and add a variable to the group
+          temp = geo_vars.AddVariable(v.id, Visus.DType.fromString(v.dtype.name).toString());
+          #print "var", v.id, "type", v.dtype.name
+          attributes=v.attributes
+          for att in attributes:
+            values=attributes[att]
+            if isinstance(values, numpy.ndarray):
+              values=numpy.array2string(attributes[att])
+            #print att, attributes[att], type(attributes[att]), type(values)
+            if attributes[att]:
+              temp.AddAttribute(att,values)
+        ## XIDX add variables end
+        
         if domains.has_key(axes):
             print "inserting",v.id,"into existing entry of domains["+str(axes)+"]"
             domains[axes].varlist.append(v.id)
@@ -225,6 +307,8 @@ def cdat_to_idx(cdat_dataset,destpath,db):
     cur.execute("INSERT into datasets (pathname) values (\"%s\")" % cdat_dataset)
     cdat_id=cur.lastrowid
 
+    xidxpath = destpath+"/test.xidx"
+
     for d in domains.values():
         found_time=False
         print d
@@ -245,9 +329,24 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         # therefore add path to .midx also into idx db
         idx=os.path.basename(d.idxinfo.path) 
         midx=os.path.splitext(idx)[0]+'.midx'
+        # XIDX path assuming only one dataset per IDX file
+        xidxpath=destpath+"/"+os.path.splitext(idx)[0]+'.xidx'
         cur.execute("INSERT into midxfiles (pathname, ds_id) values (\"%s\", %d)" % (midx, cdat_id))
         cur.execute("INSERT into idxfiles (pathname, ds_id) values (\"%s\", %d)" % (idx, cdat_id))
 
+        # XIDX set data source to the dataset file
+        source = DataSource("data", idx)
+        time_group.AddDataSource(source)
+
+    # create metadata file
+    meta = XidxFile(xidxpath)
+
+    # XIDX write metadata to disk             
+    meta.SetRootGroup(time_group);
+    meta.Save();
+
+    print "xidx created"
+   
     return domains
 
 def send_url(url):
