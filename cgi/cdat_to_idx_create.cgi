@@ -16,7 +16,8 @@ curl "http://localhost:42299/create?${QUERY_STRING}" -o /tmp/idx_create.out
 server="http://localhost:80/mod_visus?"
 
 dataset=`echo ${QUERY_STRING} | cut -d'=' -f 2 | sed -r -e 's/\.(nc|xml)+//'`
-append="-lon_lat_plev_time_idx"
+append="_idx"
+#"-lon_lat_plev_time_idx"
 dataset="$dataset$append"
 #echo $dataset > /tmp/dataset_name.out
 

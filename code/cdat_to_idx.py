@@ -268,12 +268,13 @@ def cdat_to_idx(cdat_dataset,destpath,db):
             domains[axes].idxinfo.cdat_dataset=idxbasename
         
             #idx name
-            domains[axes].idxinfo.path=destpath+"/"+idxbasename+"-"
-            for d in axes:
-                domains[axes].idxinfo.path += d
-                if d!=axes[-1]:
-                    domains[axes].idxinfo.path += '_'
-            domains[axes].idxinfo.path += ".idx"
+            domains[axes].idxinfo.path=destpath+"/"+idxbasename+".idx"#"-"
+            # using axis to create the dataset path
+            # for d in axes:
+            #     domains[axes].idxinfo.path += d
+            #     if d!=axes[-1]:
+            #         domains[axes].idxinfo.path += '_'
+            # domains[axes].idxinfo.path += ".idx"
 
             #dims,timesteps,logic_to_physic
             domains[axes].idxinfo.dims=[]
