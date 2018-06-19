@@ -116,6 +116,13 @@ def create_idx(idxinfo):
     if not bSaved:
         print "ERROR creating idx "+ idxinfo.path
 
+def isfloat(x):
+    try:
+        a = float(x)
+    except ValueError:
+        return False
+    else:
+        return True
 
 #****************************************************
 def cdat_to_idx(cdat_dataset,destpath,db):
@@ -232,11 +239,19 @@ def cdat_to_idx(cdat_dataset,destpath,db):
             continue;
         axes
 
+        use_dtype =  v.dtype.name
+
+        # variables using scale_factor or add_offset are automatically multiplied by it by cdms
+        if((v.attributes.has_key("scale_factor") and isfloat(v.attributes["scale_factor"][0])) or
+            (v.attributes.has_key("add_offset") and isfloat(v.attributes["add_offset"][0]))): 
+            use_dtype="float32"
+            print "Float scale factor found, using", use_dtype, "for variable", v.id
+
         ## XIDX add variables start
         if not v.id.endswith("_bnds"): 
           # create and add a variable to the group
-          temp = geo_vars.AddVariable(v.id, Visus.DType.fromString(v.dtype.name).toString());
-          #print "var", v.id, "type", v.dtype.name
+          temp = geo_vars.AddVariable(v.id, Visus.DType.fromString(use_dtype).toString());
+
           attributes=v.attributes
           for att in attributes:
             values=attributes[att]
@@ -250,7 +265,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         if domains.has_key(axes):
             print "inserting",v.id,"into existing entry of domains["+str(axes)+"]"
             domains[axes].varlist.append(v.id)
-            f=Visus.Field(v.id,Visus.DType.fromString(v.dtype.name))
+            f=Visus.Field(v.id,Visus.DType.fromString(use_dtype))
             f.default_layout="rowmajor"
             #f.default_compression="zip"
             if hasattr(v,'long_name'):
@@ -298,8 +313,8 @@ def cdat_to_idx(cdat_dataset,destpath,db):
                             rng=float(180)/float(sz)
                     domains[axes].idxinfo.logic_to_physic[4*i+i]=rng
 
-            # fields            
-            f=Visus.Field(v.id,Visus.DType.fromString(v.dtype.name))
+            # fields           
+            f=Visus.Field(v.id,Visus.DType.fromString(use_dtype))
             f.default_layout="rowmajor"
             #f.default_compression="zip"
             if hasattr(v,'long_name'):
