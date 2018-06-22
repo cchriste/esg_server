@@ -258,8 +258,11 @@ def cdat_to_idx(cdat_dataset,destpath,db):
             if isinstance(values, numpy.ndarray):
               values=numpy.array2string(attributes[att])
             #print att, attributes[att], type(attributes[att]), type(values)
-            if len(values)>0: #attributes[att]:
-              temp.AddAttribute(att,values)
+            if isinstance(values, list): #attributes[att]:
+              if len(values)>0:
+                temp.AddAttribute(att,values)
+            else:
+              temp.AddAttribute(att,str(values))
         ## XIDX add variables end
         
         if domains.has_key(axes):
