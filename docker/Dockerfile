@@ -23,11 +23,13 @@ ENV PYTHONPATH $XIDX_HOME/build:$PYTHONPATH
 
 # clone ondemand
 ENV ONDEMAND_HOME $VISUS_HOME/ondemand
-RUN git clone https://github.com/sci-visus/ondemand $ONDEMAND_HOME   
+ADD https://api.github.com/repos/sci-visus/ondemand/git/refs/heads/master version.json
+RUN git clone -bmaster https://github.com/sci-visus/ondemand.git $ONDEMAND_HOME
 
 # install webviewer
 RUN rm -R $VISUS_HOME/webviewer
-RUN git clone https://github.com/sci-visus/visus_javascript $VISUS_HOME/webviewer
+ADD https://api.github.com/repos/sci-visus/visus_javascript/git/refs/heads/master version.json
+RUN git clone -bmaster https://github.com/sci-visus/visus_javascript.git $VISUS_HOME/webviewer
 
 # configure webviewer
 ADD config.js   $VISUS_HOME/webviewer
