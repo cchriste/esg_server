@@ -9,11 +9,14 @@
 #query string changed after link was recreated on 2017/09
 #QUERY_STRING=`echo ${QUERY_STRING} | sed -e 's/cmip5rt/cmip5/g' | sed -e 's/\.[^\.]*\.[^\.]*|.*/.xml/g'`
 
+# configuration
+. /home/visus/ondemand/conf/ondemand-env.sh
+
 QUERY_STRING=`echo ${QUERY_STRING} | sed -e 's/cmip5rt/cmip5/g' | sed -r -e 's/\.v[0-9]+(%7C|\|)+.*/.xml/g'`
 #echo ${QUERY_STRING} > /tmp/query_string.out  #use for debugging
 curl "http://localhost:42299/create?${QUERY_STRING}" -o /tmp/idx_create.out
 
-server="http://localhost:80/mod_visus?"
+server="http://${ONDEMAND_HOST}/mod_visus?"
 
 dataset=`echo ${QUERY_STRING} | cut -d'=' -f 2 | sed -r -e 's/\.(nc|xml)+//'`
 append="_idx"
@@ -21,7 +24,7 @@ append="_idx"
 dataset="$dataset$append"
 #echo $dataset > /tmp/dataset_name.out
 
-palette=""
+palette="rich"
 vr=1
 #exit 1
 
@@ -47,5 +50,5 @@ rawurlencode() {
 echo "Content-type: text/html"
 echo ""
 echo "<html><head>"
-echo "<script>window.open(\"http://localhost/viewer?server=$( rawurlencode $server )&dataset=$( rawurlencode $dataset )&palette=$palette&vr=$vr\",'_self');</script>"
+echo "<script>window.open(\"http://${ONDEMAND_HOST}/viewer?server=$( rawurlencode $server )&dataset=$( rawurlencode $dataset )&palette=$palette&vr=$vr\",'_self');</script>"
 echo "</head></html>"
