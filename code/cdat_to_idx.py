@@ -35,8 +35,8 @@ from urlparse import urlparse,urlunparse
 from urllib import quote
 
 import numpy
-import XidxPy
-from XidxPy import *
+import xidx
+from xidx import *
 
 #****************************************************
 def getIdxPaths(cdat_dataset,db):
@@ -362,7 +362,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         time_group.AddDataSource(source)
 
     # create metadata file
-    meta = XidxFile(xidxpath)
+    meta = MetadataFile(xidxpath)
 
     # XIDX write metadata to disk             
     meta.SetRootGroup(time_group);
