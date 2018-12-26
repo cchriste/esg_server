@@ -10,7 +10,7 @@
 #QUERY_STRING=`echo ${QUERY_STRING} | sed -e 's/cmip5rt/cmip5/g' | sed -e 's/\.[^\.]*\.[^\.]*|.*/.xml/g'`
 
 # configuration
-. /home/visus/ondemand/conf/ondemand-env.sh
+. /home/visus/ondemand/conf/ondemand-cfg.sh
 
 QUERY_STRING=`echo ${QUERY_STRING} | sed -e 's/cmip5rt/cmip5/g' | sed -r -e 's/\.v[0-9]+(%7C|\|)+.*/.xml/g'`
 #echo ${QUERY_STRING} > /tmp/query_string.out  #use for debugging
