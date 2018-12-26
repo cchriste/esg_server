@@ -1,3 +1,10 @@
+#
+# ViSUS ondemand Docker installation
+#
+# Must build this Docker image from parent directory (..):
+#  `docker build -t ondemand -f docker/Dockerfile .`
+#
+
 FROM visus/miniconda
 
 # enable CGI
@@ -21,18 +28,14 @@ WORKDIR $XIDX_HOME/build
 RUN cmake .. && make 
 ENV PYTHONPATH $XIDX_HOME/build:$PYTHONPATH
 
-# clone ondemand
-ENV ONDEMAND_HOME $VISUS_HOME/ondemand
-ADD https://api.github.com/repos/sci-visus/ondemand/git/refs/heads/master version.json
-RUN git clone -bmaster https://github.com/sci-visus/ondemand.git $ONDEMAND_HOME
-
-# install webviewer
+# install webviewer (it's already installed by visus/miniconda... but, it's broken, so that's why we're installing it again)
 RUN rm -R $VISUS_HOME/webviewer
 ADD https://api.github.com/repos/sci-visus/visus_javascript/git/refs/heads/master version.json
 RUN git clone -bmaster https://github.com/sci-visus/visus_javascript.git $VISUS_HOME/webviewer
 
-# configure webviewer
-ADD config.js   $VISUS_HOME/webviewer
+# install ondemand (that's where we are, so just copy it; enables development without git commits)
+ENV ONDEMAND_HOME $VISUS_HOME/ondemand
+ADD . $ONDEMAND_HOME
 
 # copy cgi scripts to cgi-bin
 RUN cp $ONDEMAND_HOME/cgi/cdat_to_idx_create.cgi /usr/lib/cgi-bin/ && \

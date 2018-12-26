@@ -291,7 +291,7 @@ if __name__ == '__main__':
     default_host="localhost"
 
     # cdat_to_idx defaults
-    default_server="http://localhost:80/mod_visus"
+    default_server="http://localhost:80"
     default_xml_path="/data/xml/"
     default_idx_path="/data/idx/"
 
@@ -307,7 +307,7 @@ if __name__ == '__main__':
 
     init(args.database,args.hostname,args.port,args.xmlpath,args.idxpath,args.visusserver)
 
-    print "Starting server http://"+args.hostname+":"+str(args.port)+"..."
+    print "Starting server "+args.hostname+":"+str(args.port)+"..."
     print "\txml path: "+xml_path
     print "\tidx path: "+idx_path
     print "\tdatabase: "+dbpath

@@ -12,7 +12,7 @@ if [[ "${ONDEMAND_PORT}" = "" ]]; then
 fi
 
 if [[ "${ONDEMAND_LOGFILE}" = "" ]]; then
-  export ONDEMAND_LOGFILE="/tmp/idx_ondemandlog"
+  export ONDEMAND_LOGFILE="/tmp/idx_ondemand.log"
 fi
 
 if [[ "${UVCDAT_DIR}" = "" ]]; then
@@ -21,7 +21,7 @@ fi
 export UVCDAT_ANONYMOUS_LOG=yes
 
 if [[ "${VISUSSERVER}" = "" ]]; then
-  export VISUSSERVER="http://localhost/mod_visus"
+  export VISUSSERVER="http://localhost"
 fi
 
 if [[ "${ONDEMAND_PATH}" = "" ]]; then
