@@ -1,34 +1,10 @@
-# NOTE: customized for feedback.llnl.gov installation
-#
-# Ondemand configuration template
-#
-# Rename this file to ondemand-env.sh and modify any parameters to suit the needs of your installation.
-# Modifications are shell env vars of the form VAR=value.
-#
+# ondemand cfg for feedback.llnl.gov installation
 
-# Env vars that must be set:
-#   ONDEMAND_PATH           - full path to ../code
 ONDEMAND_PATH=/scratch/for_ganzberger1/idx/code/esg_server/code
-#   ONDEMAND_HOST           - host to listen for ondemand requests (default is localhost)
-#   ONDEMAND_PORT           - port to listen for ondemand requests (default is 42299)
-#   ONDEMAND_LOGFILE        - path to logfilee (default /tmp/idx_ondemand.log)
 ONDEMAND_LOGFILE=/scratch/for_ganzberger1/idx/log/ondemand.log
-#ONDEMAND_LOGFILE=/capt/idx/ondemand/log/ondemand.log
-#   UVCDAT_DIR              - path to uvcdat installation (default is /usr/local/uvcdat/2.2.0)
 UVCDAT_DIR=/usr/local/uvcdat/2.2.0-full
-#   VISUSPY_PATH            - path to visuspy install dir (if not installed in system-accessible location)
 VISUSPY_PATH=/usr/local/visus/visuspy
-#   VISUSSERVER             - server with which to register newly created idx volumes (default is http://localhost:80/mod_visus)
-VISUSSERVER=https://feedback.llnl.gov:443/mod_visus
-#   VISUSSERVER_USERNAME    - username (default should be fine)
-#   VISUSSERVER_PASSWORD    - password (default should be fine)
-#   ONDEMAND_XMLPATH        - path to cdat xml files created by uvcdat cdscan utility (default is /data/xml)
-#   ONDEMAND_IDXPATH        - destination path for idx volumes (default is /data/idx)
-#   ONDEMAND_CACHE_MAX_SIZE - maximum size of ondemand cache in bytes (ONDEMAND_IDXPATH, default is 5000000000000, 5T)
+VISUSSERVER=https://feedback.llnl.gov:443
 ONDEMAND_CACHE_MAX_SIZE=3000000000000
 ONDEMAND_XMLPATH=/scratch/for_ganzberger1/idx/ondemand/xml
 ONDEMAND_IDXPATH=/scratch/for_ganzberger1/idx/ondemand/idx
-#ONDEMAND_XMLPATH=/capt/idx/ondemand/xml
-#ONDEMAND_IDXPATH=/capt/idx/ondemand/idx
-#   ONDEMAND_DB             - path to idx-to-cdat (xml) database (default is IDXPATH/idx.db)
-#
