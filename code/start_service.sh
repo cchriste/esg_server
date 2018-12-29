@@ -11,7 +11,7 @@ DEBUG_MODE=$1
 ONDEMAND_BIN="`dirname "$0"`"
 ONDEMAND_BIN="`cd "${ONDEMAND_BIN}"; pwd`"
 ONDEMAND_CONF="`cd "${ONDEMAND_BIN}/../conf"; pwd`"
-. ${ONDEMAND_CONF}/ondemand-env.sh
+. ${ONDEMAND_CONF}/ondemand-cfg.sh
 . ${ONDEMAND_BIN}/ondemand-defaults.sh
 
 echo "starting ondemand converter service..."

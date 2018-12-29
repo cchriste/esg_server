@@ -10,10 +10,12 @@
 #QUERY_STRING=`echo ${QUERY_STRING} | sed -e 's/cmip5rt/cmip5/g' | sed -e 's/\.[^\.]*\.[^\.]*|.*/.xml/g'`
 
 # configuration
-. /home/visus/ondemand/conf/ondemand-cfg.sh
+. ondemand-cfg.sh
+
+#echo "logfile: " > ${ONDEMAND_LOGFILE}
 
 QUERY_STRING=`echo ${QUERY_STRING} | sed -e 's/cmip5rt/cmip5/g' | sed -r -e 's/\.v[0-9]+(%7C|\|)+.*/.xml/g'`
-#echo ${QUERY_STRING} > /tmp/query_string.out  #use for debugging
+#echo "query: " ${QUERY_STRING} > /tmp/query_string.out  #use for debugging
 curl "http://${ONDEMAND_HOST}:42299/create?${QUERY_STRING}" -o ${ONDEMAND_LOGFILE}
 
 server="${VISUSSERVER}/mod_visus?"
