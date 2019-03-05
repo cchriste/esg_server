@@ -17,7 +17,7 @@ spec:
       containers:
       - name: visus
         image: visus/anaconda:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         command:
           - /bin/bash
           - -i
