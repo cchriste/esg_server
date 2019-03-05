@@ -1,0 +1,119 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: visus
+  labels:
+    app: visus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: visus
+  template:
+    metadata:
+      labels:
+        app: visus
+    spec:
+      containers:
+      - name: visus
+        image: visus/anaconda:latest
+        imagePullPolicy: IfNotPresent
+        command:
+          - /bin/bash
+          - -i
+          - -c
+        args: 
+          - "VISUS_HOME=/home/OpenVisus apache2ctl -k start -DFOREGROUND"
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /data_pcmdi
+          name: data-pcmdi
+        - mountPath: /data_captarm
+          name: data-captarm
+        - mountPath: /data/xml
+          name: for-ganzberger1
+        - mountPath: /home/OpenVisus/visus.config
+          name: naturerun
+        - mountPath: /ssl-certs
+          name: ssl
+#        - mountPath: /etc/config
+#          readOnly: true
+#          name: visus-secret
+#        - mountPath: /etc/config
+#          name: visus-config
+#      nodeSelector:
+#        tier: frontend
+      volumes:
+        - name: data-pcmdi
+          hostPath:
+            path: /data_pcmdi
+        - name: data-captarm
+          hostPath:
+            path: /data_captarm
+        - name: for-ganzberger1
+          hostPath:
+            path: /scratch/for_ganzberger1/idx/bak/data
+        - name: naturerun
+          hostPath:
+            path: /export/christensen41/docker/visus_naturerun.config
+            type: File
+        - name: ssl
+          hostPath:
+            path: /etc/httpd/ssl-certs
+#      - name: data-volume
+#        persistentVolumeClaim:
+#          claimName: data-volume
+#      - name: visus-secret
+#        secret:
+#          secretName: visus
+#      - name: visus-config
+#        configMap:
+#          name: visus
+#---
+#apiVersion: v1
+#kind: ConfigMap
+#metadata:
+#  name: visus
+#data:
+#  test.txt: |
+#    hello=world
+#---
+#apiVersion: v1
+#kind: Secret
+#metadata:
+#  name: visus
+#type: Opaque
+#data:
+#  username: hello
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: visus
+spec:
+  selector:
+    app: visus
+  ports:
+  - protocol: TCP
+    port: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: visus
+  annotations: 
+    ingress.kubernetes.io/force-hsts: "true"
+    ingress.kubernetes.io/hsts-include-subdomains: "true"
+    ingress.kubernetes.io/hsts-max-age: "31536000"
+    ingress.kubernetes.io/ssl-redirect: "true"
+    traefik.frontend.rule.type: PathPrefixStrip
+spec:
+  rules:
+  - http:
+      paths:
+      - backend:
+          serviceName: visus
+          servicePort: 80
+        path: /visus
+---
