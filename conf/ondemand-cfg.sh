@@ -1,9 +1,8 @@
 #
-# Ondemand configuration template
+# Ondemand configuration options
 #
-# Rename this file to ondemand-cfg.sh and modify any parameters to suit the needs of your installation.
+# Modify any parameters to suit the needs of your installation.
 # Modifications are shell env vars of the form VAR=value.
-#
 #
 #   ONDEMAND_PATH           - full path to ../code (added to PYTHONPATH in order to import .py files)
 #   ONDEMAND_HOST           - host to listen for ondemand requests (default is localhost)
@@ -18,3 +17,14 @@
 #   ONDEMAND_CACHE_MAX_SIZE - maximum size of ondemand cache in bytes (ONDEMAND_IDXPATH, default is 5000000000000, 5T)
 #   ONDEMAND_DB             - path to idx-to-cdat (xml) database (default is IDXPATH/idx.db)
 #
+
+ONDEMAND_PATH="`dirname "$0"`"
+ONDEMAND_PATH="`cd "${ONDEMAND_PATH}"; pwd`"
+echo "ONDEMAND_PATH: " $ONDEMAND_PATH
+
+ONDEMAND_PORT="/foo/bar"
+
+. ${ONDEMAND_PATH}/conf/ondemand-defaults.sh
+
+echo "ONDEMAND_PORT: " $ONDEMAND_PORT
+echo "ARG_PORT: " $ARG_PORT
