@@ -37,28 +37,25 @@ RUN conda install -c conda-forge cdms2 && \
 #[] Not sure about all the copying. At the least, let's use an install script.
 #[] install script should set cfg params in respective files
 
-ENV ONDEMAND_HOME $VISUS_HOME/ondemand
+ENV ONDEMAND_HOME ${VISUS_HOME}/ondemand
 
 # clone ondemand
-ENV ONDEMAND_HOME $VISUS_HOME/ondemand
 ADD https://api.github.com/repos/sci-visus/ondemand/git/refs/heads/master version.json
-RUN git clone -bmaster https://github.com/sci-visus/ondemand.git $ONDEMAND_HOME
+RUN git clone -bmaster https://github.com/sci-visus/ondemand.git ${ONDEMAND_HOME}
 
-# # web root is $VISUS_HOME/webviewer, so symlink ondemand there to make ondemand/ondemand.php accessible
-# RUN ln -s $ONDEMAND_HOME $VISUS_HOME/webviewer/ondemand
+# web root is ${VISUS_HOME}/webviewer, so symlink ondemand there to make ondemand/ondemand.php accessible
+RUN ln -s ${ONDEMAND_HOME} ${VISUS_HOME}/webviewer/ondemand
 
-# # copy cgi scripts to cgi-bin
-RUN cp $ONDEMAND_HOME/cgi/cdat_to_idx_create.cgi /usr/lib/cgi-bin/ && \
-    cp $ONDEMAND_HOME/cgi/datasize.cgi /usr/lib/cgi-bin/
+# copy cgi scripts to cgi-bin
+RUN cp ${ONDEMAND_HOME}/cgi/cdat_to_idx_create.cgi /usr/lib/cgi-bin/ && \
+    cp ${ONDEMAND_HOME}/cgi/datasize.cgi /usr/lib/cgi-bin/
 
 # # NOTE: if copying the .cgi scripts then map ondemand-cfg.sh to both these directories
-# #    cp $ONDEMAND_HOME/conf/ondemand-cfg.sh.template /usr/lib/cgi-bin/ && \
-# #    cp $ONDEMAND_HOME/conf/ondemand-cfg.sh.template $ONDEMAND_HOME/conf/ondemand-cfg.sh
+# #    cp ${ONDEMAND_HOME}/conf/ondemand-cfg.sh.template /usr/lib/cgi-bin/ && \
+# #    cp ${ONDEMAND_HOME}/conf/ondemand-cfg.sh.template ${ONDEMAND_HOME}/conf/ondemand-cfg.sh
 
 
 
-
-WORKDIR $ONDEMAND_HOME/code
 EXPOSE 42299
 
-CMD ["/home/visus/ondemand/code/start_service.sh"]
+CMD ["${ONDEMAND_HOME}/bin/start_service.sh"]

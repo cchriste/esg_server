@@ -1,5 +1,5 @@
-Docker container with ViSUS, Miniconda and On-demand conversion service
------------------------------------
+On-demand Docker container built on OpenVisus (visus/anaconda)
+-------------------------------------------------------------------------------
 
 Compile docker image:
 ```
@@ -13,13 +13,20 @@ docker tag ondemand $USER/ondemand
 docker push $USER/ondemand
 ```
 
+Configure it by modifying conf/ondemand-env.sh with any necessary changes, for example:
+```
+ONDEMAND_HOST=https://aims2.llnl.gov/visus
+UVCDAT_DIR="/usr/local/uvcdat/2.2.0"
+```
+
 Run it:
 ```
-docker run -it --rm -p 80:80 -p 42299:42299 -v <path_to_xml>:/data/xml -v <path_to_idx>:/data/idx -v <path_to_config/visus.config> /home/visus/visus.config -v <path_to_htpasswd/.htpasswd> /home/visus/.htpasswd ondemand
+export VISUS_HOME=/home/OpenVisus
+docker run -it --rm -p 80:80 -p 42299:42299 -v <local_xml_path>:/data/xml -v <local_idx_path>:/data/idx -v <local_visus.config> ${VISUS_HOME}/visus.config ondemand
 ```
 
 in another shell you can test it:
 ```
-curl -v "http://$(docker-machine ip):80/mod_visus?action=list"
-curl -v "http://$(docker-machine ip)/cgi-bin/cdat_to_idx_create.cgi?dataset=$(dataset_name)"
+curl -v "http://localhost/mod_visus?action=list"
+curl -v "http://localhost/cgi-bin/cdat_to_idx_create.cgi?dataset=$(dataset_name)"
 ```
