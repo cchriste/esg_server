@@ -3,12 +3,11 @@
 # Stops the on_demand_converter service.
 #
 
-# configuration
-ONDEMAND_BIN="`dirname "$0"`"
-ONDEMAND_BIN="`cd "${ONDEMAND_BIN}"; pwd`"
+# load configuration
+. "`dirname $0`"/../conf/ondemand-cfg.sh
 
 # stop any running instance
-pid=${ONDEMAND_BIN}/current_instance.pid
+pid=${ONDEMAND_PATH}/bin/current_instance.pid
 if [ -f $pid ]; then
   TARGET_ID="$(cat "$pid")"
   shopt -s nocasematch

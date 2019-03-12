@@ -19,7 +19,7 @@ if len(datasets)==0:
     print "no datasets found containing field "+field
     sys.exit(1)
 
-ccs.init(database=os.environ['ONDEMAND_DB'],hostname="none",port=80,xmlpath=os.environ['ONDEMAND_XMLPATH'],idxpath=os.environ['ONDEMAND_IDXPATH'],visus_server="none",username="user",password="pass")
+ccs.init(database=os.environ['ONDEMAND_DB'],hostname="none",port=80,xmlpath=os.environ['ONDEMAND_XMLPATH'],idxpath=os.environ['ONDEMAND_IDXPATH'],visus_server="none")
 
 box="" #ignored
 hz=1   #ignored

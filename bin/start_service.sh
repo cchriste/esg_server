@@ -7,12 +7,8 @@
 
 DEBUG_MODE=$1
 
-# configuration
-ONDEMAND_BIN="`dirname "$0"`"
-ONDEMAND_BIN="`cd "${ONDEMAND_BIN}"; pwd`"
-ONDEMAND_CONF="`cd "${ONDEMAND_BIN}/../conf"; pwd`"
-. ${ONDEMAND_CONF}/ondemand-cfg.sh
-. ${ONDEMAND_BIN}/ondemand-defaults.sh
+# load configuration
+. "`dirname $0`"/../conf/ondemand-cfg.sh
 
 echo "starting ondemand converter service..."
 # <warning> from convert_query.py:
@@ -29,7 +25,7 @@ echo "==================== starting ondemand converter service `date` ==========
 # create db
 if [ ! -e ${ONDEMAND_DB} ]; then
     echo "idx.db not found, creating..."
-    sqlite3 ${ONDEMAND_DB} < ${ONDEMAND_BIN}/create_tables.sql
+    sqlite3 ${ONDEMAND_DB} < ${ONDEMAND_PATH}/code/create_tables.sql
 fi
 
 # source uv-cdat runtime
@@ -38,8 +34,7 @@ if [ -d {UVCDAT_DIR} ]; then
 fi
 
 # stop any running instance
-pid=${ONDEMAND_BIN}/current_instance.pid
-${ONDEMAND_BIN}/stop_service.sh
+${ONDEMAND_PATH}/bin/stop_service.sh
 
 # clean up any temporary lock files
 if [ -f /tmp/*.lock ]; then
@@ -48,11 +43,13 @@ fi
 
 # start service
 if [ ${DEBUG_MODE} ]; then
-  python ${ONDEMAND_BIN}/cdat_converter_service.py ${ARG_PORT} ${ARG_HOST} ${ARG_XMLPATH} ${ARG_IDXPATH} ${ARG_DB} ${ARG_VISUSSERVER} 2>&1
+  python ${ONDEMAND_PATH}/code/cdat_converter_service.py ${ARG_PORT} ${ARG_HOST} ${ARG_XMLPATH} ${ARG_IDXPATH} ${ARG_DB} ${ARG_VISUSSERVER} 2>&1
 else
-  python ${ONDEMAND_BIN}/cdat_converter_service.py ${ARG_PORT} ${ARG_HOST} ${ARG_XMLPATH} ${ARG_IDXPATH} ${ARG_DB} ${ARG_VISUSSERVER} >> $ONDEMAND_LOGFILE 2>&1 &
+  python ${ONDEMAND_PATH}/code/cdat_converter_service.py ${ARG_PORT} ${ARG_HOST} ${ARG_XMLPATH} ${ARG_IDXPATH} ${ARG_DB} ${ARG_VISUSSERVER} >> $ONDEMAND_LOGFILE 2>&1 &
 fi
-echo $! > $pid
+
+# save pid - needed by stop_service.sh
+echo $! > ${ONDEMAND_PATH}/bin/current_instance.pid
 
 echo "==================== started ondemand converter service (pid=$!) ====================" >> ${ONDEMAND_LOGFILE}
 echo "ondemand converter service started."

@@ -1,30 +1,78 @@
-#
-# Ondemand configuration options
-#
-# Modify any parameters to suit the needs of your installation.
-# Modifications are shell env vars of the form VAR=value.
-#
-#   ONDEMAND_PATH           - full path to ../code (added to PYTHONPATH in order to import .py files)
-#   ONDEMAND_HOST           - host to listen for ondemand requests (default is localhost)
-#   ONDEMAND_PORT           - port to listen for ondemand requests (default is 42299)
-#   ONDEMAND_LOGFILE        - path to logfilee (default /tmp/idx_ondemand.log)
-#   UVCDAT_DIR              - path to uvcdat installation (default is /usr/local/uvcdat/2.2.0)
+###############################################################################
+# base path used by all other scripts - should ONLY be set here
+ONDEMAND_PATH="`cd \`dirname "$0"\`/..; pwd`"
+
+
+###############################################################################
+# configuration options - modify to suit the needs of your installation.
+
+#   ONDEMAND_HOST           - host to listen for ondemand requests
+ONDEMAND_HOST=localhost
+
+#   ONDEMAND_PORT           - port to listen for ondemand requests
+ONDEMAND_PORT=42299
+
+#   ONDEMAND_LOGFILE        - path to logfile
+ONDEMAND_LOGFILE="/tmp/idx_ondemand.log"
+
+#   UVCDAT_DIR              - path to uvcdat installation
+UVCDAT_DIR="/usr/local/uvcdat/2.2.0"
+
 #   VISUSPY_PATH            - path to visuspy install dir (if not installed in system-accessible location)
-#   VISUSSERVER             - server with which to register idx volumes (default is http://localhost)
-#                           - (server address is also shared with clients, so it should be externally accessible)
-#   ONDEMAND_XMLPATH        - path to cdat xml files created by uvcdat cdscan utility (default is /data/xml)
-#   ONDEMAND_IDXPATH        - destination path for idx volumes (default is /data/idx)
-#   ONDEMAND_CACHE_MAX_SIZE - maximum size of ondemand cache in bytes (ONDEMAND_IDXPATH, default is 5000000000000, 5T)
-#   ONDEMAND_DB             - path to idx-to-cdat (xml) database (default is IDXPATH/idx.db)
-#
+VISUSPY_PATH="${ONDEMAND_PATH}/code"
 
-ONDEMAND_PATH="`dirname "$0"`"
-ONDEMAND_PATH="`cd "${ONDEMAND_PATH}"; pwd`"
-echo "ONDEMAND_PATH: " $ONDEMAND_PATH
+#   VISUSSERVER             - server that hosts idx volumes (must be able to access them)
+VISUSSERVER="http://localhost"
 
-ONDEMAND_PORT="/foo/bar"
+#   ONDEMAND_XMLPATH        - path to cdat xml files created by uvcdat cdscan utility
+ONDEMAND_XMLPATH="/data/xml"
 
-. ${ONDEMAND_PATH}/conf/ondemand-defaults.sh
+#   ONDEMAND_IDXPATH        - destination path for idx volumes
+ONDEMAND_IDXPATH="/data/idx"
 
-echo "ONDEMAND_PORT: " $ONDEMAND_PORT
-echo "ARG_PORT: " $ARG_PORT
+#   ONDEMAND_CACHE_MAX_SIZE - maximum size of ondemand cache (located in ONDEMAND_IDXPATH) in bytes
+ONDEMAND_CACHE_MAX_SIZE=5000000000000
+
+#   ONDEMAND_DB             - path to idx-to-cdat (xml) database
+ONDEMAND_DB="${ONDEMAND_IDXPATH}/idx.db"
+
+
+###############################################################################
+# system-wide exports
+
+export UVCDAT_ANONYMOUS_LOG=yes
+export PYTHONPATH=$PYTHONPATH:$ONDEMAND_PATH:$VISUSPY_PATH
+
+
+###############################################################################
+# command line arguments for cdat_converter_service.py
+
+ARG_PORT=""
+if [[ "${ONDEMAND_PORT}" != "" ]]; then
+    ARG_PORT="--port ${ONDEMAND_PORT}"
+fi
+
+ARG_HOST=""
+if [[ "${ONDEMAND_HOST}" != "" ]]; then
+    ARG_HOST="--hostname ${ONDEMAND_HOST}"
+fi
+
+ARG_XMLPATH=""
+if [[ "${ONDEMAND_XMLPATH}" != "" ]]; then
+    ARG_XMLPATH="--xmlpath ${ONDEMAND_XMLPATH}"
+fi
+
+ARG_IDXPATH=""
+if [[ "${ONDEMAND_IDXPATH}" != "" ]]; then
+    ARG_IDXPATH="--idxpath ${ONDEMAND_IDXPATH}"
+fi
+
+ARG_DB=""
+if [[ "${ONDEMAND_DB}" != "" ]]; then
+    ARG_DB="--database ${ONDEMAND_DB}"
+fi
+
+ARG_VISUSSERVER=""
+if [[ "${VISUSSERVER}" != "" ]]; then
+    ARG_VISUSSERVER="--visusserver ${VISUSSERVER}"
+fi

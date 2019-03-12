@@ -5,12 +5,8 @@
 # Please see conf/ondemand-env.sh to customize your installation.
 #
 
-# configuration
-ONDEMAND_BIN="`dirname "$0"`"
-ONDEMAND_BIN="`cd "${ONDEMAND_BIN}"; pwd`"
-ONDEMAND_CONF="`cd "${ONDEMAND_BIN}/../conf"; pwd`"
-. ${ONDEMAND_CONF}/ondemand-env.sh
-. ${ONDEMAND_BIN}/ondemand-defaults.sh
+# load configuration
+. "`dirname $0`"/../conf/ondemand-cfg.sh
 
 # start logging
 echo "==================================================================" >> ${ONDEMAND_LOGFILE}
