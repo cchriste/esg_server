@@ -1,8 +1,0 @@
-# ondemand cfg for pcmdi11.llnl.gov install
-
-ONDEMAND_LOGFILE=/for_ganzberger1/idx/idx_ondemand.log
-UVCDAT_DIR=/usr/local/uvcdat/2.2.0
-VISUSPY_PATH=/home/cam/code/nvisus/build/swig
-VISUSSERVER=http://pcmdi11.llnl.gov:8080
-ONDEMAND_XMLPATH=/for_ganzberger1/idx/xml
-ONDEMAND_IDXPATH=/for_ganzberger1/idx/idx

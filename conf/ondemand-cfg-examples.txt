@@ -1,0 +1,49 @@
+The best way to install and run the Visus On-Demand server is to simply use Docker, for which the default ondemand-cfg.sh works well.
+If that's not possible for some reason, several locations must be manually specified, such as the location of the local UVCDAT installation.
+Here are some examples of the ondemand-cfg.sh for such installations:
+
+###############################################################################
+# atlanta.sci.utah.edu
+
+ONDEMAND_LOGFILE=/scratch/cam/log/idx_ondemand.log
+VISUSSERVER=http://atlanta.sci.utah.edu
+ONDEMAND_XMLPATH=/usr/sci/cedmav/data/climate/ondemand/xml
+ONDEMAND_IDXPATH=/usr/sci/cedmav/data/climate/ondemand/idx
+
+###############################################################################
+# gunship.sci.utah.edu
+
+VISUSSERVER=http://gunship.sci.utah.edu:8080
+ONDEMAND_CACHE_MAX_SIZE=3000000000000
+
+###############################################################################
+# feedback.llnl.gov
+
+ONDEMAND_PATH=/scratch/for_ganzberger1/idx/code/esg_server/code
+ONDEMAND_LOGFILE=/scratch/for_ganzberger1/idx/log/ondemand.log
+UVCDAT_DIR=/usr/local/uvcdat/2.2.0-full
+VISUSPY_PATH=/usr/local/visus/visuspy
+VISUSSERVER=https://feedback.llnl.gov:443
+ONDEMAND_CACHE_MAX_SIZE=3000000000000
+ONDEMAND_XMLPATH=/scratch/for_ganzberger1/idx/ondemand/xml
+ONDEMAND_IDXPATH=/scratch/for_ganzberger1/idx/ondemand/idx
+
+###############################################################################
+# localhost 
+
+ONDEMAND_LOGFILE=/tmp/idx_ondemand.log
+UVCDAT_DIR=/Users/cam/code/uvcdat-build/install
+#VISUSSERVER=http://localhost:10000    #debug
+VISUSSERVER=http://localhost:80
+ONDEMAND_XMLPATH=/Users/cam/data/ondemand/xml
+ONDEMAND_IDXPATH=/Users/cam/data/ondemand/idx
+
+###############################################################################
+# pcmdi11.llnl.gov
+
+ONDEMAND_LOGFILE=/for_ganzberger1/idx/idx_ondemand.log
+UVCDAT_DIR=/usr/local/uvcdat/2.2.0
+VISUSPY_PATH=/home/cam/code/nvisus/build/swig
+VISUSSERVER=http://pcmdi11.llnl.gov:8080
+ONDEMAND_XMLPATH=/for_ganzberger1/idx/xml
+ONDEMAND_IDXPATH=/for_ganzberger1/idx/idx

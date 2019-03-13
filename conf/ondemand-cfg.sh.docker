@@ -1,5 +1,0 @@
-# default ondemand cfg for docker installation
-
-ONDEMAND_PATH=/home/visus/ondemand/code
-ONDEMAND_LOGFILE=/home/visus/ondemand.log
-ONDEMAND_CACHE_MAX_SIZE=3000000000000

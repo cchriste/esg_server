@@ -1,9 +1,0 @@
-# ondemand cfg for Cameron's localhost installation
-
-ONDEMAND_LOGFILE=/tmp/idx_ondemand.log
-UVCDAT_DIR=/Users/cam/code/uvcdat-build/install
-#VISUSSERVER=http://localhost:10000    #debug
-VISUSSERVER=http://localhost:80
-ONDEMAND_XMLPATH=/Users/cam/data/ondemand/xml
-ONDEMAND_IDXPATH=/Users/cam/data/ondemand/idx
-

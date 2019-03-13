@@ -1,6 +1,0 @@
-# ondemand cfg for gunship docker installation
-
-ONDEMAND_PATH=/home/visus/ondemand/code
-ONDEMAND_LOGFILE=/home/visus/ondemand.log
-VISUSSERVER=http://gunship.sci.utah.edu:8080
-ONDEMAND_CACHE_MAX_SIZE=3000000000000

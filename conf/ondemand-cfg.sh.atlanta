@@ -1,6 +1,0 @@
-# ondemand cfg for atlanta.sci.utah.edu
-
-ONDEMAND_LOGFILE=/scratch/cam/log/idx_ondemand.log
-VISUSSERVER=http://atlanta.sci.utah.edu
-ONDEMAND_XMLPATH=/usr/sci/cedmav/data/climate/ondemand/xml
-ONDEMAND_IDXPATH=/usr/sci/cedmav/data/climate/ondemand/idx
