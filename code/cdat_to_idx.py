@@ -481,7 +481,7 @@ if __name__ == '__main__':
     parser.add_argument("-i","--inputfile",required=True,help="cdat volume to read")
     parser.add_argument("-o","--outputdir",required=True,help="basepath for idx volumes")
     parser.add_argument("-d","--database",required=False,help="path to idx<->cdat database")
-    parser.add_argument("-s","--server",required=False,help="server with which volumes shoud be registered",default=default_server)
+    parser.add_argument("-s","--server",required=False,help="visus server with which volumes shoud be registered",default=default_server)
     parser.add_argument("-v","--service",required=False,help="on-demand climate data converter service address",default=default_service)
     parser.add_argument("-f","--force",action="store_true",dest="force",required=False,default=False,help="force creation even if idx volumes already exist")
     args = parser.parse_args()

@@ -6,10 +6,10 @@ ONDEMAND_PATH="`cd \`dirname "$0"\`/..; pwd`"
 ###############################################################################
 # configuration options - modify to suit the needs of your installation.
 
-#   ONDEMAND_HOST           - host to listen for ondemand requests
+#   ONDEMAND_HOST           - host to listen for ondemand cgi requests
 ONDEMAND_HOST=localhost
 
-#   ONDEMAND_PORT           - port to listen for ondemand requests
+#   ONDEMAND_PORT           - port to listen for ondemand cgi requests
 ONDEMAND_PORT=42299
 
 #   ONDEMAND_LOGFILE        - path to logfile

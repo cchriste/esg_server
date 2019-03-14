@@ -1,3 +1,9 @@
+#
+# Kubernetes startup file for ViSUS On-Demand Docker image
+# 
+# (this version is specifically for aims2.llnl.gov)
+#
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:

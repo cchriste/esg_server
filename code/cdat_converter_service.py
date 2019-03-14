@@ -291,7 +291,7 @@ if __name__ == '__main__':
     default_host="localhost"
 
     # cdat_to_idx defaults
-    default_server="http://localhost:80"
+    default_visusserver="http://localhost:80"
     default_xml_path="/data/xml/"
     default_idx_path="/data/idx/"
 
@@ -302,7 +302,7 @@ if __name__ == '__main__':
     parser.add_argument("-x","--xmlpath",default=default_xml_path,help="path to cdat xml files created with uv-cdat cdscan utility")
     parser.add_argument("-i","--idxpath",default=default_idx_path,help="path to place newly created idx volumes")
     parser.add_argument("-d","--database",help="path to cdat-to-database (default is $IDX_PATH/idx.db)")
-    parser.add_argument("-s","--visusserver",default=default_server,help="visus server with which to register newly created idx volumes")
+    parser.add_argument("-s","--visusserver",default=default_visusserver,help="visus server with which to register newly created idx volumes")
     args = parser.parse_args()
 
     init(args.database,args.hostname,args.port,args.xmlpath,args.idxpath,args.visusserver)

@@ -11,6 +11,9 @@ DEBUG_MODE=$1
 . "`dirname $0`"/../conf/ondemand-cfg.sh
 
 echo "starting ondemand converter service..."
+mkdir -p ${ONDEMAND_IDXPATH}
+mkdir -p ${ONDEMAND_XMLPATH}
+
 # <warning> from convert_query.py:
 # nasty hack to work around bug in cdms2 when using opendap:
 # solution is to run converter service from xml directory and
@@ -25,6 +28,7 @@ echo "==================== starting ondemand converter service `date` ==========
 # create db
 if [ ! -e ${ONDEMAND_DB} ]; then
     echo "idx.db not found, creating..."
+    mkdir -p `dirname ${ONDEMAND_DB}`
     sqlite3 ${ONDEMAND_DB} < ${ONDEMAND_PATH}/code/create_tables.sql
 fi
 
