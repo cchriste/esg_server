@@ -14,6 +14,9 @@ echo "starting ondemand converter service..."
 mkdir -p ${ONDEMAND_IDXPATH}
 mkdir -p ${ONDEMAND_XMLPATH}
 
+# Tell webviewer to default to this server (TODO: move this to configure.sh when it's created)
+echo "DEFAULT_SERVER='${VISUSSERVER}/mod_visus?';" > ${VISUS_HOME}/webviewer/config.js
+
 # <warning> from convert_query.py:
 # nasty hack to work around bug in cdms2 when using opendap:
 # solution is to run converter service from xml directory and
