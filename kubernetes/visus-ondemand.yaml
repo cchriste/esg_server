@@ -22,14 +22,14 @@ spec:
     spec:
       containers:
       - name: visus
-        image: visus/anaconda:latest
+        image: visus/ondemand:0.1b
         imagePullPolicy: Always
         command:
           - /bin/bash
           - -i
           - -c
         args: 
-          - "VISUS_HOME=/home/OpenVisus apache2ctl -k start -DFOREGROUND"
+          - "${ONDEMAND_HOME}/bin/start_service.sh"
         ports:
         - containerPort: 80
         volumeMounts:
