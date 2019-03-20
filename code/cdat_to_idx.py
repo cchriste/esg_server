@@ -25,18 +25,16 @@ import cdms2
 import os
 import sys
 import sqlite3
-import visuspy as Visus
-import VisusIdxPy
 from copy import deepcopy
 from lxml import etree
-import urllib2
+import urllib
+from urllib.request import urlopen
 import base64
-from urlparse import urlparse,urlunparse
-from urllib import quote
-
+from urllib.parse import urlparse,urlunparse,quote
 import numpy
-import xidx
-from xidx import *
+
+import OpenVisus
+from OpenVisus import *
 
 #****************************************************
 def getIdxPaths(cdat_dataset,db):
@@ -99,22 +97,22 @@ def create_idx(idxinfo):
         dims[2] = 1
         
     # Set logical bounds
-    dataset_logicbox = Visus.NdBox(Visus.NdPoint(0, 0, 0), Visus.NdPoint.one(dims[0], dims[1], dims[2]))
+    dataset_logicbox = NdBox(NdPoint(0, 0, 0), NdPoint.one(dims[0], dims[1], dims[2]))
     idxfile = VisusIdxPy.IdxFile()
-    idxfile.box = Visus.NdBox(dataset_logicbox)
+    idxfile.box = NdBox(dataset_logicbox)
 
     # add fields
     for f in idxinfo.fields:
         idxfile.fields.push_back(f)
 
-    # set timesteps
-    if idxinfo.timesteps > 0:
+    # set timesteps (TODO check those timsteps APIs)
+    if idxinfo.timesteps > 1:
         idxfile.timesteps.addTimesteps(0, idxinfo.timesteps-1,1);
         idxfile.time_template="time%0"+str(len(str(idxinfo.timesteps)))+"d/"
 
     bSaved = idxfile.save(str(idxinfo.path))
     if not bSaved:
-        print "ERROR creating idx "+ idxinfo.path
+        print("ERROR creating idx "+ idxinfo.path)
 
 def isfloat(x):
     try:
@@ -136,39 +134,39 @@ def cdat_to_idx(cdat_dataset,destpath,db):
     except:
         None  #directory likely already exists
 
-    print "destination", destpath
+    print("destination", destpath)
 
     ## XIDX init start
 
     # create time group
-    time_group = Group("TimeSeries", Group.TEMPORAL_GROUP_TYPE)
+    time_group = Group("TimeSeries", GroupType(GroupType.TEMPORAL_GROUP_TYPE))
 
     # create a list domain for the temporal group
-    time_dom = ListDomainDouble("Time")
+    time_dom = ListDomain("Time")
 
     # XIDX set group time domain
-    time_group.SetDomain(time_dom)
+    time_group.setDomain(time_dom)
  
     # create grid domain
     geo_dom = MultiAxisDomain("Geospatial")
 
     # group of variables sharing this domain
-    geo_vars = Group("geo_vars", Group.SPATIAL_GROUP_TYPE, geo_dom);
+    geo_vars = Group("geo_vars", GroupType(GroupType.SPATIAL_GROUP_TYPE), geo_dom);
     
     ## XIDX init end
     
     # open dataset
-    print "cdat_to_idx: datasets="+cdat_dataset
+    print("cdat_to_idx: datasets="+cdat_dataset)
     dataset = cdms2.open(cdat_dataset)
     vars=dataset.variables
-    print "vars: "+str(vars)
+    print("vars: "+str(vars))
 
     # Calculate range of value for logic_to_physic
     # We need to use <axis>_bnds var to get full
     # extents, which may not be accessible, so do our best.
     physical_bounds={}
     for name in dataset.axes:
-        print "considering axis: "+name
+        print("considering axis: "+name)
         axis=dataset.axes[name]
 
         ## XIDX create axis start
@@ -187,23 +185,24 @@ def cdat_to_idx(cdat_dataset,destpath,db):
             for i in range(shape[0]):
                 entry=[]
                 for j in range(shape[1]):
-                  entry.append(B[i][j])
-                if name=="time":
-                  time_dom.AddDomainItems(IndexSpace(entry))
-                else:
-                  new_axis.AddValues(IndexSpace(entry))
+                  val=B[i][j]
+                  entry.append(val)
+                  if name=="time":
+                    time_dom.addDomainItem(val)
+                  else:
+                    new_axis.addValue(val)
           else:
             values=attributes[att]
             if isinstance(values, numpy.ndarray):
               values=numpy.array2string(attributes[att])
             #print att, attributes[att], type(attributes[att]), type(values)
             if attributes[att] and name=="time":
-              time_dom.AddAttribute(att,attributes[att])
+              time_dom.addAttribute(att,attributes[att])
             else:
-              new_axis.AddAttribute(att,values)
+              new_axis.addAttribute(att,values)
         
         if not name=="time":
-          geo_dom.AddAxis(new_axis)  
+          geo_dom.addAxis(new_axis)  
 
         ## XIDX create axis end
         
@@ -213,20 +212,20 @@ def cdat_to_idx(cdat_dataset,destpath,db):
                 assert(len(B.shape)==2)  #bounds should be (len(arr_axis),2) where for each value of the arr axis there is a min and max
                 physical_bounds[name]=(B[0][0],B[-1][1])  #assume regular spacing
             except IOError:
-                print "bounds not found, skipping",str(axis.bounds)
-        elif vars.has_key(name+"_bnds"):
+                print("bounds not found, skipping",str(axis.bounds))
+        elif (name+"_bnds") in vars:
             B=dataset(name+"_bnds")
             if len(B.shape)!=2:
-                print "WARNING: bounds should be (len(arr_axis),2) where for each value of the arr axis there is a min and max"
-                print "         B.shape =",str(B.shape)
+                print("WARNING: bounds should be (len(arr_axis),2) where for each value of the arr axis there is a min and max")
+                print("         B.shape =",str(B.shape))
             physical_bounds[name]=(B[0][0],B[-1][1])  #assume regular spacing
 
             
     # XIDX add geometric domain
-    time_group.AddGroup(geo_vars);
+    time_group.addGroup(geo_vars);
     
     # collect variables into their associated domains
-    print "finished considering axes"
+    print("finished considering axes")
     logic_to_physic=[1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
     field=type('field',(object,),{'name':None,'ndtype':1,'dtype':None})()  #cheap class-like defs
     idxinfo=type('idxinfo',(object,),{'cdat_dataset':None,'path':None,'fields':None,'dims':None,'logic_to_physic':None,'timesteps':0})()
@@ -242,15 +241,15 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         use_dtype =  v.dtype.name
 
         # variables using scale_factor or add_offset are automatically multiplied by it by cdms
-        if((v.attributes.has_key("scale_factor") and isfloat(v.attributes["scale_factor"][0])) or
-            (v.attributes.has_key("add_offset") and isfloat(v.attributes["add_offset"][0]))): 
+        if((("scale_factor" in v.attributes) and isfloat(v.attributes["scale_factor"][0])) or 
+          (("add_offset" in v.attributes) and isfloat(v.attributes["add_offset"][0]))): 
             use_dtype="float32"
-            print "Float scale factor found, using", use_dtype, "for variable", v.id
+            print("Float scale factor found, using", use_dtype, "for variable", v.id)
 
         ## XIDX add variables start
         if not v.id.endswith("_bnds"): 
           # create and add a variable to the group
-          temp = geo_vars.AddVariable(v.id, Visus.DType.fromString(use_dtype).toString());
+          temp = geo_vars.addVariable(v.id, DType.fromString(use_dtype));
 
           attributes=v.attributes
           for att in attributes:
@@ -260,28 +259,28 @@ def cdat_to_idx(cdat_dataset,destpath,db):
             #print att, attributes[att], type(attributes[att]), type(values)
             if isinstance(values, list): #attributes[att]:
               if len(values)>0:
-                temp.AddAttribute(att,values)
+                temp.addAttribute(att,values)
             else:
-              temp.AddAttribute(att,str(values))
+              temp.addAttribute(att,str(values))
         ## XIDX add variables end
         
-        if domains.has_key(axes):
-            print "inserting",v.id,"into existing entry of domains["+str(axes)+"]"
+        if axes in domains:
+            print("inserting",v.id,"into existing entry of domains["+str(axes)+"]")
             domains[axes].varlist.append(v.id)
-            f=Visus.Field(v.id,Visus.DType.fromString(use_dtype))
+            f=Field(v.id,DType.fromString(use_dtype))
             f.default_layout="rowmajor"
             #f.default_compression="zip"
             if hasattr(v,'long_name'):
                 f.setDescription(v.long_name)
             domains[axes].idxinfo.fields.append(f)
-            print "domains["+str(axes)+"].varlist="+str(domains[axes].varlist)
+            print("domains["+str(axes)+"].varlist="+str(domains[axes].varlist))
         else:
-            print "inserting",v.id,"as NEW entry of domains["+str(axes)+"]"
+            print("inserting",v.id,"as NEW entry of domains["+str(axes)+"]")
             domains[axes]=deepcopy(domain)
             domains[axes].id=axes
             domains[axes].shape=v.shape[::-1]
             domains[axes].varlist=[v.id]
-            print "domains["+str(axes)+"].varlist="+str(domains[axes].varlist)
+            print("domains["+str(axes)+"].varlist="+str(domains[axes].varlist))
             domains[axes].idxinfo=deepcopy(idxinfo)
             domains[axes].idxinfo.cdat_dataset=idxbasename
         
@@ -304,10 +303,10 @@ def cdat_to_idx(cdat_dataset,destpath,db):
                 if axis.startswith("time"):  #note: some axes named time_<ntimesteps> (with opendap), others just named time
                     domains[axes].idxinfo.timesteps = sz
                 else:
-                    print "appending sz"
+                    print("appending sz")
                     domains[axes].idxinfo.dims.append(sz)
                     rng=1
-                    if physical_bounds.has_key(axis):
+                    if axis in physical_bounds:
                        rng=float(physical_bounds[axis][1]-physical_bounds[axis][0])/float(sz)
                     if not rng:              #note: assume longitude [0,360] and latitude [0,180] if not explicitly specified
                         if axis.startswith("lon"):
@@ -317,7 +316,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
                     domains[axes].idxinfo.logic_to_physic[4*i+i]=rng
 
             # fields           
-            f=Visus.Field(v.id,Visus.DType.fromString(use_dtype))
+            f=Field(v.id,DType.fromString(use_dtype))
             f.default_layout="rowmajor"
             #f.default_compression="zip"
             if hasattr(v,'long_name'):
@@ -325,7 +324,7 @@ def cdat_to_idx(cdat_dataset,destpath,db):
             domains[axes].idxinfo.fields=[f]
 
     # insert new dataset into db
-    print "inserting into db..."
+    print("inserting into db...")
     cur=db.cursor()
     cur.execute("INSERT into datasets (pathname) values (\"%s\")" % cdat_dataset)
     cdat_id=cur.lastrowid
@@ -334,14 +333,14 @@ def cdat_to_idx(cdat_dataset,destpath,db):
 
     for d in domains.values():
         found_time=False
-        print d
+        print(d)
         for axis in d.id:
             found_time |= axis.startswith("time")
         if len(d.id)<3 or len(d.id)>4 or not found_time:
-            print "Skipping",d.id,"because it isn't a 2D or 3D field with time."
+            print("Skipping",d.id,"because it isn't a 2D or 3D field with time.")
             continue
 
-        print "creating idxfile for",d.id,"containing fields",d.varlist
+        print("creating idxfile for",d.id,"containing fields",d.varlist)
 
         # create the idx
         create_idx(d.idxinfo)
@@ -359,16 +358,16 @@ def cdat_to_idx(cdat_dataset,destpath,db):
 
         # XIDX set data source to the dataset file
         source = DataSource("data", idx)
-        time_group.AddDataSource(source)
+        time_group.addDataSource(source)
 
     # create metadata file
-    meta = MetadataFile(xidxpath)
+    meta = XIdxFile()
 
     # XIDX write metadata to disk             
-    meta.SetRootGroup(time_group);
-    meta.Save();
+    meta.addGroup(time_group);
+    meta.save(xidxpath);
 
-    print "xidx created"
+    print("xidx created")
    
     return domains
 
@@ -379,20 +378,20 @@ def send_url(url):
         base64string = base64.encodestring('%s:%s' % ('visus', 'P@ssw0rd!')).replace('\n', '')
         request.add_header("Authorization", "Basic %s" % base64string)
         ret = urllib2.urlopen(request).read()
-        print ret
-    except urllib2.HTTPError, e:
-        print "HTTP error adding dataset to server: %d" % e.code
-    except urllib2.URLError, e:
-        print "Network error adding dataset to server: %s" % e.reason.args[1]        
+        print(ret)
+    except (urllib2.HTTPError, e):
+        print("HTTP error adding dataset to server: %d" % e.code)
+    except (urllib2.URLError, e):
+        print("Network error adding dataset to server: %s" % e.reason.args[1])
     #except httplib.BadStatusLine, e:
         #print "BadStatusLine:",e
-    except Exception,e:
-        print "unknown exception:",e
+    except (Exception,e):
+        print("unknown exception:",e)
 
 #****************************************************
 def register_datasets(idx_paths,outputdir,hostname,service):
     """ register datasets with ViSUS data server """
-    print "Ensuring new datasets are registered with ViSUS data server"
+    print("Ensuring new datasets are registered with ViSUS data server")
 
     for idx_path in idx_paths:
         dataset_name=os.path.splitext(os.path.basename(idx_path))[0]
@@ -400,12 +399,12 @@ def register_datasets(idx_paths,outputdir,hostname,service):
         # need to add both idx and midx to config becuase webviewer uses idx and visus viewer uses midx
         p = [idx_path, midx_path]
         n = [dataset_name+"_idx", dataset_name]
-        print hostname
+        print(hostname)
         for path, name in zip(p, n):
             url=urlparse(hostname)
             xml="<dataset name=\""+name+"\" permissions=\"public\" url=\"file://"+outputdir+'/'+path+"\" ><access name=\"Multiplex\" type=\"multiplex\"><access chmod=\"r\" type=\"disk\" /><access chmod=\"r\" ondemand=\"external\" path=\""+service+"/convert\" type=\"ondemandaccess\" /><access chmod=\"r\" type=\"disk\" /></access></dataset>"
             url=url._replace(query="action=AddDataset&xml="+quote(xml))
-            print urlunparse(url)
+            print(urlunparse(url))
             send_url(url)
         
 
@@ -447,7 +446,7 @@ def generate_idx(inputfile,outputdir,database=None,server=default_server,service
         idx_paths,ds_id=getIdxPaths(inputfile,db)
 
         if not validatePaths(idx_paths,outputdir):
-            print "idx files do not exist: (re)creating them"
+            print("idx files do not exist: (re)creating them")
             force=True
 
         # if force recreate, delete existing entries in database 
@@ -461,10 +460,10 @@ def generate_idx(inputfile,outputdir,database=None,server=default_server,service
         if len(idx_paths)==0 or force:
             cdat_to_idx(inputfile,outputdir,db)
 
-            print "done creating idx volumes for",inputfile
+            print("done creating idx volumes for",inputfile)
             idx_paths,ds_id=getIdxPaths(inputfile,db)
         else:
-            print "idx volumes already exist for",inputfile
+            print("idx volumes already exist for",inputfile)
             
         register_datasets(idx_paths,outputdir,server,service)
         xml=make_visus_config(idx_paths,inputfile,server)
@@ -487,5 +486,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     xml=generate_idx(args.inputfile,args.outputdir,args.database,args.server,args.service,args.force)
-    print xml
+    print(xml)
 
