@@ -52,14 +52,14 @@ class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
         if url.path=='/convert':
             query_id=cdatConverter.nqueries_; cdatConverter.nqueries_+=1
             t1=time.time()
-            print "("+str(query_id)+") started: ",url.query
+            print("("+str(query_id)+") started: ",url.query)
             stdout.flush()
             try:
                 result,response=call_convert_query(url.query)
             except Exception as e:
-                print "Exception: ",e
+                print("Exception: ",e)
                 raise
-            print "("+str(query_id)+") complete ("+str((time.time()-t1)*1000)+"ms): ["+str(response)+"] "+result,url.query
+            print("("+str(query_id)+") complete ("+str((time.time()-t1)*1000)+"ms): ["+str(response)+"] "+result,url.query)
             stdout.flush()
             self.send_response(response)
             self.send_header('Content-type','text/html')
@@ -67,7 +67,7 @@ class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
             self.wfile.write("<html><head></head><body>"+result+"</body></html>")
             return
         if url.path=='/create':
-            print "request received: "+url.query
+            print("request received: "+url.query)
             result,response=create(url.query)
             self.send_response(response)
             if response != RESULT_SUCCESS:
@@ -113,11 +113,11 @@ def parse_query(query):
     timestep=0
     box=None
     hz=-1
-    if job.has_key("idx"):
+    if "idx" in job:
         idxpath=job["idx"][0]
-    if job.has_key("time"):
+    if "time" in job:
         timestep=int(float(job["time"][0]))
-    if job.has_key("field"):
+    if "field" in job:
         field=job["field"][0]
         idx=field.find('?')
         if idx>=0:                  # field time overrides query time
@@ -125,15 +125,15 @@ def parse_query(query):
             arg=field[idx+1:]
             if arg.startswith("time="):
                 timestep=int(arg[arg.find('=')+1:])
-    if job.has_key("box"):
+    if "box" in job:
         box=job["box"][0]
-    if job.has_key("hz"):
+    if "hz" in job:
         hz=int(job["hz"][0])
     return idxpath,field,timestep,box,hz
 
 
 def parse_return(args_str):
-    print "parse_return:",args_str
+    print("parse_return:",args_str)
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("-c","--code"    ,default=200,type=int,help="return code")
@@ -151,10 +151,10 @@ def call_convert_query(query):
     # parse query request
     try:
         idxpath,field,timestep,box,hz=parse_query(query)
-        print idxpath,field,timestep,box,hz
+        print(idxpath,field,timestep,box,hz)
 
     except Exception as e:
-        print "Exception: ",e
+        print("Exception: ",e)
         raise
  
     if not idxpath or not field:
@@ -163,10 +163,10 @@ def call_convert_query(query):
     try:
         global dbpath
         ret=convert_query.convert(idxpath,field,timestep,box,hz,dbpath)
-        print "ret:",ret
+        print("ret:",ret)
         return ret #parse_return(ret)
     except Exception as e:
-        print "Exception:",e
+        print("Exception:",e)
         raise
     # from subprocess import check_output,CalledProcessError
     # try:
@@ -193,26 +193,26 @@ def create(query):
     try:
         # parse query request
         job=urlparse.parse_qs(query, True, True)   #keep empty fields, strict checking
-        if not job.has_key("dataset"):
+        if not "dataset" in job:
             raise ConvertError(RESULT_INVALID,"Query must specify a valid and accessible .xml or .nc file and destination path")
 
         global xml_path,idx_path,ondemand_service_address,dbpath,visusserver
         cdatpath=xml_path+"/"+job["dataset"][0]
         idxpath=idx_path
-        if job.has_key("destination"):
+        if "destination" in job:
             idxpath=idx_path+"/"+job["destination"][0]
         server=visusserver
-        if job.has_key("server"):
+        if "server" in job:
             server=job["server"][0]
         force=False
-        if job.has_key("force"):
+        if "force" in job:
             if job["force"][0]=="True" or job["force"][0]=="1" or job["force"][0]=="true":
-                print "forcing job!!! (force="+job["force"][0]+")"
+                print("forcing job!!! (force="+job["force"][0]+")")
                 force=True
 
         # create idx volumes from climate dataset
         import cdat_to_idx
-        print "generate_idx(inputfile=",cdatpath,",outputdir=",idxpath,",database=",dbpath,",server=",server,",service=",ondemand_service_address,",force=",str(force),")"
+        print("generate_idx(inputfile=",cdatpath,",outputdir=",idxpath,",database=",dbpath,",server=",server,",service=",ondemand_service_address,",force=",str(force),")")
         result_str=cdat_to_idx.generate_idx(inputfile=cdatpath,outputdir=idxpath,database=dbpath,server=server,service=ondemand_service_address,force=force)
         result=RESULT_SUCCESS
 
@@ -223,8 +223,8 @@ def create(query):
         result=RESULT_ERROR
         result_str="unknown error occurred during create ("+str(e)+")"
 
-    print "result_str: "+result_str
-    print "result: "+str(result)
+    print("result_str: "+result_str)
+    print("result: "+str(result))
     return (result_str,result)
 
 
@@ -259,12 +259,11 @@ class OnDemandSocketServer(SocketServer.ThreadingTCPServer):
         The default is to print a traceback and continue.
         """
         if False:
-            print '-'*40
-            print 'Exception happened during processing of request from',
-            print client_address
+            print('-'*40)
+            print('Exception happened during processing of request from',client_address)
             import traceback
             traceback.print_exc() # XXX But this goes to stderr!
-            print '-'*40
+            print('-'*40)
 
 
 def start_server(hostname,port):
@@ -273,7 +272,7 @@ def start_server(hostname,port):
     #SocketServer.ForkingTCPServer.allow_reuse_address = True
     httpd = OnDemandSocketServer((hostname, port),cdatConverter)
     httpd.request_queue_size=socket.SOMAXCONN
-    print "serving at port", port
+    print("serving at port", port)
     stdout.flush()
     try:
         httpd.serve_forever()
@@ -307,13 +306,13 @@ if __name__ == '__main__':
 
     init(args.database,args.hostname,args.port,args.xmlpath,args.idxpath,args.visusserver)
 
-    print "Starting server "+args.hostname+":"+str(args.port)+"..."
-    print "\txml path: "+xml_path
-    print "\tidx path: "+idx_path
-    print "\tdatabase: "+dbpath
-    print "\tvisus server: "+visusserver
-    print "\tmax sockets:",socket.SOMAXCONN
+    print("Starting server "+args.hostname+":"+str(args.port)+"...")
+    print("\txml path: "+xml_path)
+    print("\tidx path: "+idx_path)
+    print("\tdatabase: "+dbpath)
+    print("\tvisus server: "+visusserver)
+    print("\tmax sockets:",socket.SOMAXCONN)
     start_server(args.hostname,args.port)
     VisusIdxPy.IdxModule.detach()
 
-    print "done!"
+    print("done!")

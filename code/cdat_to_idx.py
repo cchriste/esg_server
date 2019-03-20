@@ -105,8 +105,7 @@ def create_idx(idxinfo):
     for f in idxinfo.fields:
         idxfile.fields.push_back(f)
 
-    # set timesteps (TODO check those timsteps APIs)
-    if idxinfo.timesteps > 1:
+    if idxinfo.timesteps > 0:
         idxfile.timesteps.addTimesteps(0, idxinfo.timesteps-1,1);
         idxfile.time_template="time%0"+str(len(str(idxinfo.timesteps)))+"d/"
 
