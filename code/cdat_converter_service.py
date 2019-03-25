@@ -24,14 +24,13 @@
 
 import time
 import sqlite3
-import visuspy as Visus
-import VisusIdxPy
-import VisusKernelPy
-import SocketServer
-import BaseHTTPServer
+import OpenVisus
+from OpenVisus import *
+import socketserver
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import fcntl
 import cdms2
-import urlparse
+import urllib.parse
 import os
 import socket
 from sys import stdout
@@ -39,10 +38,9 @@ from shutil import rmtree
 import cdat_to_idx
 import convert_query
 
-
 RESULT_SUCCESS=200; RESULT_INVALID=400; RESULT_NOTFOUND=404; RESULT_ERROR=500; RESULT_BUSY=503
 
-class cdatConverter(BaseHTTPServer.BaseHTTPRequestHandler):
+class cdatConverter(BaseHTTPRequestHandler):
     """http request handler for cdat to idx conversion requests"""
 
     nqueries_=0
@@ -229,8 +227,8 @@ def create(query):
 
 
 def init(database,hostname,port,xmlpath,idxpath,visus_server):
-    VisusKernelPy.SetCommandLine("__main__")
-    VisusIdxPy.IdxModule.attach()
+    SetCommandLine("__main__")
+    IdxModule.attach()
 
     global dbpath
     dbpath=database
@@ -250,7 +248,7 @@ def init(database,hostname,port,xmlpath,idxpath,visus_server):
     visusserver=visus_server
 
 #note: doesn't seem to be any huge reason in our case to prefer forking over theading, but both work fine
-class OnDemandSocketServer(SocketServer.ThreadingTCPServer):
+class OnDemandSocketServer(socketserver.ThreadingTCPServer):
 #class OnDemandSocketServer(SocketServer.ForkingTCPServer):
     """This is just to override handle_error to be less annoying when disconnections occur
     """

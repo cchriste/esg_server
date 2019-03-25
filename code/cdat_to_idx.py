@@ -98,7 +98,7 @@ def create_idx(idxinfo):
         
     # Set logical bounds
     dataset_logicbox = NdBox(NdPoint(0, 0, 0), NdPoint.one(dims[0], dims[1], dims[2]))
-    idxfile = VisusIdxPy.IdxFile()
+    idxfile = IdxFile()
     idxfile.box = NdBox(dataset_logicbox)
 
     # add fields
@@ -171,11 +171,15 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         ## XIDX create axis start
         attributes = axis.attributes
 
+        if "standard_name" in attributes:
+          name=attributes["standard_name"]
+
         # use time axis for time domain
         # or create new axis for others
         if not name=="time":
           new_axis = Variable(name);
-            
+
+        print("attributes ",attributes.keys())
         for att in attributes:
           if att=="bounds":
             B=dataset(axis.bounds)
