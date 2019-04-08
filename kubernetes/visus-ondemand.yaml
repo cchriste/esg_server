@@ -20,6 +20,7 @@ spec:
       labels:
         app: visus
     spec:
+      nodeName: aims2.llnl.gov
       containers:
       - name: visus
         image: visus/ondemand:0.1b
