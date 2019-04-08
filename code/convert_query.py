@@ -21,10 +21,9 @@
 
 import time
 import sqlite3
-import visuspy as Visus
-import VisusIdxPy
-import VisusDbPy
-import VisusKernelPy
+import OpenVisus
+from OpenVisus import *
+
 #import SocketServer
 #import BaseHTTPServer
 #import fcntl
@@ -59,7 +58,9 @@ def lookup_cdat_path(idxpath,dbpath):
         # solution is to run converter service from xml directory and
         # to load xml files from local paths, not explicit paths
         # (e.g. "filename.xml", not "/path/to/filename.xml".
-        cdatpath=os.path.basename(cdatpath)
+
+        # steve: ??? (commenting this next line)
+        # cdatpath=os.path.basename(cdatpath)
         return cdatpath,True
     return "",False
 
@@ -67,9 +68,9 @@ def lookup_cdat_path(idxpath,dbpath):
 def read_cdat_data(cdatpath,field,timestep):
     """open and read a field from a cdat dataset"""
     f=cdms2.open(cdatpath)
-    if not f.variables.has_key(field):
+    if not field in f.variables:
         raise ConvertError(RESULT_NOTFOUND,"Field %s not found in cdat volume %s."%(field,cdatpath))
-    print cdatpath,"opened. Reading field",field,"at timestep",timestep
+    print(cdatpath,"opened. Reading field",field,"at timestep",timestep)
     v=f.variables[field]
 
     data=None
@@ -80,7 +81,7 @@ def read_cdat_data(cdatpath,field,timestep):
         data=v[timestep]
     else:
         data=v
-    print "finished reading field",field,"at timestep",timestep,"of",cdatpath
+    print("finished reading field",field,"at timestep",timestep,"of",cdatpath)
 
     #"flatten" masked data by inserting missing_value everywhere mask is invalid
     if isinstance(data,cdms2.tvariable.TransientVariable):
@@ -96,26 +97,26 @@ def create_idx_query(idxpath,field,timestep,box,hz,dbpath):
     idxpath=os.path.dirname(dbpath)+"/"+idxpath
     idxpath=os.path.splitext(idxpath)[0]+'.idx'  
 
-    dataset=VisusDbPy.Dataset.loadDataset(idxpath);
+    dataset=Dataset_loadDataset(idxpath);
     if not dataset:
         raise ConvertError(RESULT_ERROR,"Error creating IDX query: could not load dataset "+idxpath)
-    visus_field=dataset.get().getFieldByName(field);
+    visus_field=dataset.getFieldByName(field);
     if not visus_field:
         raise ConvertError(RESULT_ERROR,"Error creating IDX query: could not find field "+field)
-
-    access=dataset.get().createAccess()
-    logic_box=dataset.get().getBox()
+    
+    access=dataset.createAccess()
+    logic_box=dataset.getBox()
 
     if box or hz>=0:
         pass #print "TODO: handle subregion queries and resolution selection (box=%s,hz=%d)"%(box,hz)
 
     # convert the field
-    query=VisusDbPy.QueryPtr(VisusDbPy.Query(dataset.get(), ord('w')))
-    query.get().position=Visus.Position(logic_box)
-    query.get().field=visus_field
-    query.get().time=timestep
-
-    dataset.get().beginQuery(query)
+    query=Query(dataset, ord('w'))
+    query.position=Position(logic_box)
+    query.field=visus_field
+    query.time=timestep
+    
+    dataset.beginQuery(query)
 
     return dataset,access,query  # IMPORTANT: need to return dataset,access because otherwise they go out of scope and query fails
 
@@ -135,7 +136,7 @@ class ConvertError(Exception):
 
 def convert(idxpath,field,timestep,box,hz,dbpath):
     """Converts a timestep of a field of a cdat dataset to idx, using the idxpath to find the matching cdat volume."""
-    VisusIdxPy.IdxModule.attach()
+    IdxModule.attach()
 
     t1  = time.time()
     pt1 = time.clock()
@@ -144,7 +145,7 @@ def convert(idxpath,field,timestep,box,hz,dbpath):
     cdatpath,success=lookup_cdat_path(idxpath,dbpath)
     if not success:
         result_str="Database does not list associated cdat dataset for %s"%idxpath
-        print "-c;"+str(RESULT_NOTFOUND)+";-s;\\\""+result_str+"\\\""
+        print("-c;"+str(RESULT_NOTFOUND)+";-s;\\\""+result_str+"\\\"")
         #return (result_str,RESULT_NOTFOUND)
         #sys.exit(0)  #(implied)
 
@@ -155,7 +156,7 @@ def convert(idxpath,field,timestep,box,hz,dbpath):
     result_str="Success!"
     try:
         # get file lock
-        print "opening lockfile:",lockfilename
+        print("opening lockfile:",lockfilename)
         lock=os.open(lockfilename,os.O_CREAT|os.O_EXCL)
 
         #import pdb; pdb.set_trace()
@@ -168,32 +169,33 @@ def convert(idxpath,field,timestep,box,hz,dbpath):
             field_name=field_name[:-1]
         else:
             field_name=field
-        print "reading cdat data for field",field_name,"at time",timestep,"of",cdatpath
+        print("reading cdat data for field",field_name,"at time",timestep,"of",cdatpath)
         data=read_cdat_data(cdatpath,field_name,timestep)
 
         # open idx and create query
-        print "creating idx query for field",field_name,"at time",timestep,"of",cdatpath
+        print("creating idx query for field",field_name,"at time",timestep,"of",cdatpath)
         dataset,access,query=create_idx_query(idxpath,field_name,timestep,box,hz,dbpath)
 
         # validate bounds
-        if data.size!=query.get().nsamples.innerProduct():
+        if data.size!=query.nsamples.innerProduct():
             raise ConvertError(RESULT_ERROR,"Invalid IDX query")
             
         # validate shape
         shape=data.shape[::-1]
         for i in range(len(shape)):
-            if shape[i]!=query.get().nsamples[i]:
+            if shape[i]!=query.nsamples[i]:
                 raise ConvertError(RESULT_ERROR,"Invalid query dimensions.")
                 
         # convert data
-        print "converting field",field_name,"at time",timestep,"of",cdatpath,"to idx..."
-        buffer=VisusKernelPy.convertToVisusArray(data)
-        query.get().buffer=buffer.get()
-        ret=dataset.get().executeQuery(access, query)
+        print("converting field",field_name,"at time",timestep,"of",cdatpath,"to idx...")
+        buffer=Array.fromNumPy(data)
+        
+        query.buffer=buffer
+        ret=dataset.executeQuery(access, query)
 
         if not ret:
             raise ConvertError(RESULT_ERROR,"Error executing IDX query.")
-        print "done converting field",field_name,"at time",timestep,"of",cdatpath
+        print("done converting field",field_name,"at time",timestep,"of",cdatpath)
             
     except IOError as e:
         if e.errno==None:
@@ -249,4 +251,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     out=convert(args.idxpath,args.field,args.timestep,args.box,args.hz)
-    print out
+    print(out)
