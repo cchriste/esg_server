@@ -35,8 +35,13 @@ RUN conda install -c conda-forge cdms2=3.1.2=py37h6091dcd_7 && \
 #[] Not sure about all the copying. At the least, let's use an install script.
 #[] install script should set cfg params in respective files
 
-ENV ONDEMAND_HOME ${VISUS_HOME}/ondemand
+#ENV ONDEMAND_HOME ${VISUS_HOME}/ondemand
+ENV ONDEMAND_HOME /home/ondemand
 ADD . ${ONDEMAND_HOME}
+
+# configure mod_visus and webviewer
+COPY ${ONDEMAND_HOME}/conf/ondemand.conf /etc/apache2/sites-enabled
+#COPY resources/shared/visus.config ${VISUS_HOME}  (or symlink)
 
 # web root is ${VISUS_HOME}/webviewer, so symlink ondemand there to make ondemand/ondemand.php accessible
 #<ctc> - copy to /home/ondemand or ${VISUS_HOME}/ondemand... don't want to symlink to webviewer.
