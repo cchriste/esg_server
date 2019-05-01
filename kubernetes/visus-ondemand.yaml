@@ -23,7 +23,7 @@ spec:
       nodeName: aims2.llnl.gov
       containers:
       - name: visus
-        image: visus/ondemand:0.1b
+        image: visus/ondemand:0.2b
         imagePullPolicy: Always
         command:
           - /bin/bash

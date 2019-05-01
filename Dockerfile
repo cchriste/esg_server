@@ -5,9 +5,8 @@
 # Installation based on visus/anaconda, which has OpenVisus w/ python, webviewer, and apache mod_visus
 # NOTE: - includes Docker ENVs for VISUS_HOME and CONDA_PREFIX
 #       - both conda update and apt-get update have been run in the parent image
-#       - for officially releases, set a specific tag (e.g., visus/anaconda:1.3.8)
-FROM visus/anaconda:1.3.8
-
+#       - for official releases, set a specific tag (e.g., visus/anaconda:1.3.8)
+FROM visus/anaconda:1.3.8-newest_webviewer
 
 
 
@@ -45,11 +44,11 @@ ADD . ${ONDEMAND_HOME}
 RUN ln -s ${ONDEMAND_HOME} ${VISUS_HOME}/webviewer/ondemand
 
 # link cgi scripts and configuration to cgi-bin (TODO: is this somehow avoidable?)
-RUN ln -s ${ONDEMAND_HOME}/cgi/cdat_to_idx_create.cgi /usr/lib/cgi-bin/ && \
-    ln -s ${ONDEMAND_HOME}/cgi/datasize.cgi /usr/lib/cgi-bin/ && \
-    ln -s ${ONDEMAND_HOME}/conf/ondemand-cfg.sh /usr/lib/cgi-bin/
+#<ctc> symlinking these filesworked, but on some restart it stopped, so they have to be copied instead. Meh.
+#<ctc> I'd rather they stay in ondemand in the first place, so just figure this out (give ondemand it's own apache .conf with appropriate perms)
+RUN cp ${ONDEMAND_HOME}/cgi/cdat_to_idx_create.cgi /usr/lib/cgi-bin/ && \
+    cp ${ONDEMAND_HOME}/cgi/datasize.cgi /usr/lib/cgi-bin/ && \
+    cp ${ONDEMAND_HOME}/conf/ondemand-cfg.sh /usr/lib/cgi-bin/
 
-
-# EXPOSE 42299  #specified in ondemand-cfg.sh, and docker more-or-less ignores this anyway, so not necessary
-
-CMD "${ONDEMAND_HOME}/bin/start_service.sh"
+#CMD "${ONDEMAND_HOME}/bin/start_service.sh"
+CMD "/bin/bash"
