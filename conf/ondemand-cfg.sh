@@ -22,7 +22,7 @@ UVCDAT_DIR="/usr/local/uvcdat/2.2.0"
 VISUSPY_PATH="${ONDEMAND_PATH}/code"
 
 #   VISUSSERVER             - server that hosts idx volumes (must be able to access them)
-VISUSSERVER="http://localhost"
+VISUSSERVER="https://aims2.llnl.gov/visus"
 
 #   ONDEMAND_XMLPATH        - path to cdat xml files created by uvcdat cdscan utility
 ONDEMAND_XMLPATH="/data/xml"

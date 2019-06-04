@@ -10,7 +10,7 @@
 #QUERY_STRING=`echo ${QUERY_STRING} | sed -e 's/cmip5rt/cmip5/g' | sed -e 's/\.[^\.]*\.[^\.]*|.*/.xml/g'`
 
 # configuration
-. ondemand-cfg.sh
+. ../conf/ondemand-cfg.sh
 
 QUERY_STRING=`echo ${QUERY_STRING} | sed -e 's/cmip5rt/cmip5/g' | sed -r -e 's/\.v[0-9]+(%7C|\|)+.*/.xml/g'`
 #echo "query: " ${QUERY_STRING} > /tmp/query_string.out  #use for debugging
@@ -25,7 +25,7 @@ dataset="$dataset$append"
 #echo $dataset > /tmp/dataset_name.out
 
 palette="rich"
-vr=1
+vr=0  # this should depend on the dataset dims
 #exit 1
 
 rawurlencode() {
@@ -50,5 +50,7 @@ rawurlencode() {
 echo "Content-type: text/html"
 echo ""
 echo "<html><head>"
-echo "<script>window.open(\"${VISUSSERVER}/viewer?server=$( rawurlencode $server )?&dataset=$( rawurlencode $dataset )&palette=$palette&vr=$vr\",'_self');</script>"
+#FIXME: it's not working yet for general datasets, so leave dataset out for now and just show something pretty
+echo "<script>window.open(\"${VISUSSERVER}/viewer/viewer.html?server=$( rawurlencode $server )&palette=$palette&palette_min=0.0&palette_max=0.0&dataset=nature_2007_aer1_hourly\",'_self');</script>"
+#echo "<script>window.open(\"${VISUSSERVER}/viewer/viewer.html?server=$( rawurlencode $server )&dataset=$( rawurlencode $dataset )&palette=$palette&vr=$vr&palette_min=0.0&palette_max=0.0&dataset=nature_2007_aer1_hourly\",'_self');</script>"
 echo "</head></html>"
