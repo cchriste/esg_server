@@ -42,16 +42,19 @@ def parse_and_map(url, table):
 
 
 def map_datasets(id):
+  mapped_datasets = []
+  for url in get_mapped_dataset(id):
+    mapped_datasets.append(parse_and_map(url, sample_table))
 
-	for url in get_mapped_dataset(id):
-            print(parse_and_map(url, sample_table))
+  print(mapped_datasets)
+  return mapped_datasets
 
 
-import sys
+#import sys
 
 # test example files:
 #  'cmip5.output1.CMCC.CMCC-CM.historical.day.atmos.day.r1i1p1.v20120514|aims3.llnl.gov'
 # 'CMIP6.CMIP.NASA-GISS.GISS-E2-1-G.historical.r1i1p1f1.3hr.clt.gn.v20181015|aims3.llnl.gov'
 
-map_datasets(sys.argv[1])
+#map_datasets(sys.argv[1])
 

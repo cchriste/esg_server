@@ -14,6 +14,7 @@
 
 QUERY_STRING=`echo ${QUERY_STRING}` #| sed -e 's/cmip5rt/cmip5/g' | sed -r -e 's/\.v[0-9]+(%7C|\|)+.*/.xml/g'`
 echo "query: " ${QUERY_STRING} > /tmp/query_string.out  #use for debugging
+
 curl "http://${ONDEMAND_HOST}:${ONDEMAND_PORT}/create?${QUERY_STRING}" -o ${ONDEMAND_LOGFILE}
 
 server="${VISUSSERVER}/mod_visus?"
@@ -24,8 +25,12 @@ dataset_id=`echo ${QUERY_STRING} | awk -F'[=&]' '{print $2}'`
 #append="_idx"
 #"-lon_lat_plev_time_idx"
 #dataset="$dataset$append"
-echo $dataset_id > /tmp/dataset_name.out
 
+#echo $dataset_id > /tmp/dataset_name.out
+#python map_files.py $dataset_id > /tmp/dataset_path.out
+#$first="`head -n1 /tmp/dataset_path.out`"
+#echo $first > /tmp/first_dataset.out
+#echo "http://${ONDEMAND_HOST}:${ONDEMAND_PORT}/create?{dataset=}" > /tmp/ondemand_config.out
 exit 0
 
 palette="rich"

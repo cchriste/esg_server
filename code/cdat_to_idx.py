@@ -83,6 +83,7 @@ def create_midx(cdat_dataset,destpath,idxinfo):
         
 #****************************************************
 def create_idx(idxinfo):
+    print("creating dims", idxinfo.dims, "timesteps",idxinfo.timesteps) 
     """Create a new idx volume from the information in idxinfo (fields, dims, timesteps)"""
     dims = [0]*3
     if len(idxinfo.dims) > 0:
@@ -113,6 +114,8 @@ def create_idx(idxinfo):
     if not bSaved:
         print("ERROR creating idx "+ idxinfo.path)
 
+    print("idx saved in", idxinfo.path)
+        
 def isfloat(x):
     try:
         a = float(x)
