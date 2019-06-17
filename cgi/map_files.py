@@ -1,5 +1,7 @@
 import requests, json
 from urllib.parse import urlparse
+import os.path
+from os import path
 
 # Load this table from a .json file
 sample_table = { 'esg_dataroot' : '/path/to/data',
@@ -7,8 +9,11 @@ sample_table = { 'esg_dataroot' : '/path/to/data',
 		 '/cmip5_css01_data': '/path/to/cmip5_01/data',
 		  'css03_data': '/path/to/css03/data', 'user_pub_work': '/path/to/user/data' }
 
-
-
+# use local configuration if exists
+if path.exists('local.json'):
+    with open('local.json') as json_file:
+        sample_table = json.load(json_file)[0]
+    
 def get_mapped_dataset(id):
 
 	search_url = "https://esgf-node.llnl.gov/esg-search/search/?type=File&dataset_id={}&format=application%2fsolr%2bjson".format(id)
@@ -29,7 +34,7 @@ def parse_and_map(url, table):
 
 	thepath = res.path
 	pathparts = thepath.split('/')
-
+        
 	# Entry at index 3 is the logical thredds dataroot that needs to be mapped
 	mappedroot = table[pathparts[3]]
 
@@ -39,8 +44,7 @@ def parse_and_map(url, table):
 def map_datasets(id):
 
 	for url in get_mapped_dataset(id):
-
-		print(parse_and_map(url, sample_table))
+            print(parse_and_map(url, sample_table))
 
 
 import sys
