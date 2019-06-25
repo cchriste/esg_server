@@ -29,6 +29,8 @@ from copy import deepcopy
 from lxml import etree
 import urllib
 from urllib.request import urlopen
+import urllib.parse
+import urllib.request
 import base64
 from urllib.parse import urlparse,urlunparse,quote
 import numpy
@@ -380,17 +382,41 @@ def cdat_to_idx(cdat_dataset,destpath,db):
 def send_url(url):
     """ sendurl using urllib2 """
     try:
-        request = urllib2.Request(urlunparse(url))
-        base64string = base64.encodestring('%s:%s' % ('visus', 'P@ssw0rd!')).replace('\n', '')
-        request.add_header("Authorization", "Basic %s" % base64string)
-        ret = urllib2.urlopen(request).read()
-        print(ret)
-    except (urllib2.HTTPError, e):
+        # create a password manager
+        password_mgr = urllib.request.HTTPPasswordMgrWithDefaultRealm()
+        
+        # Add the username and password.
+        # If we knew the realm, we could use it instead of None.
+        top_level_url = urlunparse(url)
+        password_mgr.add_password(None, top_level_url, 'visus', 'P@ssw0rd!')
+        
+        handler = urllib.request.HTTPBasicAuthHandler(password_mgr)
+
+        # create "opener" (OpenerDirector instance)
+        opener = urllib.request.build_opener(handler)
+        
+        # use the opener to fetch a URL
+        u = opener.open(urlunparse(url))
+        
+        # Install the opener.
+        # Now all calls to urllib.request.urlopen use our opener.
+        #urllib.request.install_opener(opener)
+        
+        # OLD way of making authenticated requests
+        #request = urllib.request.Request(urlunparse(url))
+        
+        #base64string = base64.encodestring('%s:%s' % ('visus', 'P@ssw0rd!')).replace('\n', '')
+        #request.add_header("Authorization", "Basic "+base64string)
+        #ret = urllib.request.urlopen(request, timeout=4).read()
+        ret = u.read()
+    except (urllib.error.HTTPError, e):
         print("HTTP error adding dataset to server: %d" % e.code)
-    except (urllib2.URLError, e):
+    except (urllib.error.URLError, e):
         print("Network error adding dataset to server: %s" % e.reason.args[1])
-    #except httplib.BadStatusLine, e:
-        #print "BadStatusLine:",e
+    except (urllib.error.BadStatusLine, e):
+        print("BadStatusLine:",e)
+    except (socket.timeout, e):
+        print("timeout exception:",e)
     except (Exception,e):
         print("unknown exception:",e)
 
@@ -410,7 +436,7 @@ def register_datasets(idx_paths,outputdir,hostname,service):
             url=urlparse(hostname)
             xml="<dataset name=\""+name+"\" permissions=\"public\" url=\"file://"+outputdir+'/'+path+"\" ><access name=\"Multiplex\" type=\"multiplex\"><access chmod=\"r\" type=\"disk\" /><access chmod=\"r\" ondemand=\"external\" path=\""+service+"/convert\" type=\"ondemandaccess\" /><access chmod=\"r\" type=\"disk\" /></access></dataset>"
             url=url._replace(query="action=AddDataset&xml="+quote(xml))
-            print(urlunparse(url))
+            print("Sending URL", urlunparse(url))
             send_url(url)
         
 

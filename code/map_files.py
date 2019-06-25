@@ -10,8 +10,8 @@ sample_table = { 'esg_dataroot' : '/path/to/data',
 		  'css03_data': '/path/to/css03/data', 'user_pub_work': '/path/to/user/data' }
 
 # use local configuration if exists
-if path.exists('local.json'):
-    with open('local.json') as json_file:
+if path.exists('/home/ondemand/conf/local.json'):
+    with open('/home/ondemand/conf/local.json') as json_file:
         sample_table = json.load(json_file)[0]
     
 def get_mapped_dataset(id):
