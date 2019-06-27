@@ -15,11 +15,26 @@
 QUERY_STRING=`echo ${QUERY_STRING}` #| sed -e 's/cmip5rt/cmip5/g' | sed -r -e 's/\.v[0-9]+(%7C|\|)+.*/.xml/g'`
 echo "query: " ${QUERY_STRING} > /tmp/query_string.out  #use for debugging
 
-curl "http://${ONDEMAND_HOST}:${ONDEMAND_PORT}/create?${QUERY_STRING}" -o ${ONDEMAND_LOGFILE}
+ts=`date +%s`
 
-server="${VISUSSERVER}/mod_visus?"
+curl "http://${ONDEMAND_HOST}:${ONDEMAND_PORT}/create?${QUERY_STRING}&ts=$ts" -o ${ONDEMAND_LOGFILE}
 
-dataset_id=`echo ${QUERY_STRING} | awk -F'[=&]' '{print $2}'` 
+# wait for result in file
+#while [ ! -f /tmp/${ts}.out ]
+#do
+#    sleep 2
+#    n=`date +%s`
+#    if [ $(($n-$ts)) -gt 10 ]; then
+#	break
+#    fi
+#done
+
+#python ${ONDEMAND_PATH}/code/get_last_dataset.py /tmp/${ts}.out > /tmp/last_attempt.out
+last_idx=`python ${ONDEMAND_PATH}/code/get_last_dataset.py /tmp/${ts}.out`
+echo $last_idx > /tmp/last_idx.out
+
+server="${VISUSSERVER}?"
+#dataset_id=`echo ${QUERY_STRING} | awk -F'[=&]' '{print $2}'` 
 
 #dataset=`echo ${QUERY_STRING} | cut -d'=' -f 2 | sed -r -e 's/\.(nc|xml)+//'`
 #append="_idx"
@@ -31,7 +46,6 @@ dataset_id=`echo ${QUERY_STRING} | awk -F'[=&]' '{print $2}'`
 #$first="`head -n1 /tmp/dataset_path.out`"
 #echo $first > /tmp/first_dataset.out
 #echo "http://${ONDEMAND_HOST}:${ONDEMAND_PORT}/create?{dataset=}" > /tmp/ondemand_config.out
-exit 0
 
 palette="rich"
 vr=0  # this should depend on the dataset dims
@@ -60,6 +74,8 @@ echo "Content-type: text/html"
 echo ""
 echo "<html><head>"
 #FIXME: it's not working yet for general datasets, so leave dataset out for now and just show something pretty
-echo "<script>window.open(\"${VISUSSERVER}/viewer/viewer.html?server=$( rawurlencode $server )&palette=$palette&palette_min=0.0&palette_max=0.0&dataset=nature_2007_aer1_hourly\",'_self');</script>"
+#echo "<script>window.open(\"${VISUSSERVER}/viewer/viewer.html?server=$( rawurlencode $server )&palette=$palette&palette_min=0.0&palette_max=0.0&dataset=nature_2007_aer1_hourly\",'_self');</script>"
 #echo "<script>window.open(\"${VISUSSERVER}/viewer/viewer.html?server=$( rawurlencode $server )&dataset=$( rawurlencode $dataset )&palette=$palette&vr=$vr&palette_min=0.0&palette_max=0.0&dataset=nature_2007_aer1_hourly\",'_self');</script>"
+echo "<script>window.open(\"https://aims2.llnl.gov/visus/viewer/viewer.html?server=$( rawurlencode $server )&dataset=$last_idx\",'_self');</script>"
+
 echo "</head></html>"

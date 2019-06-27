@@ -243,6 +243,12 @@ def create(query):
 
     print("result_str: "+result_str)
     print("result: "+str(result))
+    if("ts" in job):
+      outf = open("/tmp/"+job["ts"][0]+".out","w")
+      outf.write(result_str)
+      print("wrote to ","/tmp/"+job["ts"][0]+".out")
+      outf.close()
+    
     return (result_str,result)
 
 
