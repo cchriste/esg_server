@@ -54,9 +54,7 @@ spec:
           name: ssl
         - mountPath: /home/ondemand/conf/local.json
           name: local-json
-	# Add mounthPath for data folders on the node
-
-
+        # Add mounthPath for data folders on the node
 #      nodeSelector:
 #        tier: frontend
       volumes:
