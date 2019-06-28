@@ -97,7 +97,7 @@ def create_idx_query(idxpath,field,timestep,box,hz,dbpath):
     idxpath=os.path.dirname(dbpath)+"/"+idxpath
     idxpath=os.path.splitext(idxpath)[0]+'.idx'  
 
-    dataset=Dataset_loadDataset(idxpath);
+    dataset=LoadDataset(idxpath);
     if not dataset:
         raise ConvertError(RESULT_ERROR,"Error creating IDX query: could not load dataset "+idxpath)
     visus_field=dataset.getFieldByName(field);

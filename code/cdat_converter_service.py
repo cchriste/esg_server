@@ -30,7 +30,8 @@ import socketserver
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import fcntl
 import cdms2
-import urllib.parse
+from urllib.parse import urlparse
+from urllib import parse
 import os
 import socket
 from sys import stdout
@@ -38,15 +39,26 @@ from shutil import rmtree
 import cdat_to_idx
 import convert_query
 
+from map_files import map_datasets
+
 RESULT_SUCCESS=200; RESULT_INVALID=400; RESULT_NOTFOUND=404; RESULT_ERROR=500; RESULT_BUSY=503
 
 class cdatConverter(BaseHTTPRequestHandler):
     """http request handler for cdat to idx conversion requests"""
 
     nqueries_=0
-
+    def _set_headers(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html')
+        self.end_headers()
+        
+    def do_HEAD(self):
+        self._set_headers()
+        
     def do_GET(self):
-        url=urlparse.urlparse(self.path)
+        print("got ", self.path)
+        url=urlparse(self.path)
+        print("url", url)
         if url.path=='/convert':
             query_id=cdatConverter.nqueries_; cdatConverter.nqueries_+=1
             t1=time.time()
@@ -66,6 +78,7 @@ class cdatConverter(BaseHTTPRequestHandler):
             return
         if url.path=='/create':
             print("request received: "+url.query)
+            #s.wfile.write("<html><head><title>Just received</title></head>")
             result,response=create(url.query)
             self.send_response(response)
             if response != RESULT_SUCCESS:
@@ -105,7 +118,7 @@ def clear_cache():
 def parse_query(query):
     """parse the cdat to idx conversion query string"""
 
-    job=urlparse.parse_qs(query)
+    job=parse.parse_qs(query)
     idxpath=None
     field=None
     timestep=0
@@ -184,18 +197,32 @@ def call_convert_query(query):
 def create(query):
     """Create idx volumes corresponding to cdat dataset (xml or nc)."""
 
-    t1 = time.clock()
+    print("create query start")
+    t1 = time.perf_counter()
 
     result_str="An unknown error occurred."
     result=RESULT_ERROR
     try:
         # parse query request
-        job=urlparse.parse_qs(query, True, True)   #keep empty fields, strict checking
+        job=parse.parse_qs(query, True, True)   #keep empty fields, strict checking
+        print(job)
         if not "dataset" in job:
             raise ConvertError(RESULT_INVALID,"Query must specify a valid and accessible .xml or .nc file and destination path")
 
+        dataset_id=job["dataset"][0]
+        datasets=map_datasets(dataset_id)
+        
         global xml_path,idx_path,ondemand_service_address,dbpath,visusserver
-        cdatpath=xml_path+"/"+job["dataset"][0]
+        #cdatpath=xml_path+"/"+job["dataset"][0]
+        # TODO: using only the first for initial testing
+        cdatpath=datasets[0]
+        
+        if("ts" in job):
+            outf = open("/tmp/"+job["ts"][0]+".out","w")
+            outf.write(os.path.basename(cdatpath).replace(".nc","_idx"))
+            print("wrote to ","/tmp/"+job["ts"][0]+".out")
+            outf.close()
+    
         idxpath=idx_path
         if "destination" in job:
             idxpath=idx_path+"/"+job["destination"][0]
@@ -223,6 +250,7 @@ def create(query):
 
     print("result_str: "+result_str)
     print("result: "+str(result))
+    
     return (result_str,result)
 
 
@@ -266,11 +294,11 @@ class OnDemandSocketServer(socketserver.ThreadingTCPServer):
 
 def start_server(hostname,port):
     # start server
-    SocketServer.ThreadingTCPServer.allow_reuse_address = True
+    socketserver.ThreadingTCPServer.allow_reuse_address = True
     #SocketServer.ForkingTCPServer.allow_reuse_address = True
     httpd = OnDemandSocketServer((hostname, port),cdatConverter)
     httpd.request_queue_size=socket.SOMAXCONN
-    print("serving at port", port)
+    print("serving at ", hostname, "port", port)
     stdout.flush()
     try:
         httpd.serve_forever()
