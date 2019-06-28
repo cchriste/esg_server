@@ -216,6 +216,13 @@ def create(query):
         #cdatpath=xml_path+"/"+job["dataset"][0]
         # TODO: using only the first for initial testing
         cdatpath=datasets[0]
+        
+        if("ts" in job):
+            outf = open("/tmp/"+job["ts"][0]+".out","w")
+            outf.write(os.path.basename(cdatpath).replace(".nc","_idx"))
+            print("wrote to ","/tmp/"+job["ts"][0]+".out")
+            outf.close()
+    
         idxpath=idx_path
         if "destination" in job:
             idxpath=idx_path+"/"+job["destination"][0]
@@ -243,11 +250,6 @@ def create(query):
 
     print("result_str: "+result_str)
     print("result: "+str(result))
-    if("ts" in job):
-      outf = open("/tmp/"+job["ts"][0]+".out","w")
-      outf.write(result_str)
-      print("wrote to ","/tmp/"+job["ts"][0]+".out")
-      outf.close()
     
     return (result_str,result)
 

@@ -17,7 +17,7 @@ echo "query: " ${QUERY_STRING} > /tmp/query_string.out  #use for debugging
 
 ts=`date +%s`
 
-curl "http://${ONDEMAND_HOST}:${ONDEMAND_PORT}/create?${QUERY_STRING}&ts=$ts" -o ${ONDEMAND_LOGFILE}
+curl -v "http://${ONDEMAND_HOST}:${ONDEMAND_PORT}/create?${QUERY_STRING}&ts=$ts" -o ${ONDEMAND_LOGFILE}
 
 # wait for result in file
 #while [ ! -f /tmp/${ts}.out ]
@@ -30,8 +30,9 @@ curl "http://${ONDEMAND_HOST}:${ONDEMAND_PORT}/create?${QUERY_STRING}&ts=$ts" -o
 #done
 
 #python ${ONDEMAND_PATH}/code/get_last_dataset.py /tmp/${ts}.out > /tmp/last_attempt.out
-last_idx=`python ${ONDEMAND_PATH}/code/get_last_dataset.py /tmp/${ts}.out`
+last_idx=`cat /tmp/${ts}.out` #`python ${ONDEMAND_PATH}/code/get_last_dataset.py /tmp/${ts}.out`
 echo $last_idx > /tmp/last_idx.out
+rm /tmp/${ts}.out
 
 server="${VISUSSERVER}?"
 #dataset_id=`echo ${QUERY_STRING} | awk -F'[=&]' '{print $2}'` 
