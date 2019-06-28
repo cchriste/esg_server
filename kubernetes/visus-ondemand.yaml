@@ -25,10 +25,10 @@ spec:
       nodeName: aims2.llnl.gov
       containers:
       - name: visus
-        image: visus/ondemand:0.2b
+        image: visus/ondemand:0.26b
         imagePullPolicy: Always
         # IfNotPresent helps when debugging so you don't have to push every single image to dockerhub
-        #imagePullPolicy: IfNotPresent
+        imagePullPolicy: IfNotPresent
         command:
           - /bin/bash
           - -i
@@ -52,11 +52,11 @@ spec:
           name: naturerun
         - mountPath: /ssl-certs
           name: ssl
-#        - mountPath: /etc/config
-#          readOnly: true
-#          name: visus-secret
-#        - mountPath: /etc/config
-#          name: visus-config
+        - mountPath: /home/ondemand/conf/local.json
+          name: local-json
+	# Add mounthPath for data folders on the node
+
+
 #      nodeSelector:
 #        tier: frontend
       volumes:
@@ -72,36 +72,16 @@ spec:
         # this creates a volume for the naturerun config, which is mounted to the OpenVisus home above
         - name: naturerun
           hostPath:
-            path: /export/christensen41/docker/visus_naturerun.config
+            path: /export/spetruzza1/ondemand/demos/visus_naturerun.config
             type: File
         - name: ssl
           hostPath:
             path: /etc/httpd/ssl-certs
-#      - name: data-volume
-#        persistentVolumeClaim:
-#          claimName: data-volume
-#      - name: visus-secret
-#        secret:
-#          secretName: visus
-#      - name: visus-config
-#        configMap:
-#          name: visus
-#---
-#apiVersion: v1
-#kind: ConfigMap
-#metadata:
-#  name: visus
-#data:
-#  test.txt: |
-#    hello=world
-#---
-#apiVersion: v1
-#kind: Secret
-#metadata:
-#  name: visus
-#type: Opaque
-#data:
-#  username: hello
+        - name: local-json
+          hostPath:
+            path: /export/spetruzza1/ondemand/conf/local.json
+        # Add hostPath for folders on the node
+
 ---
 kind: Service
 apiVersion: v1
