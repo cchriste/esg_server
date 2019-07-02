@@ -44,12 +44,14 @@ def getIdxPaths(cdat_dataset,db):
     ret=[]
     cur=db.cursor()
     cur.execute("SELECT ds_id from datasets where pathname=\"%s\"" % cdat_dataset)
+    db.commit()
     cdat_id=cur.fetchall()
     ds_id=-1
     assert(len(cdat_id)<=1)
     if len(cdat_id)>0:
         ds_id=cdat_id[0]
         cur.execute("SELECT * from idxfiles where ds_id=%d" % ds_id)
+        db.commit()
         idxfiles=cur.fetchall()
         for f in idxfiles:
             ret.append(f[1])
@@ -331,11 +333,18 @@ def cdat_to_idx(cdat_dataset,destpath,db):
                 f.setDescription(v.long_name)
             domains[axes].idxinfo.fields=[f]
 
-    # insert new dataset into db
-    print("inserting into db...")
-    cur=db.cursor()
-    cur.execute("INSERT into datasets (pathname) values (\"%s\")" % cdat_dataset)
-    cdat_id=cur.lastrowid
+    try:
+      # insert new dataset into db
+      print("inserting into db...")
+      cur=db.cursor()
+      cur.execute("INSERT into datasets (pathname) values (\"%s\")" % cdat_dataset)
+      db.commit()
+      cdat_id=cur.lastrowid
+    except sqlite3.Error as e:
+      print("Error Sqlite: ", e)
+    except Exception as e:
+      print("Exception Sqlite in _query: ", e)
+ 
 
     xidxpath = destpath+"/test.xidx"
 
@@ -361,8 +370,15 @@ def cdat_to_idx(cdat_dataset,destpath,db):
         midx=os.path.splitext(idx)[0]+'.midx'
         # XIDX path assuming only one dataset per IDX file
         xidxpath=destpath+"/"+os.path.splitext(idx)[0]+'.xidx'
-        cur.execute("INSERT into midxfiles (pathname, ds_id) values (\"%s\", %d)" % (midx, cdat_id))
-        cur.execute("INSERT into idxfiles (pathname, ds_id) values (\"%s\", %d)" % (idx, cdat_id))
+
+        try:
+          cur.execute("INSERT into midxfiles (pathname, ds_id) values (\"%s\", %d)" % (midx, cdat_id))
+          cur.execute("INSERT into idxfiles (pathname, ds_id) values (\"%s\", %d)" % (idx, cdat_id))
+          db.commit()
+        except sqlite3.Error as e:
+          print("Error Sqlite: ", e)
+        except Exception as e:
+          print("Exception Sqlite in _query: ", e)
 
         # XIDX set data source to the dataset file
         source = DataSource("data", idx)
@@ -488,6 +504,7 @@ def generate_idx(inputfile,outputdir,database=None,server=default_server,service
             for path in idx_paths:
                 cur.execute("DELETE from idxfiles where ds_id=%d"%ds_id[0])
                 cur.execute("DELETE from midxfiles where ds_id=%d"%ds_id[0])
+                db.commit()
 
         if len(idx_paths)==0 or force:
             cdat_to_idx(inputfile,outputdir,db)
