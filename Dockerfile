@@ -26,7 +26,7 @@ RUN conda install -c conda-forge cdms2=3.1.2=py37h6091dcd_7 && \
 # RUN apt-get install -y libxml2-dev python-dev libapache2-mod-php
 
 # Update webviewer
-RUN cd /home/OpenVisus/webviewer && git pull
+RUN cd ${VISUS_HOME}/webviewer && git pull
  
 # Install ondemand #
 # add ondemand src and enable access/execute for scripts and html
@@ -34,6 +34,8 @@ ENV ONDEMAND_HOME /home/ondemand
 ADD . ${ONDEMAND_HOME}
 RUN chgrp -R www-data ${ONDEMAND_HOME}
 RUN chmod -R 775 ${ONDEMAND_HOME}
+RUN chgrp -R www-data ${VISUS_HOME}/
+RUN chmod -R 775 ${VISUS_HOME}/
 
 # configure mod_visus and webviewer
 COPY conf/ondemand.conf /etc/apache2/sites-enabled/000-default.conf
