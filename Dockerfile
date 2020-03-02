@@ -6,7 +6,8 @@
 # NOTE: - includes Docker ENVs for VISUS_HOME and CONDA_PREFIX
 #       - both conda update and apt-get update have been run in the parent image
 #       - for official releases, set a specific tag (e.g., visus/anaconda:1.3.8)
-FROM visus/anaconda
+FROM anaconda:latest
+#visus/anaconda
 #1.3.8-newest_webviewer
 
 #(try these by hand to see if it's all really needed: numpy, libgomp1, a2enmod cgid, cdms2, genutil, lxml, libxml2-dev...)
@@ -19,7 +20,10 @@ RUN conda install -y numpy
 RUN a2enmod cgid
 
 # install conda packages
-RUN conda install -c conda-forge cdms2=3.1.2=py37h6091dcd_7 && \
+# this was the version of cdms2 isntalled before
+# cdms2=3.1.2=py37h6091dcd_7 && \
+
+RUN conda install -c conda-forge cdms2 && \ 
   conda install -c conda-forge genutil && \
   conda install -c conda-forge lxml
 # # install libxml2 (if necessary for cdat_to_idx to work)

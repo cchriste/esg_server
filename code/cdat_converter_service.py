@@ -256,7 +256,7 @@ def create(query):
 
 def init(database,hostname,port,xmlpath,idxpath,visus_server):
     SetCommandLine("__main__")
-    IdxModule.attach()
+    DbModule.attach()
 
     global dbpath
     dbpath=database
@@ -339,6 +339,6 @@ if __name__ == '__main__':
     print("\tvisus server: "+visusserver)
     print("\tmax sockets:",socket.SOMAXCONN)
     start_server(args.hostname,args.port)
-    VisusIdxPy.IdxModule.detach()
+    DbModule.detach()
 
     print("done!")
